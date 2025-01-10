@@ -67,10 +67,7 @@ public class MAXSwerve {
 
 
     SparkMaxConfig driveConfig = new SparkMaxConfig();
-      driveConfig.absoluteEncoder
-        .positionConversionFactor(kModule.drivingEncoderPositionFactor)
-        .velocityConversionFactor(kModule.drivingEncoderVelocityFactor);
-      driveConfig.alternateEncoder
+      driveConfig.encoder
         .positionConversionFactor(kModule.drivingEncoderPositionFactor)
         .velocityConversionFactor(kModule.drivingEncoderVelocityFactor);
       // steerConfig.closedLoop                 somethings wrong here but im too dumb to figure out what
@@ -89,9 +86,6 @@ public class MAXSwerve {
     
     SparkMaxConfig steerConfig = new SparkMaxConfig();
       steerConfig.absoluteEncoder
-        .positionConversionFactor(kModule.steeringEncoderPositionFactor)
-        .velocityConversionFactor(kModule.steeringEncoderVelocityFactor);
-      steerConfig.alternateEncoder
         .positionConversionFactor(kModule.steeringEncoderPositionFactor)
         .velocityConversionFactor(kModule.steeringEncoderVelocityFactor);
       // steerConfig.closedLoop                 somethings wrong here but im too dumb to figure out what
