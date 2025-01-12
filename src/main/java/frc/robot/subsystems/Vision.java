@@ -5,15 +5,39 @@
 package frc.robot.subsystems;
 
 import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.kVision;
 
 public class Vision extends SubsystemBase {
-  private final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
+  private final PhotonCamera camera1 = new PhotonCamera("photonvision");
+  private final PhotonCamera camera2 = new PhotonCamera("photonvision");
+  private final PhotonCamera camera3 = new PhotonCamera("photonvision");
+  private final PhotonCamera camera4 = new PhotonCamera("photonvision");
 
-  private PhotonCamera camera = new PhotonCamera("photonvision");
+  private AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
+
+  PhotonPoseEstimator PoseEstimator1 = new PhotonPoseEstimator(
+    aprilTagFieldLayout, 
+    PoseStrategy.CLOSEST_TO_REFERENCE_POSE, 
+    kVision.camera1Position);
+  PhotonPoseEstimator PoseEstimator2 = new PhotonPoseEstimator(
+    aprilTagFieldLayout, 
+    PoseStrategy.CLOSEST_TO_REFERENCE_POSE, 
+    kVision.camera2Position);
+  PhotonPoseEstimator PoseEstimator3 = new PhotonPoseEstimator(
+    aprilTagFieldLayout, 
+    PoseStrategy.CLOSEST_TO_REFERENCE_POSE, 
+    kVision.camera3Position);
+  PhotonPoseEstimator PoseEstimator4 = new PhotonPoseEstimator(
+    aprilTagFieldLayout, 
+    PoseStrategy.CLOSEST_TO_REFERENCE_POSE, 
+    kVision.camera4Position);
+
   /** Creates a new Vision. */
   public Vision() {
 
@@ -24,7 +48,7 @@ public class Vision extends SubsystemBase {
     // Read in relevant data from the Camera
     boolean targetVisible = false;
     double targetYaw = 0.0;
-    var results = camera.getAllUnreadResults();
+    var results = camera1.getAllUnreadResults();
     if (!results.isEmpty()) {
       // Camera processed a new frame since last
       // Get the last one in the list.
