@@ -202,9 +202,9 @@ public final class Constants {
   public static class kVision {
     // Vision
     public static final Transform3d camera1Position =
-    new Transform3d(
-        new Translation3d(0,0, 0),
-        new Rotation3d(0, 0, 0));
+        new Transform3d(
+            new Translation3d(0,0, 0),
+            new Rotation3d(0, 0, 0));
     public static final Transform3d camera2Position =
         new Transform3d(
             new Translation3d(0, 0, 0),
@@ -217,14 +217,12 @@ public final class Constants {
         new Transform3d(
             new Translation3d(0, 0, 0),
             new Rotation3d(0, 0, 0));
-        
     
     public static final Matrix<N3, N1> stateStdDevs =
         MatBuilder.fill(Nat.N3(), Nat.N1(), 0.02, 0.02, 0.01);
     public static final Matrix<N3, N1> visionStdDevs =
         MatBuilder.fill(Nat.N3(), Nat.N1(), 0.03, 0.03, 0.25);
-    public static final double visionScalingFactor =
-        2.3; // scaling factor applied to the visionStdDevs per meter bigger means trust less at a
+    public static final double visionScalingFactor = 2.3; // scaling factor applied to the visionStdDevs per meter bigger means trust less at a
     // distance
   }
 }

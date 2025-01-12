@@ -31,6 +31,10 @@ public class SwerveSubsystem extends SubsystemBase{
         kSwerve.Offsets.frontRight);
     
     private final AHRS navX = new AHRS(AHRS.NavXComType.kMXP_SPI);
+
+    // SwerveDrivePoseEstimator3d swervePoseEstimator = new SwerveDrivePoseEstimator3d(
+    //     kSwerve.kinematics,
+    //     navX.getRotation3d(), null, null);
     public SwerveSubsystem() {
         new Thread(() -> {
             try {
