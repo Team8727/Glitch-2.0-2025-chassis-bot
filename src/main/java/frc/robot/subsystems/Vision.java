@@ -6,11 +6,13 @@ package frc.robot.subsystems;
 
 import org.photonvision.PhotonCamera;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 
 public class Vision extends SubsystemBase {
+  private final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
+
   private PhotonCamera camera = new PhotonCamera("photonvision");
   /** Creates a new Vision. */
   public Vision() {
@@ -53,5 +55,6 @@ public class Vision extends SubsystemBase {
 
     //     // Put debug information to the dashboard
     //     SmartDashboard.putBoolean("Vision Target Visible", targetVisible);
-    }  }
+    //  }
+    } 
 }
