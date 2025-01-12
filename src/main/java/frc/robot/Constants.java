@@ -6,6 +6,8 @@ package frc.robot;
 
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.MatBuilder;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.controller.HolonomicDriveController;
@@ -193,17 +195,18 @@ public final class Constants {
       public static int frontRightDrive = 3;
       public static int frontRightSteer = 4;
     }
-
+  }
+  public static class kVision {
     // Vision
     public static final Transform3d aprilTagCamera1PositionTransform =
-        new Transform3d(
-            new Translation3d(-0.29972, -0.09552, 0.53),
-            new Rotation3d(0, -Units.degreesToRadians(25), Math.PI));
+    new Transform3d(
+        new Translation3d(-0.29972, -0.09552, 0.53),
+        new Rotation3d(0, -Units.degreesToRadians(25), Math.PI));
     public static final Transform3d aprilTagCamera2PositionTransform =
         new Transform3d(
             new Translation3d(0.243, 0.193, 0.229),
             new Rotation3d(0, 0, 0)); // TODO GET REAL ONE this is from last year
-
+    
     public static final Matrix<N3, N1> stateStdDevs =
         MatBuilder.fill(Nat.N3(), Nat.N1(), 0.02, 0.02, 0.01);
     public static final Matrix<N3, N1> visionStdDevs =
