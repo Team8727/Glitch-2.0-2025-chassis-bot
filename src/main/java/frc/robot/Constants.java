@@ -46,8 +46,8 @@ public final class Constants {
     public static double length = width;
 
     // Speed & accel limits (m/s, rad/s, m/s^2 & rad/s^2)
-    public static double maxTransSpeed = 1;
-    public static double maxAngSpeed = .3 * Math.PI;
+    public static double maxTransSpeed = .5; //5
+    public static double maxAngSpeed = .3 * Math.PI; //3 * Math.PI
 
     public static double maxTransAccel = 1.35 * 9.81;
     public static double maxAngAccel = 10 * 2 * Math.PI;
