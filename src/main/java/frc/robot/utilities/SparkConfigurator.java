@@ -2,7 +2,9 @@ package frc.robot.utilities;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 
@@ -91,9 +93,69 @@ public class SparkConfigurator {
       for (int j = 0; j < Constants.configurationSetRetries; j++) {
 
         //NEW FOR 2025
-        SparkMaxConfig c = new SparkMaxConfig();
-        c.signals.primaryEncoderPositionPeriodMs(status[i]);
-        spark.configure(c, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+        // SparkMaxConfig c = new SparkMaxConfig();
+        // c.signals.primaryEncoderPositionPeriodMs(status[i]);
+        // spark.configure(c, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+        //spark.setPeriodicFramePeriod(PeriodicFrame.values()[i], status[i]);
+
+      }
+    }
+
+    return spark;
+  }
+
+  // Get a sparkmax
+  public static SparkFlex getSparkFlex(
+      int id,
+      MotorType motorType,
+      boolean hasFollower,
+      Set<Sensors> sensors,
+      Set<LogData> logData) {
+
+    //NEW 2025 CREATION OF SPARKMAX, CANSPARKMAX was removed
+    SparkFlex spark = new SparkFlex(id, motorType);
+    SparkFlexConfig config = new SparkFlexConfig();
+    spark.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+    //spark.restoreFactoryDefaults();
+
+    int[] status = {FAST, SLOW, SLOW, OFF, OFF, OFF, OFF};
+    // status0 Applied Output & Faults
+    // status1 Velocity, Voltage, & Current
+    // status2 Position
+    // status3 Analog Sensor
+    // status4 Alternate Encoder
+    // status5 Absolute Encoder Position
+    // status6 Absolute Encoder Velocity
+
+    if (!hasFollower && !logData.contains(LogData.VOLTAGE)) {
+      status[0] = SLOW;
+    }
+
+    if (logData.contains(LogData.VELOCITY)
+        || logData.contains(LogData.VOLTAGE)
+        || logData.contains(LogData.CURRENT)) {
+      status[1] = NORMAL;
+    }
+
+    if (logData.contains(LogData.POSITION)) status[2] = NORMAL;
+
+    if (sensors.contains(Sensors.ANALOG)) status[3] = NORMAL;
+
+    if (sensors.contains(Sensors.ALTERNATE)) status[4] = NORMAL;
+
+    if (sensors.contains(Sensors.ABSOLUTE)) {
+      if (logData.contains(LogData.POSITION)) status[5] = NORMAL;
+      if (logData.contains(LogData.VELOCITY)) status[6] = NORMAL;
+    }
+
+    for (int i = 0; i < 7; i++) {
+      for (int j = 0; j < Constants.configurationSetRetries; j++) {
+
+        //NEW FOR 2025
+        // SparkMaxConfig c = new SparkMaxConfig();
+        // c.signals.primaryEncoderPositionPeriodMs(status[i]);
+        // spark.configure(c, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
         //spark.setPeriodicFramePeriod(PeriodicFrame.values()[i], status[i]);
 
       }
