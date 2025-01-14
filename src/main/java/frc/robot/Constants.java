@@ -93,10 +93,10 @@ public final class Constants {
       public static final double angP = 4;
       public static final double angD = 0;
 
-      public static final double maxAccel = 0.1;
-      public static final double maxVel = 0.1;
-      public static final double maxAngAccel = 0.1 * kSwerve.maxAngAccel;
-      public static final double maxAngVel = 0.1 * kSwerve.maxAngSpeed;
+      public static final double maxAccel = 0.4;
+      public static final double maxVel = 0.4;
+      public static final double maxAngAccel = 0.4 * kSwerve.maxAngAccel;
+      public static final double maxAngVel = 0.4 * kSwerve.maxAngSpeed;
       
 
       public static final double transP = 12;
