@@ -5,12 +5,16 @@ import com.studica.frc.AHRS;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utilities.MAXSwerve;
 import frc.robot.Constants.kSwerve;
 import frc.robot.Constants.kSwerve.kModule;
+import frc.robot.utilities.NetworkTableLogger;
 
 public class SwerveSubsystem extends SubsystemBase{
     private final MAXSwerve frontLeftModule = new MAXSwerve(
@@ -31,6 +35,9 @@ public class SwerveSubsystem extends SubsystemBase{
         kSwerve.Offsets.frontRight);
     
     private final AHRS navX = new AHRS(AHRS.NavXComType.kMXP_SPI);
+
+    NetworkTableLogger networkTableLogger = new NetworkTableLogger(this.getName().toString());
+
     public SwerveSubsystem() {
         new Thread(() -> {
             try {
@@ -56,7 +63,8 @@ public class SwerveSubsystem extends SubsystemBase{
 
     @Override 
     public void periodic() {
-        SmartDashboard.putNumber("robot heading", getHeading());
+
+        networkTableLogger.logDouble("robotHeading", getHeading());
     }
     
     public Command XPosition() {
