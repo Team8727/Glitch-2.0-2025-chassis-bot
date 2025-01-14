@@ -6,6 +6,8 @@ package frc.robot;
 
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.MatBuilder;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.controller.HolonomicDriveController;
@@ -201,6 +203,8 @@ public final class Constants {
   }
   public static class kVision {
     // Vision
+
+    public static final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
     public static final Transform3d camera1Position =
         new Transform3d(
             new Translation3d(0,0, 0),
