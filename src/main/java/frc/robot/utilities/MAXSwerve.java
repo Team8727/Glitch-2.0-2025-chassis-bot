@@ -88,6 +88,7 @@ public class MAXSwerve {
     
     SparkMaxConfig steerConfig = new SparkMaxConfig();
       steerConfig.absoluteEncoder
+        .inverted(kModule.invertSteerEncoder)
         .positionConversionFactor(kModule.steeringEncoderPositionFactor)
         .velocityConversionFactor(kModule.steeringEncoderVelocityFactor);
       // steerConfig.closedLoop                 somethings wrong here but im too dumb to figure out what
@@ -105,8 +106,6 @@ public class MAXSwerve {
         .idleMode(IdleMode.kBrake)
         .smartCurrentLimit(kModule.driveSmartCurrentLimit)
         .secondaryCurrentLimit(kModule.driveMaxCurrent);
-      steerConfig
-        .inverted(kModule.invertSteerEncoder);
     steerNEO.configure(steerConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
     driveEncoder = driveNEO.getEncoder();
