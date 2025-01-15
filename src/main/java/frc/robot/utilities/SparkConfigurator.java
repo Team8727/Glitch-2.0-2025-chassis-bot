@@ -211,7 +211,7 @@ public class SparkConfigurator {
     // spark.configure(new SparkFlexConfig().follow(leader, invert), ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
     //spark.follow(leader, invert);
 
-    int[] status = {SLOW, SLOW, SLOW, OFF, OFF, OFF, OFF};
+    //int[] status = {SLOW, SLOW, SLOW, OFF, OFF, OFF, OFF};
     // status0 Applied Output & Faults
     // status1 Velocity, Voltage, & Current
     // status2 Position

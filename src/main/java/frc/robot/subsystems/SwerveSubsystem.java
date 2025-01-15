@@ -2,10 +2,7 @@ package frc.robot.subsystems;
 
 import com.studica.frc.AHRS;
 
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator3d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
