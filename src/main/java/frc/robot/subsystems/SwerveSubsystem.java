@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import com.studica.frc.AHRS;
 
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator3d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -31,7 +33,7 @@ public class SwerveSubsystem extends SubsystemBase{
         kSwerve.CANID.frontRightSteer,
         kSwerve.Offsets.frontRight);
     
-    final AHRS navX = new AHRS(AHRS.NavXComType.kMXP_SPI);
+    public final AHRS navX = new AHRS(AHRS.NavXComType.kMXP_SPI);
 
     SwerveModulePosition[] modulePositions = new SwerveModulePosition[] {
         frontLeftModule.getPositon(),
@@ -39,6 +41,13 @@ public class SwerveSubsystem extends SubsystemBase{
         backRightModule.getPositon(),
         frontRightModule.getPositon()
     };
+
+    Pose3d pose3d = new Pose3d();
+    SwerveDrivePoseEstimator3d swervePoseEstimator = new SwerveDrivePoseEstimator3d(
+        kSwerve.kinematics,
+        navX.getRotation3d(),
+        modulePositions, 
+        pose3d);
 
     public SwerveSubsystem() {
         new Thread(() -> {

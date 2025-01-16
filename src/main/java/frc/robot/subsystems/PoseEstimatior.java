@@ -10,33 +10,55 @@ import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator3d;
 import edu.wpi.first.math.geometry.Pose3d;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.kSwerve;
 import frc.robot.Constants.kVision;
 
 public class PoseEstimatior extends SubsystemBase {
-  private SwerveSubsystem m_SwerveSubsystem;
+  SwerveSubsystem m_SwerveSubsystem;
+  SwerveDrivePoseEstimator3d m_swervePoseEstimator;
 
   /** Creates a new PoseEstimation. */
-
   public PoseEstimatior(
       SwerveSubsystem swerveSubsystem) {
+    // //setup simulation
+    // VisionSystemSim visionSim = new VisionSystemSim("vision sim");
+    // // Create the vision system simulation which handles cameras and targets on the field.
+    // visionSim.addAprilTags(kVision.aprilTagFieldLayout);
+
+    // // config simulation properties
+    // SimCameraProperties cameraProp = new SimCameraProperties();
+    // cameraProp.setCalibration(960, 720, Rotation2d.fromDegrees(90));
+    // cameraProp.setCalibError(0.35, 0.10);
+    // cameraProp.setFPS(15);
+    // cameraProp.setAvgLatencyMs(50);
+    // cameraProp.setLatencyStdDevMs(15);
+
+    // PhotonCameraSim cameraSim = new PhotonCameraSim(camera1, cameraProp);
+    
+    // visionSim.addCamera(cameraSim, kVision.camera1Position);
+
+    // cameraSim.enableDrawWireframe(true);
+
     //subsystem setups
     m_SwerveSubsystem = swerveSubsystem;
-
+    m_swervePoseEstimator = swerveSubsystem.swervePoseEstimator;
+    m_swervePoseEstimator.resetPose(getPose3d());
   };
 
   //setup cameras 
   PhotonCamera camera1 = new PhotonCamera("camera1");
   PhotonCamera camera2 = new PhotonCamera("camera2");
   PhotonCamera camera3 = new PhotonCamera("camera3");
-  PhotonCamera camera4 = new PhotonCamera("camera4");
+  PhotonCamera camera4 = new PhotonCamera("camera4");  
+
   // photon pose estimators
   PhotonPoseEstimator PoseEstimator1 = new PhotonPoseEstimator(
     kVision.aprilTagFieldLayout, 
@@ -56,7 +78,7 @@ public class PoseEstimatior extends SubsystemBase {
     kVision.camera4Position);
   
   // get starting pos with cam1
-  private Pose3d getPose3d() {
+  public Pose3d getPose3d() {
     //vars
     Pose3d pose3d = new Pose3d();
     var result = camera1.getLatestResult();
@@ -77,12 +99,6 @@ public class PoseEstimatior extends SubsystemBase {
     return pose3d;
   }
 
-  SwerveDrivePoseEstimator3d swervePoseEstimator = new SwerveDrivePoseEstimator3d(
-    kSwerve.kinematics,
-    m_SwerveSubsystem.navX.getRotation3d(),
-    m_SwerveSubsystem.modulePositions, 
-    getPose3d());
-
   Optional<EstimatedRobotPose> getEstimatedGlobalPose(
       Pose3d prevEstimatedRobotPose,
       PhotonPipelineResult cameraResult,
@@ -95,45 +111,70 @@ public class PoseEstimatior extends SubsystemBase {
     //camera 1 pose estimation
     PhotonPipelineResult camera1res = camera1.getLatestResult();
     Optional<EstimatedRobotPose> camera1pose = getEstimatedGlobalPose(
-      swervePoseEstimator.getEstimatedPosition(),
+      m_swervePoseEstimator.getEstimatedPosition(),
       camera1res,
       PoseEstimator1);
-    swervePoseEstimator.addVisionMeasurement(
-      camera1pose.get().estimatedPose,
-      camera1pose.get().timestampSeconds);
+    try {
+      m_swervePoseEstimator.addVisionMeasurement(
+        camera1pose.get().estimatedPose,
+        camera1pose.get().timestampSeconds);
+      } catch (Exception e) {}
 
     //camera 2 pose estimation
     PhotonPipelineResult camera2res = camera2.getLatestResult();
     Optional<EstimatedRobotPose> camera2pose = getEstimatedGlobalPose(
-      swervePoseEstimator.getEstimatedPosition(),
+      m_swervePoseEstimator.getEstimatedPosition(),
       camera2res,
       PoseEstimator2);
-    swervePoseEstimator.addVisionMeasurement(
-      camera2pose.get().estimatedPose,
-      camera2pose.get().timestampSeconds);
+    try {
+      m_swervePoseEstimator.addVisionMeasurement(
+        camera2pose.get().estimatedPose,
+        camera2pose.get().timestampSeconds);
+      } catch (Exception e) {}
 
     //camera 3 pose estimation
     PhotonPipelineResult camera3res = camera3.getLatestResult();
     Optional<EstimatedRobotPose> camera3pose = getEstimatedGlobalPose(
-      swervePoseEstimator.getEstimatedPosition(),
+      m_swervePoseEstimator.getEstimatedPosition(),
       camera3res,
       PoseEstimator3);
-    swervePoseEstimator.addVisionMeasurement(
-      camera3pose.get().estimatedPose,
-      camera3pose.get().timestampSeconds);
+    try {
+      m_swervePoseEstimator.addVisionMeasurement(
+        camera3pose.get().estimatedPose,
+        camera3pose.get().timestampSeconds);
+      } catch (Exception e) {}
     
     //camera 4 pose estimation
     PhotonPipelineResult camera4res = camera4.getLatestResult();
     Optional<EstimatedRobotPose> camera4pose = getEstimatedGlobalPose(
-      swervePoseEstimator.getEstimatedPosition(),
+      m_swervePoseEstimator.getEstimatedPosition(),
       camera4res,
       PoseEstimator4);
-    swervePoseEstimator.addVisionMeasurement(
-      camera4pose.get().estimatedPose,
-      camera4pose.get().timestampSeconds);
+    try {
+      m_swervePoseEstimator.addVisionMeasurement(
+        camera4pose.get().estimatedPose,
+        camera4pose.get().timestampSeconds);
+      } catch (Exception e) {}
+    }
+  // // simulation
+  // @Override
+  // public void simulationPeriodic() {
+  //     // Update drivetrain simulation
+  //     m_SwerveSubsystem.simulationPeriodic();
 
-    //update pose
-    swervePoseEstimator.update(m_SwerveSubsystem.navX.getRotation3d(), m_SwerveSubsystem.modulePositions);// may not need
-  }
-  
+  //     // Update camera simulation
+  //     simulationPeriodic(m_SwerveSubsystem.getHeading());
+
+  //     var debugField = getSimDebugField();
+  //     debugField.getObject("EstimatedRobot").setPose(m_SwerveSubsystem.getPose());
+  //     debugField.getObject("EstimatedRobotModules").setPoses(drivetrain.getModulePoses());
+
+  //     // Update gamepiece launcher simulation
+  //     gpLauncher.simulationPeriodic();
+
+  //     // Calculate battery voltage sag due to current draw
+  //     RoboRioSim.setVInVoltage(
+  //             BatterySim.calculateDefaultBatteryLoadedVoltage(drivetrain.getCurrentDraw()));
+  // }
+
 }
