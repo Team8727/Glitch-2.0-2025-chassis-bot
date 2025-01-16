@@ -17,7 +17,6 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator3d;
 import edu.wpi.first.math.geometry.Pose3d;
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.kVision;
 
@@ -118,7 +117,10 @@ public class PoseEstimatior extends SubsystemBase {
       m_swervePoseEstimator.addVisionMeasurement(
         camera1pose.get().estimatedPose,
         camera1pose.get().timestampSeconds);
-      } catch (Exception e) {}
+        // System.out.println("not error");
+      } catch (Exception e) {
+        // System.out.println("error");
+      }
 
     //camera 2 pose estimation
     PhotonPipelineResult camera2res = camera2.getLatestResult();
@@ -130,7 +132,8 @@ public class PoseEstimatior extends SubsystemBase {
       m_swervePoseEstimator.addVisionMeasurement(
         camera2pose.get().estimatedPose,
         camera2pose.get().timestampSeconds);
-      } catch (Exception e) {}
+      } catch (Exception e) {
+      }
 
     //camera 3 pose estimation
     PhotonPipelineResult camera3res = camera3.getLatestResult();
@@ -142,7 +145,8 @@ public class PoseEstimatior extends SubsystemBase {
       m_swervePoseEstimator.addVisionMeasurement(
         camera3pose.get().estimatedPose,
         camera3pose.get().timestampSeconds);
-      } catch (Exception e) {}
+      } catch (Exception e) {
+      }
     
     //camera 4 pose estimation
     PhotonPipelineResult camera4res = camera4.getLatestResult();
@@ -154,7 +158,8 @@ public class PoseEstimatior extends SubsystemBase {
       m_swervePoseEstimator.addVisionMeasurement(
         camera4pose.get().estimatedPose,
         camera4pose.get().timestampSeconds);
-      } catch (Exception e) {}
+      } catch (Exception e) {
+      }
     }
   // // simulation
   // @Override
