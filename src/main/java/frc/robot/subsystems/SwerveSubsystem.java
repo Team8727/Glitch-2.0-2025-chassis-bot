@@ -2,8 +2,11 @@ package frc.robot.subsystems;
 
 import com.studica.frc.AHRS;
 
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator3d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
@@ -34,9 +37,23 @@ public class SwerveSubsystem extends SubsystemBase{
         kSwerve.CANID.frontRightSteer,
         kSwerve.Offsets.frontRight);
     
-    private final AHRS navX = new AHRS(AHRS.NavXComType.kMXP_SPI);
+    public final AHRS navX = new AHRS(AHRS.NavXComType.kMXP_SPI);
 
     NetworkTableLogger networkTableLogger = new NetworkTableLogger(this.getName().toString());
+
+    SwerveModulePosition[] modulePositions = new SwerveModulePosition[] {
+        frontLeftModule.getPositon(),
+        backLeftModule.getPositon(),
+        backRightModule.getPositon(),
+        frontRightModule.getPositon()
+    };
+
+    Pose3d pose3d = new Pose3d();
+    SwerveDrivePoseEstimator3d swervePoseEstimator = new SwerveDrivePoseEstimator3d(
+        kSwerve.kinematics,
+        navX.getRotation3d(),
+        modulePositions, 
+        pose3d);
 
     public SwerveSubsystem() {
         new Thread(() -> {
@@ -60,7 +77,7 @@ public class SwerveSubsystem extends SubsystemBase{
     public Rotation2d getRotation2d() {
         return Rotation2d.fromDegrees(getHeading());
     }
-
+    
     @Override 
     public void periodic() {
 

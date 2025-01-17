@@ -9,8 +9,10 @@ import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -32,7 +34,7 @@ public class MAXSwerve {
   private final double chassisOffset;
 
   // Hardware
-  private final SparkMax driveNEO;
+  private final SparkFlex driveNEO;
   private final SparkMax steerNEO;
 
   private final RelativeEncoder driveEncoder;
@@ -51,7 +53,7 @@ public class MAXSwerve {
 
     // Initialize hardware
     driveNEO =
-        getSparkMax(
+        getSparkFlex(
             driveCANId,
             MotorType.kBrushless,
             false,
@@ -66,10 +68,12 @@ public class MAXSwerve {
             Set.of(LogData.VOLTAGE, LogData.POSITION, LogData.VELOCITY));
 
 
-    SparkMaxConfig driveConfig = new SparkMaxConfig();
+    SparkFlexConfig driveConfig = new SparkFlexConfig();
       driveConfig.encoder
         .positionConversionFactor(kModule.drivingEncoderPositionFactor)
         .velocityConversionFactor(kModule.drivingEncoderVelocityFactor);
+      // steerConfig.closedLoop                 somethings wrong here but im too dumb to figure out what
+      //   .feedbackSensor(driveEncoder);
       driveConfig.closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
         .outputRange(kModule.kDrive.minOutput, kModule.kDrive.maxOutput)
@@ -83,9 +87,11 @@ public class MAXSwerve {
     
     SparkMaxConfig steerConfig = new SparkMaxConfig();
       steerConfig.absoluteEncoder
+        .inverted(kModule.invertSteerEncoder)
         .positionConversionFactor(kModule.steeringEncoderPositionFactor)
-        .velocityConversionFactor(kModule.steeringEncoderVelocityFactor)
-        .inverted(kModule.invertSteerEncoder);
+        .velocityConversionFactor(kModule.steeringEncoderVelocityFactor);
+      // steerConfig.closedLoop                 somethings wrong here but im too dumb to figure out what
+      //   .feedbackSensor(driveEncoder);
       steerConfig.closedLoop
         .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
         .outputRange(kModule.kSteer.minOutput, kModule.kSteer.maxOutput)
