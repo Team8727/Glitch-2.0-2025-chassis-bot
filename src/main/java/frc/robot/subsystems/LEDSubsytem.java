@@ -52,14 +52,14 @@ public class LEDSubsytem extends SubsystemBase {
   public Command runPattern(LEDPattern pattern) {
     return run(
       () -> pattern
-      .applyTo(stripBuffer));
+      .applyTo(stripBuffer)).andThen(
+        () -> lightStrip.setData(stripBuffer));
   }
 
   // This command is incredibly straightforward. It just sets all the lights to red.
   public Command redLight() {
     return runPattern(
-      LEDPattern.solid(Color.kRed))
-      .withName("Red Light");
+      LEDPattern.solid(Color.kRed));
   }
   
   // This command calls the gradient method, which can be either continous or discontinous.
@@ -83,12 +83,12 @@ public class LEDSubsytem extends SubsystemBase {
   // the mask's color. If it has a similar color value, then it stays. If it has a different one, then it is replaced
   // by the mask. Basically what the code here is doing is showing a small sliver of a rainbow that scrolls through the
   // strip, getting replaced by darkness along the way.
-  // public Command maskedRainbow() {
-  //   return runPattern(
-  //     LEDPattern.rainbow(256, 128)
-  //     .mask(LEDPattern.steps(
-  //       Map.of(0, Color.kWhite, 1/3, Color.kBlack))
-  //     .scrollAtRelativeSpeed(
-  //       Percent.per(Second).of(0.25))));
-  // }
+  public Command maskedRainbow() {
+    return runPattern(
+      LEDPattern.rainbow(256, 128)
+      .mask(LEDPattern.steps(
+        Map.of(0, Color.kWhite, 0.3, Color.kBlack))
+      .scrollAtRelativeSpeed(
+        Percent.per(Second).of(0.25))));
+  }
 }
