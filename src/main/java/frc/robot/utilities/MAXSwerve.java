@@ -75,39 +75,36 @@ public class MAXSwerve {
       // steerConfig.closedLoop                 somethings wrong here but im too dumb to figure out what
       //   .feedbackSensor(driveEncoder);
       driveConfig.closedLoop
-        .maxOutput(kModule.kDrive.maxOutput)
-        .minOutput(kModule.kDrive.minOutput)
+        .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+        .outputRange(kModule.kDrive.minOutput, kModule.kDrive.maxOutput)
         .p(kModule.kDrive.kP)
-        .d(kModule.kDrive.kD)
-        .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+        .d(kModule.kDrive.kD);
       driveConfig
         .idleMode(IdleMode.kBrake)
         .smartCurrentLimit(kModule.driveSmartCurrentLimit)
         .secondaryCurrentLimit(kModule.driveMaxCurrent);
-    driveNEO.configure(driveConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+    driveNEO.configure(driveConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters); //TODO: this might need to be reset and persist instead of noreset and nopersist for "burning flash" on the motor
     
     SparkMaxConfig steerConfig = new SparkMaxConfig();
       steerConfig.absoluteEncoder
+        .inverted(kModule.invertSteerEncoder)
         .positionConversionFactor(kModule.steeringEncoderPositionFactor)
         .velocityConversionFactor(kModule.steeringEncoderVelocityFactor);
       // steerConfig.closedLoop                 somethings wrong here but im too dumb to figure out what
       //   .feedbackSensor(driveEncoder);
       steerConfig.closedLoop
-        .maxOutput(kModule.kSteer.maxOutput)
-        .minOutput(kModule.kSteer.minOutput)
+        .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
+        .outputRange(kModule.kSteer.minOutput, kModule.kSteer.maxOutput)
         .positionWrappingEnabled(true)
         .positionWrappingMaxInput(kModule.steeringEncoderPositionPIDMaxInput)
         .positionWrappingMinInput(kModule.steeringEncoderPositionPIDMinInput)
         .p(kModule.kSteer.kP)
-        .d(kModule.kSteer.kD)
-        .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
+        .d(kModule.kSteer.kD);
       steerConfig
         .idleMode(IdleMode.kBrake)
         .smartCurrentLimit(kModule.driveSmartCurrentLimit)
         .secondaryCurrentLimit(kModule.driveMaxCurrent);
-      steerConfig
-        .inverted(kModule.invertSteerEncoder);
-    steerNEO.configure(steerConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+    steerNEO.configure(steerConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters); //TODO: this might need to be reset and persist instead of noreset and nopersist for "burning flash" on the motor
 
     driveEncoder = driveNEO.getEncoder();
     steerEncoder = steerNEO.getAbsoluteEncoder();
