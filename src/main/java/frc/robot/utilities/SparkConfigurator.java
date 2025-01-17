@@ -4,7 +4,9 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 
@@ -101,8 +103,8 @@ public class SparkConfigurator {
 
         //NEW FOR 2025
         config.signals.primaryEncoderPositionPeriodMs(status[i]);
-        spark.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
         //spark.setPeriodicFramePeriod(PeriodicFrame.values()[i], status[i]);
+        spark.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
       }
     }
@@ -159,8 +161,8 @@ public class SparkConfigurator {
 
         //NEW FOR 2025
         config.signals.primaryEncoderPositionPeriodMs(status[i]);
-        spark.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
         //spark.setPeriodicFramePeriod(PeriodicFrame.values()[i], status[i]);
+        spark.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
       }
     }
@@ -211,7 +213,7 @@ public class SparkConfigurator {
     // spark.configure(new SparkFlexConfig().follow(leader, invert), ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
     //spark.follow(leader, invert);
 
-    int[] status = {SLOW, SLOW, SLOW, OFF, OFF, OFF, OFF};
+    //int[] status = {SLOW, SLOW, SLOW, OFF, OFF, OFF, OFF};
     // status0 Applied Output & Faults
     // status1 Velocity, Voltage, & Current
     // status2 Position
