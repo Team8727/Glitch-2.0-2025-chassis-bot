@@ -48,16 +48,11 @@ public final class Constants {
     public static double length = width;
 
     // Speed & accel limits (m/s, rad/s, m/s^2 & rad/s^2)
-    // public static double maxTransSpeed = 1;
-    // public static double maxAngSpeed = .3 * Math.PI;
+    public static double maxTransSpeed = .5;//5
+    public static double maxAngSpeed = .3 * Math.PI;//3
 
-    // public static double maxTransAccel = 1.35 * 9.81;
-    // public static double maxAngAccel = 10 * 2 * Math.PI;
-    public static double maxTransSpeed = .1;
-    public static double maxAngSpeed = .1 * Math.PI;
-
-    public static double maxTransAccel = .1 * 9.81;
-    public static double maxAngAccel = .1 * 2 * Math.PI;
+    public static double maxTransAccel = .135 * 9.81;//1.35
+    public static double maxAngAccel = 1.0 * 2 * Math.PI;//10
 
     // Operator interface constants
     public static class Teleop {
