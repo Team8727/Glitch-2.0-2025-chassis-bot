@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.subsystems.LEDSubsytem;
+import frc.robot.subsystems.PoseEstimatior;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -20,9 +22,10 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem m_SwerveSubsystem = new SwerveSubsystem();
-
+  private final LEDSubsytem m_LedSubsytem = new LEDSubsytem();
   private final CommandXboxController m_driverController = new CommandXboxController(0);
-  // private final CommandJoystick m_Joystick = new CommandJoystick(1);
+  private final PoseEstimatior m_PoseEstimatior = new PoseEstimatior(m_SwerveSubsystem);
+
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -35,7 +38,11 @@ public class RobotContainer {
           () -> true));
       // Configure the trigger bindings
       configureBindings();
+
+    
   }
+
+
 
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
@@ -51,6 +58,13 @@ public class RobotContainer {
     m_driverController.a().onTrue(new InstantCommand(m_SwerveSubsystem::zeroHeading));
     // x configuration
     m_driverController.x().toggleOnTrue(m_SwerveSubsystem.XPosition());
+    // This sets all of the LEDs to the color green. Placeholder command.
+    // m_driverController.y().toggleOnTrue(m_LedSubsytem.runPattern(LEDPattern.solid(Color.kGreen)).withName("Full Green"));
+
+    // These triggers all reference commands already explained in LEDSubsystem. The names are just for fun.
+    m_driverController.y().toggleOnTrue(m_LedSubsytem.redLight().withName("Red Light"));
+    m_driverController.b().toggleOnTrue(m_LedSubsytem.scrollingGradient().withName("The Blues"));
+    // m_driverController.leftBumper().toggleOnTrue(m_LedSubsytem.maskedRainbow().withName("Running Rainbow"));
 
   }
 
