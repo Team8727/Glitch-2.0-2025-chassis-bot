@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.commands.SwerveJoystickCmd;
+import frc.robot.subsystems.PoseEstimatior;
 import frc.robot.subsystems.SwerveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -20,7 +21,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem m_SwerveSubsystem = new SwerveSubsystem();
-
+  private final PoseEstimatior poseEstimatior = new PoseEstimatior(m_SwerveSubsystem);
   private final CommandXboxController m_driverController = new CommandXboxController(0);
   // private final CommandJoystick m_Joystick = new CommandJoystick(1);
 
