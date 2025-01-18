@@ -160,9 +160,9 @@ public class PoseEstimatior extends SubsystemBase {
       //Update Field2d with pose to display the robot's visual position on the field to the dashboard
       field2d.setRobotPose(get2dPose());
       //field.setRobotPose(m_swervePoseEstimator.getEstimatedPosition().toPose2d());//pose 3d as 2d pose
-      
+
       //Log the robot's 2d position on the field to the dashboard using the NetworkTableLogger Utility
-      networkTableLogger.log("Field2d", field2d);
+      networkTableLogger.logField2d("Field2d", field2d);
       networkTableLogger.logPose2d("Robot 3d Pose", get2dPose());
       networkTableLogger.logPose3d("Robot 2d Pose", m_swervePoseEstimator.getEstimatedPosition());
   }
