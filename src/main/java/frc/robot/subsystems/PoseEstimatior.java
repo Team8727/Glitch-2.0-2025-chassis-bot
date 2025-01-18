@@ -10,7 +10,6 @@ import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
-
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
@@ -19,7 +18,6 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator3d;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.kVision;
 import frc.robot.utilities.NetworkTableLogger;
@@ -27,29 +25,10 @@ import frc.robot.utilities.NetworkTableLogger;
 public class PoseEstimatior extends SubsystemBase {
   SwerveSubsystem m_SwerveSubsystem;
   SwerveDrivePoseEstimator3d m_swervePoseEstimator;
+  NetworkTableLogger networkTableLogger = new NetworkTableLogger(this.getName().toString());
 
   /** Creates a new PoseEstimation. */
-  public PoseEstimatior(
-      SwerveSubsystem swerveSubsystem) {
-    // //setup simulation
-    // VisionSystemSim visionSim = new VisionSystemSim("vision sim");
-    // // Create the vision system simulation which handles cameras and targets on the field.
-    // visionSim.addAprilTags(kVision.aprilTagFieldLayout);
-
-    // // config simulation properties
-    // SimCameraProperties cameraProp = new SimCameraProperties();
-    // cameraProp.setCalibration(960, 720, Rotation2d.fromDegrees(90));
-    // cameraProp.setCalibError(0.35, 0.10);
-    // cameraProp.setFPS(15);
-    // cameraProp.setAvgLatencyMs(50);
-    // cameraProp.setLatencyStdDevMs(15);
-
-    // PhotonCameraSim cameraSim = new PhotonCameraSim(camera1, cameraProp);
-    
-    // visionSim.addCamera(cameraSim, kVision.camera1Position);
-
-    // cameraSim.enableDrawWireframe(true);
-
+  public PoseEstimatior(SwerveSubsystem swerveSubsystem) {
     //subsystem setups
     m_SwerveSubsystem = swerveSubsystem;
     m_swervePoseEstimator = swerveSubsystem.swervePoseEstimator;
@@ -109,7 +88,7 @@ public class PoseEstimatior extends SubsystemBase {
 
   // Get 2d pose: from the poseEstimator
   public Pose2d get2dPose() {
-    return getPose3d().toPose2d();
+    return (m_swervePoseEstimator.getEstimatedPosition().toPose2d();
   }
 
   public Field2d getField2d() {
@@ -179,32 +158,14 @@ public class PoseEstimatior extends SubsystemBase {
       } catch (Exception e) {
       }
 
-    networkTableLogger.logDouble("null", 8);
-        //Update Field2d with pose to display the robot's visual position on the field to the dashboard
-    field2d.setRobotPose(get2dPose());
+      //gyro update
+      m_SwerveSubsystem.swervePoseEstimator.update(
+        m_SwerveSubsystem.navX.getRotation3d(), m_SwerveSubsystem.modulePositions);
 
-    //Log the robot's 2d position on the field to the dashboard using the NetworkTableLogger Utility
-    networkTableLogger.log("Field2d", field2d);
-    }
-  // // simulation
-  // @Override
-  // public void simulationPeriodic() {
-  //     // Update drivetrain simulation
-  //     m_SwerveSubsystem.simulationPeriodic();
-
-  //     // Update camera simulation
-  //     simulationPeriodic(m_SwerveSubsystem.getHeading());
-
-  //     var debugField = getSimDebugField();
-  //     debugField.getObject("EstimatedRobot").setPose(m_SwerveSubsystem.getPose());
-  //     debugField.getObject("EstimatedRobotModules").setPoses(drivetrain.getModulePoses());
-
-  //     // Update gamepiece launcher simulation
-  //     gpLauncher.simulationPeriodic();
-
-  //     // Calculate battery voltage sag due to current draw
-  //     RoboRioSim.setVInVoltage(
-  //             BatterySim.calculateDefaultBatteryLoadedVoltage(drivetrain.getCurrentDraw()));
-  // }
-
+      //Update Field2d with pose to display the robot's visual position on the field to the dashboard
+      field2d.setRobotPose(get2dPose());
+      //field.setRobotPose(m_swervePoseEstimator.getEstimatedPosition().toPose2d());//pose 3d as 2d pose
+      //Log the robot's 2d position on the field to the dashboard using the NetworkTableLogger Utility
+      networkTableLogger.log("pose",field);
+  }
 }

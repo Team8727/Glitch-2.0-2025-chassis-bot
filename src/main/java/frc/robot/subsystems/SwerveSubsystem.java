@@ -45,6 +45,7 @@ public class SwerveSubsystem extends SubsystemBase{
     };
 
     Pose3d pose3d = new Pose3d();
+    
     SwerveDrivePoseEstimator3d swervePoseEstimator = new SwerveDrivePoseEstimator3d(
         kSwerve.kinematics,
         navX.getRotation3d(),
@@ -88,7 +89,7 @@ public class SwerveSubsystem extends SubsystemBase{
         });
     }
 
-    public void stopModules() {
+    public void stopModules() {     
 
     }
 
@@ -98,5 +99,5 @@ public class SwerveSubsystem extends SubsystemBase{
         frontRightModule.setTargetState(desiredState[1], true, true);
         backLeftModule.setTargetState(desiredState[2], true, true);
         backRightModule.setTargetState(desiredState[3], true, true);
-    }   
+    }
 }
