@@ -35,9 +35,6 @@ public class NetworkTableLogger {
     // when the robot program starts
     NetworkTableInstance inst = NetworkTableInstance.getDefault();
 
-    // Subsystem the logger will be for (string)
-    String subsystemFor;
-
     // NetworkTable to log to
     NetworkTable table;
 
@@ -49,7 +46,6 @@ public class NetworkTableLogger {
      */
     // Constructor for NetworkTableLogger that takes a subsystem name and creates a network table for the subsystem
     public NetworkTableLogger(String subsystemFor) {
-        this.subsystemFor = subsystemFor;
 
         // Get the table within that instance that contains the data. There can
         // be as many tables as you like and exist to make it easier to organize
@@ -130,11 +126,12 @@ public class NetworkTableLogger {
             dataTable.getEntry(".name").setString(key);
             }
         }
-
+        
         for (Sendable data : tablesToData.values()) {
             SendableRegistry.update(data);
         }
-    }
+}
+}
     
 
            /*
@@ -153,5 +150,3 @@ public class NetworkTableLogger {
 
         //___________________________________________________________________________________________________________________________
         */
-
-}
