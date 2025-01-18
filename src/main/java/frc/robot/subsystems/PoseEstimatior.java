@@ -18,6 +18,7 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator3d;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.kVision;
 import frc.robot.utilities.NetworkTableLogger;
@@ -159,7 +160,10 @@ public class PoseEstimatior extends SubsystemBase {
       //Update Field2d with pose to display the robot's visual position on the field to the dashboard
       field2d.setRobotPose(get2dPose());
       //field.setRobotPose(m_swervePoseEstimator.getEstimatedPosition().toPose2d());//pose 3d as 2d pose
+      
       //Log the robot's 2d position on the field to the dashboard using the NetworkTableLogger Utility
-      networkTableLogger.log("pose",field2d);
+      networkTableLogger.log("Field2d", field2d);
+      networkTableLogger.logPose2d("Robot 3d Pose", get2dPose());
+      networkTableLogger.logPose3d("Robot 2d Pose", m_swervePoseEstimator.getEstimatedPosition());
   }
 }
