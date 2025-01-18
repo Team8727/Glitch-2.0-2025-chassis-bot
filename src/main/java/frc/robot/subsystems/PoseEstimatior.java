@@ -15,6 +15,7 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator3d;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -34,11 +35,16 @@ public class PoseEstimatior extends SubsystemBase {
     m_swervePoseEstimator.resetPose(getPose3d());
   };
 
+  NetworkTableLogger networkTableLogger = new NetworkTableLogger("PoseEstimator");
+
   //setup cameras 
   PhotonCamera camera1 = new PhotonCamera("camera1");
   PhotonCamera camera2 = new PhotonCamera("camera2");
   PhotonCamera camera3 = new PhotonCamera("camera3");
   PhotonCamera camera4 = new PhotonCamera("camera4");  
+
+  //Field2d for logging the robot's 2d position on the field to the dashboard like AdvantageScope, Elastic or Glass.
+  private Field2d field2d = new Field2d();
 
   // photon pose estimators
   PhotonPoseEstimator PoseEstimator1 = new PhotonPoseEstimator(
@@ -58,8 +64,6 @@ public class PoseEstimatior extends SubsystemBase {
     PoseStrategy.CLOSEST_TO_REFERENCE_POSE, 
     kVision.camera4Position);
   
-  private Field2d field = new Field2d();
-
   // get starting pos with cam1
   public Pose3d getPose3d() {
     //vars
@@ -80,6 +84,15 @@ public class PoseEstimatior extends SubsystemBase {
       }
     }
     return pose3d;
+  }
+
+  // Get 2d pose: from the poseEstimator
+  public Pose2d get2dPose() {
+    return (m_swervePoseEstimator.getEstimatedPosition().toPose2d();
+  }
+
+  public Field2d getField2d() {
+    return field2d;
   }
 
   Optional<EstimatedRobotPose> getEstimatedGlobalPose(
@@ -149,8 +162,10 @@ public class PoseEstimatior extends SubsystemBase {
       m_SwerveSubsystem.swervePoseEstimator.update(
         m_SwerveSubsystem.navX.getRotation3d(), m_SwerveSubsystem.modulePositions);
 
-      //update field
-      field.setRobotPose(m_swervePoseEstimator.getEstimatedPosition().toPose2d());//pose 3d as 2d pose
+      //Update Field2d with pose to display the robot's visual position on the field to the dashboard
+      field2d.setRobotPose(get2dPose());
+      //field.setRobotPose(m_swervePoseEstimator.getEstimatedPosition().toPose2d());//pose 3d as 2d pose
+      //Log the robot's 2d position on the field to the dashboard using the NetworkTableLogger Utility
       networkTableLogger.log("pose",field);
   }
 }
