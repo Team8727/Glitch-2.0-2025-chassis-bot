@@ -16,9 +16,13 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator3d;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.kVision;
+import frc.robot.utilities.NetworkTableLogger;
 
 public class PoseEstimatior extends SubsystemBase {
   SwerveSubsystem m_SwerveSubsystem;
@@ -52,11 +56,16 @@ public class PoseEstimatior extends SubsystemBase {
     m_swervePoseEstimator.resetPose(getPose3d());
   };
 
+  NetworkTableLogger networkTableLogger = new NetworkTableLogger("PoseEstimator");
+
   //setup cameras 
   PhotonCamera camera1 = new PhotonCamera("camera1");
   PhotonCamera camera2 = new PhotonCamera("camera2");
   PhotonCamera camera3 = new PhotonCamera("camera3");
   PhotonCamera camera4 = new PhotonCamera("camera4");  
+
+  //Field2d for logging the robot's 2d position on the field to the dashboard like AdvantageScope, Elastic or Glass.
+  private Field2d field2d = new Field2d();
 
   // photon pose estimators
   PhotonPoseEstimator PoseEstimator1 = new PhotonPoseEstimator(
@@ -96,6 +105,15 @@ public class PoseEstimatior extends SubsystemBase {
       }
     }
     return pose3d;
+  }
+
+  // Get 2d pose: from the poseEstimator
+  public Pose2d get2dPose() {
+    return getPose3d().toPose2d();
+  }
+
+  public Field2d getField2d() {
+    return field2d;
   }
 
   Optional<EstimatedRobotPose> getEstimatedGlobalPose(
@@ -160,6 +178,13 @@ public class PoseEstimatior extends SubsystemBase {
         camera4pose.get().timestampSeconds);
       } catch (Exception e) {
       }
+
+    networkTableLogger.logDouble("null", 8);
+        //Update Field2d with pose to display the robot's visual position on the field to the dashboard
+    field2d.setRobotPose(get2dPose());
+
+    //Log the robot's 2d position on the field to the dashboard using the NetworkTableLogger Utility
+    networkTableLogger.log("Field2d", field2d);
     }
   // // simulation
   // @Override
