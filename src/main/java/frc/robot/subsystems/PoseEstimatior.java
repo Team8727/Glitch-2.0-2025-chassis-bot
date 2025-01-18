@@ -19,10 +19,12 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.kVision;
+import frc.robot.utilities.NetworkTableLogger;
 
 public class PoseEstimatior extends SubsystemBase {
   SwerveSubsystem m_SwerveSubsystem;
   SwerveDrivePoseEstimator3d m_swervePoseEstimator;
+  NetworkTableLogger networkTableLogger = new NetworkTableLogger(this.getName().toString());
 
   /** Creates a new PoseEstimation. */
   public PoseEstimatior(SwerveSubsystem swerveSubsystem) {
@@ -56,7 +58,7 @@ public class PoseEstimatior extends SubsystemBase {
     PoseStrategy.CLOSEST_TO_REFERENCE_POSE, 
     kVision.camera4Position);
   
-  Field2d field = new Field2d();
+  private Field2d field = new Field2d();
 
   // get starting pos with cam1
   public Pose3d getPose3d() {
@@ -148,6 +150,7 @@ public class PoseEstimatior extends SubsystemBase {
         m_SwerveSubsystem.navX.getRotation3d(), m_SwerveSubsystem.modulePositions);
 
       //update field
-      field.setRobotPose(getPose3d().toPose2d());//pose 3d as 2d pose
+      field.setRobotPose(m_swervePoseEstimator.getEstimatedPosition().toPose2d());//pose 3d as 2d pose
+      networkTableLogger.log("pose",field);
   }
 }
