@@ -10,13 +10,13 @@ import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
-
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator3d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.kVision;
 
@@ -25,27 +25,7 @@ public class PoseEstimatior extends SubsystemBase {
   SwerveDrivePoseEstimator3d m_swervePoseEstimator;
 
   /** Creates a new PoseEstimation. */
-  public PoseEstimatior(
-      SwerveSubsystem swerveSubsystem) {
-    // //setup simulation
-    // VisionSystemSim visionSim = new VisionSystemSim("vision sim");
-    // // Create the vision system simulation which handles cameras and targets on the field.
-    // visionSim.addAprilTags(kVision.aprilTagFieldLayout);
-
-    // // config simulation properties
-    // SimCameraProperties cameraProp = new SimCameraProperties();
-    // cameraProp.setCalibration(960, 720, Rotation2d.fromDegrees(90));
-    // cameraProp.setCalibError(0.35, 0.10);
-    // cameraProp.setFPS(15);
-    // cameraProp.setAvgLatencyMs(50);
-    // cameraProp.setLatencyStdDevMs(15);
-
-    // PhotonCameraSim cameraSim = new PhotonCameraSim(camera1, cameraProp);
-    
-    // visionSim.addCamera(cameraSim, kVision.camera1Position);
-
-    // cameraSim.enableDrawWireframe(true);
-
+  public PoseEstimatior(SwerveSubsystem swerveSubsystem) {
     //subsystem setups
     m_SwerveSubsystem = swerveSubsystem;
     m_swervePoseEstimator = swerveSubsystem.swervePoseEstimator;
@@ -76,6 +56,8 @@ public class PoseEstimatior extends SubsystemBase {
     PoseStrategy.CLOSEST_TO_REFERENCE_POSE, 
     kVision.camera4Position);
   
+  Field2d field = new Field2d();
+
   // get starting pos with cam1
   public Pose3d getPose3d() {
     //vars
@@ -160,26 +142,12 @@ public class PoseEstimatior extends SubsystemBase {
         camera4pose.get().timestampSeconds);
       } catch (Exception e) {
       }
-    }
-  // // simulation
-  // @Override
-  // public void simulationPeriodic() {
-  //     // Update drivetrain simulation
-  //     m_SwerveSubsystem.simulationPeriodic();
 
-  //     // Update camera simulation
-  //     simulationPeriodic(m_SwerveSubsystem.getHeading());
+      //gyro update
+      m_SwerveSubsystem.swervePoseEstimator.update(
+        m_SwerveSubsystem.navX.getRotation3d(), m_SwerveSubsystem.modulePositions);
 
-  //     var debugField = getSimDebugField();
-  //     debugField.getObject("EstimatedRobot").setPose(m_SwerveSubsystem.getPose());
-  //     debugField.getObject("EstimatedRobotModules").setPoses(drivetrain.getModulePoses());
-
-  //     // Update gamepiece launcher simulation
-  //     gpLauncher.simulationPeriodic();
-
-  //     // Calculate battery voltage sag due to current draw
-  //     RoboRioSim.setVInVoltage(
-  //             BatterySim.calculateDefaultBatteryLoadedVoltage(drivetrain.getCurrentDraw()));
-  // }
-
+      //update field
+      field.setRobotPose(getPose3d().toPose2d());//pose 3d as 2d pose
+  }
 }
