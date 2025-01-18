@@ -3,13 +3,21 @@ package frc.robot.utilities;
 import java.util.HashMap;
 import java.util.Map;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.StringPublisher;
+import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.networktables.StructPublisher;
+
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilderImpl;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
+
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.util.sendable.Sendable;
 
@@ -25,6 +33,16 @@ public class NetworkTableLogger {
     DoublePublisher doublePublisher;
     BooleanPublisher booleanPublisher;
     StringPublisher stringPublisher;
+
+    StructPublisher<Pose2d> pose2dPublisher = NetworkTableInstance.getDefault()
+        .getStructTopic("2DPose", Pose2d.struct).publish();
+    StructArrayPublisher<Pose2d> pose2dArrayPublisher = NetworkTableInstance.getDefault()
+        .getStructArrayTopic("2DPoseArray", Pose2d.struct).publish();
+
+    StructPublisher<Pose3d> pose3dPublisher = NetworkTableInstance.getDefault()
+        .getStructTopic("3DPose", Pose3d.struct).publish();
+    StructArrayPublisher<Pose3d> pose3dArrayPublisher = NetworkTableInstance.getDefault()
+        .getStructArrayTopic("3DPoseArray", Pose3d.struct).publish();
 
     //-=-=- Stuff for log(key, value) =-=-=
     @SuppressWarnings("PMD.UseConcurrentHashMap")
@@ -102,6 +120,14 @@ public class NetworkTableLogger {
         SmartDashboard.updateValues();
     }
 
+    public void logPose2d(String key, Pose2d value) {
+        pose2dPublisher.set(value);
+    }
+
+    public void logPose3d(String key, Pose3d value) {
+        pose3dPublisher.set(value);
+    }
+
     /**
      * Logs a Sendable to the network table.
      * This is useful for logging certain functions and also for logging Field2d objects.
@@ -113,7 +139,7 @@ public class NetworkTableLogger {
      * @param value the value that will be logged 
      */
     @SuppressWarnings("PMD.CompareObjectsWithEquals") //TODO Might need to get rid of <if (!table.containsKey(key))> AND <for (Sendable data : tablesToData.values())> depending on if it updates
-    public void log(String key, Sendable value) {
+    public void logField2d(String key, Field2d value) {
         if (!table.containsKey(key)) {
             Sendable sddata = tablesToData.get(key);
             if (sddata == null || sddata != value) {
