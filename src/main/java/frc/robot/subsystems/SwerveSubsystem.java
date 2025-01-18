@@ -45,7 +45,7 @@ public class SwerveSubsystem extends SubsystemBase{
     };
 
     Pose3d pose3d = new Pose3d();
-    
+
     SwerveDrivePoseEstimator3d swervePoseEstimator = new SwerveDrivePoseEstimator3d(
         kSwerve.kinematics,
         navX.getRotation3d(),
