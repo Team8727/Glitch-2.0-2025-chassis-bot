@@ -32,7 +32,7 @@ public class PoseEstimatior extends SubsystemBase {
     //subsystem setups
     m_SwerveSubsystem = swerveSubsystem;
     m_swervePoseEstimator = swerveSubsystem.swervePoseEstimator;
-    m_swervePoseEstimator.resetPose(getPose3d());
+    resetPose();
   };
 
   //setup cameras 
@@ -82,6 +82,10 @@ public class PoseEstimatior extends SubsystemBase {
       }
     }
     return pose3d;
+  }
+
+  public void resetPose() {
+    m_swervePoseEstimator.resetPose(getPose3d());
   }
 
   // Get 2d pose: from the poseEstimator
@@ -160,6 +164,7 @@ public class PoseEstimatior extends SubsystemBase {
       field2d.setRobotPose(get2dPose());
       //field.setRobotPose(m_swervePoseEstimator.getEstimatedPosition().toPose2d());//pose 3d as 2d pose
       //Log the robot's 2d position on the field to the dashboard using the NetworkTableLogger Utility
-      networkTableLogger.log("pose",field2d);
+      networkTableLogger.log("pose", field2d);
   }
+
 }
