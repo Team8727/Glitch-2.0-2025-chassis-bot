@@ -35,8 +35,6 @@ public class PoseEstimatior extends SubsystemBase {
     m_swervePoseEstimator.resetPose(getPose3d());
   };
 
-  NetworkTableLogger networkTableLogger = new NetworkTableLogger("PoseEstimator");
-
   //setup cameras 
   PhotonCamera camera1 = new PhotonCamera("camera1");
   PhotonCamera camera2 = new PhotonCamera("camera2");
@@ -88,11 +86,7 @@ public class PoseEstimatior extends SubsystemBase {
 
   // Get 2d pose: from the poseEstimator
   public Pose2d get2dPose() {
-    return (m_swervePoseEstimator.getEstimatedPosition().toPose2d();
-  }
-
-  public Field2d getField2d() {
-    return field2d;
+    return (m_swervePoseEstimator.getEstimatedPosition().toPose2d());
   }
 
   Optional<EstimatedRobotPose> getEstimatedGlobalPose(
@@ -166,6 +160,6 @@ public class PoseEstimatior extends SubsystemBase {
       field2d.setRobotPose(get2dPose());
       //field.setRobotPose(m_swervePoseEstimator.getEstimatedPosition().toPose2d());//pose 3d as 2d pose
       //Log the robot's 2d position on the field to the dashboard using the NetworkTableLogger Utility
-      networkTableLogger.log("pose",field);
+      networkTableLogger.log("pose",field2d);
   }
 }
