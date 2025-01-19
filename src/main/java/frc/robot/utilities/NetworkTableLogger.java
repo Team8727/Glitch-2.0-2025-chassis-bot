@@ -124,17 +124,17 @@ public class NetworkTableLogger {
     }
 
     public void logPose2d(String key, Pose2d pose2d) {
-        if (!table.containsKey(key)) pose2dPublisher = table.getStructTopic("2DPose", Pose2d.struct).publish();
+        if (!table.containsKey(key)) pose2dPublisher = table.getStructTopic(key, Pose2d.struct).publish();
         pose2dPublisher.set(pose2d);
     }
 
     public void logPose3d(String key, Pose3d pose3d) {
-        if (!table.containsKey(key)) pose3dPublisher = table.getStructTopic("3DPose", Pose3d.struct).publish();
+        if (!table.containsKey(key)) pose3dPublisher = table.getStructTopic(key, Pose3d.struct).publish();
         pose3dPublisher.set(pose3d);
     }
 
     public void logSwerveModuleState(String key, SwerveModuleState[] swerveState) {
-        if (!table.containsKey(key)) swerveModuleStatePublisher = table.getStructArrayTopic("swerveModuleStates", SwerveModuleState.struct).publish();
+        if (!table.containsKey(key)) swerveModuleStatePublisher = table.getStructArrayTopic(key, SwerveModuleState.struct).publish();
         swerveModuleStatePublisher.set(swerveState);
     }
 
