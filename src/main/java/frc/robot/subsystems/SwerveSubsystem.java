@@ -44,6 +44,13 @@ public class SwerveSubsystem extends SubsystemBase{
         frontRightModule.getPositon()
     };
 
+    SwerveModuleState[] moduleStates = new SwerveModuleState[] {
+        frontLeftModule.getState(),
+        backLeftModule.getState(),
+        backRightModule.getState(),
+        frontRightModule.getState()
+    };
+
     Pose3d pose3d = new Pose3d();
 
     SwerveDrivePoseEstimator3d swervePoseEstimator = new SwerveDrivePoseEstimator3d(
@@ -78,6 +85,7 @@ public class SwerveSubsystem extends SubsystemBase{
     @Override 
     public void periodic() {
         networkTableLogger.logDouble("robotHeading", getHeading());
+        networkTableLogger.logSwerveModuleState("swerveModuleStates", moduleStates);
     }
     
     public Command XPosition() {
