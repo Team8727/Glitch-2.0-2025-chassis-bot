@@ -117,22 +117,48 @@ public class NetworkTableLogger {
     }
     */
     
-    // Logs any value to the network table
+    /**
+     * Logs a function (Sendable) to the SmartDashboard (use for debug). 
+     * Avoid using this if possible; make a new method in NetworkTableLogger to log specific data type. 
+     * (Can be seen using AdvantageScope, Glass, Elastic, etc.)
+     * 
+     * @param key the key, a string, that will represent the value in the SmartDashboard Network Table
+     * @param value the function (Sendable) to log. (This parameter can just be the bare object, field or method
+     * if it is applicable as a sendable)
+     */
     public void logFn_SmartDash(String key, Sendable value) {
         if (!table.containsKey(key)) SmartDashboard.putData(key, value);
         SmartDashboard.updateValues();
     }
 
+    /**
+     * Log method for logging a Pose2d to the network table (can be seen using AdvantageScope, Glass, Elastic, etc.)
+     * 
+     * @param key the key, a string, that will represent the value
+     * @param value the value (Pose2d) that will be logged
+     */
     public void logPose2d(String key, Pose2d pose2d) {
         if (!table.containsKey(key)) pose2dPublisher = table.getStructTopic(key, Pose2d.struct).publish();
         pose2dPublisher.set(pose2d);
     }
 
+    /**
+     * Log method for logging a Pose3d to the network table (can be seen using AdvantageScope, Glass, Elastic, etc.)
+     * 
+     * @param key the key, a string, that will represent the value
+     * @param value the value (Pose3d) that will be logged
+     */
     public void logPose3d(String key, Pose3d pose3d) {
         if (!table.containsKey(key)) pose3dPublisher = table.getStructTopic(key, Pose3d.struct).publish();
         pose3dPublisher.set(pose3d);
     }
 
+    /**
+     * Log method for logging the ServeModuleStates to the network table (can be seen using AdvantageScope, Glass, Elastic, etc.)
+     * 
+     * @param key the key, a string, that will represent the value
+     * @param value the value (SwerveModuleState[]) that will be logged
+     */
     public void logSwerveModuleState(String key, SwerveModuleState[] swerveState) {
         if (!table.containsKey(key)) swerveModuleStatePublisher = table.getStructArrayTopic(key, SwerveModuleState.struct).publish();
         swerveModuleStatePublisher.set(swerveState);
@@ -146,7 +172,7 @@ public class NetworkTableLogger {
      * (This parameter can just be the bare object, field or method)
      * 
      * @param key the key, a string, that will represent the value
-     * @param field2d the value that will be logged 
+     * @param field2d the value (Field2d) that will be logged 
      */
     @SuppressWarnings("PMD.CompareObjectsWithEquals") //TODO Might need to get rid of <if (!table.containsKey(key))> AND <for (Sendable data : tablesToData.values())> depending on if it updates
     public void logField2d(String key, Field2d field2d) {
@@ -166,23 +192,5 @@ public class NetworkTableLogger {
         for (Sendable data : tablesToData.values()) {
             SendableRegistry.update(data);
         }
+    }
 }
-}
-    
-
-           /*
-        //________________USING NETWORK TABLES TO PUBLISH ROBOT HEADING UNDER A TABLE CALLED "SwerveSubsystemLiveLogging" ___________
-        //                SEE PERIODIC METHOD FOR THE UPDATING OF THE DOUBLETOPIC "robotHeading" USING getRobotHeading() 
-            
-            // Get the default instance of NetworkTables that was created automatically
-            // when the robot program starts
-            NetworkTableInstance inst = NetworkTableInstance.getDefault();
-            // Get the table within that instance that contains the data. There can
-            // be as many tables as you like and exist to make it easier to organize
-            // your data. In this case, it's a table called datatable.
-            NetworkTable table = inst.getTable("SwerveSubsystemLiveLogging");
-
-            robotHeadingPublisher = table.getDoubleTopic("robotHeading").publish();
-
-        //___________________________________________________________________________________________________________________________
-        */
