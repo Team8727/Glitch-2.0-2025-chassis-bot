@@ -5,6 +5,7 @@ import java.util.Map;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -34,15 +35,21 @@ public class NetworkTableLogger {
     BooleanPublisher booleanPublisher;
     StringPublisher stringPublisher;
 
+    // Pose2d logging objects
     StructPublisher<Pose2d> pose2dPublisher = NetworkTableInstance.getDefault()
         .getStructTopic("2DPose", Pose2d.struct).publish();
     StructArrayPublisher<Pose2d> pose2dArrayPublisher = NetworkTableInstance.getDefault()
         .getStructArrayTopic("2DPoseArray", Pose2d.struct).publish();
 
+    // Pose 3d logging objects
     StructPublisher<Pose3d> pose3dPublisher = NetworkTableInstance.getDefault()
         .getStructTopic("3DPose", Pose3d.struct).publish();
     StructArrayPublisher<Pose3d> pose3dArrayPublisher = NetworkTableInstance.getDefault()
         .getStructArrayTopic("3DPoseArray", Pose3d.struct).publish();
+
+    //Swerve Module States logging objects
+    StructArrayPublisher<SwerveModuleState> swerveModuleStatePublisher = NetworkTableInstance.getDefault()
+        .getStructArrayTopic("frontLeftSwerveModuleState", SwerveModuleState.struct).publish();
 
     //-=-=- Stuff for log(key, value) =-=-=
     @SuppressWarnings("PMD.UseConcurrentHashMap")
@@ -99,12 +106,12 @@ public class NetworkTableLogger {
      * Log method for logging a string to the network table (can be seen using AdvantageScope, Glass, Elastic, etc.)
      * 
      * @param key the key, a string, that will represent the value
-     * @param value the value (string) that will be logged
+     * @param string the value (string) that will be logged
      */
     // Log methods for logging a string to the network table (can be seen using AdvantageScope, Glass, Elastic, etc.)
-    public void logString(String key, String value) {
+    public void logString(String key, String string) {
         if (!table.containsKey(key)) stringPublisher = table.getStringTopic(key).publish();
-        stringPublisher.set(value);
+        stringPublisher.set(string);
     }
 
     /* //Use logFunction(key, value) instead
@@ -120,12 +127,16 @@ public class NetworkTableLogger {
         SmartDashboard.updateValues();
     }
 
-    public void logPose2d(String key, Pose2d value) {
-        pose2dPublisher.set(value);
+    public void logPose2d(String key, Pose2d pose2d) {
+        pose2dPublisher.set(pose2d);
     }
 
-    public void logPose3d(String key, Pose3d value) {
-        pose3dPublisher.set(value);
+    public void logPose3d(String key, Pose3d pose3d) {
+        pose3dPublisher.set(pose3d);
+    }
+
+    public void logSwerveModuleState(String key, SwerveModuleState[] swerveState) {
+        swerveModuleStatePublisher.set(swerveState);
     }
 
     /**
@@ -136,18 +147,18 @@ public class NetworkTableLogger {
      * (This parameter can just be the bare object, field or method)
      * 
      * @param key the key, a string, that will represent the value
-     * @param value the value that will be logged 
+     * @param field2d the value that will be logged 
      */
     @SuppressWarnings("PMD.CompareObjectsWithEquals") //TODO Might need to get rid of <if (!table.containsKey(key))> AND <for (Sendable data : tablesToData.values())> depending on if it updates
-    public void logField2d(String key, Field2d value) {
+    public void logField2d(String key, Field2d field2d) {
         if (!table.containsKey(key)) {
             Sendable sddata = tablesToData.get(key);
-            if (sddata == null || sddata != value) {
-            tablesToData.put(key, value);
+            if (sddata == null || sddata != field2d) {
+            tablesToData.put(key, field2d);
             NetworkTable dataTable = table.getSubTable(key);
             SendableBuilderImpl builder = new SendableBuilderImpl();
             builder.setTable(dataTable);
-            SendableRegistry.publish(value, builder);
+            SendableRegistry.publish(field2d, builder);
             builder.startListeners();
             dataTable.getEntry(".name").setString(key);
             }
