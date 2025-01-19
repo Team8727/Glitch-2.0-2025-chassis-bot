@@ -30,38 +30,33 @@ import edu.wpi.first.util.sendable.Sendable;
  */
 public class NetworkTableLogger {
 
-    // Declare the publishers (type) for the commonly used network table data types
-    DoublePublisher doublePublisher;
-    BooleanPublisher booleanPublisher;
-    StringPublisher stringPublisher;
-
-    // Pose2d logging objects
-    StructPublisher<Pose2d> pose2dPublisher = NetworkTableInstance.getDefault()
-        .getStructTopic("2DPose", Pose2d.struct).publish();
-    StructArrayPublisher<Pose2d> pose2dArrayPublisher = NetworkTableInstance.getDefault()
-        .getStructArrayTopic("2DPoseArray", Pose2d.struct).publish();
-
-    // Pose 3d logging objects
-    StructPublisher<Pose3d> pose3dPublisher = NetworkTableInstance.getDefault()
-        .getStructTopic("3DPose", Pose3d.struct).publish();
-    StructArrayPublisher<Pose3d> pose3dArrayPublisher = NetworkTableInstance.getDefault()
-        .getStructArrayTopic("3DPoseArray", Pose3d.struct).publish();
-
-    //Swerve Module States logging objects
-    StructArrayPublisher<SwerveModuleState> swerveModuleStatePublisher = NetworkTableInstance.getDefault()
-        .getStructArrayTopic("frontLeftSwerveModuleState", SwerveModuleState.struct).publish();
-
-    //-=-=- Stuff for log(key, value) =-=-=
-    @SuppressWarnings("PMD.UseConcurrentHashMap")
-    private static final Map<String, Sendable> tablesToData = new HashMap<>();
-    //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-
     // Get the default instance of NetworkTables that was created automatically
     // when the robot program starts
     NetworkTableInstance inst = NetworkTableInstance.getDefault();
 
     // NetworkTable to log to
     NetworkTable table;
+
+    // Declare the publishers (type) for the commonly used network table data types
+    DoublePublisher doublePublisher;
+    BooleanPublisher booleanPublisher;
+    StringPublisher stringPublisher;
+
+    // Pose2d logging objects
+    StructPublisher<Pose2d> pose2dPublisher;
+    StructArrayPublisher<Pose2d> pose2dArrayPublisher;
+
+    // Pose 3d logging objects
+    StructPublisher<Pose3d> pose3dPublisher;
+    StructArrayPublisher<Pose3d> pose3dArrayPublisher;
+
+    //Swerve Module States logging objects
+    StructArrayPublisher<SwerveModuleState> swerveModuleStatePublisher;
+
+    //-=-=- Stuff for log(key, value) =-=-=
+    @SuppressWarnings("PMD.UseConcurrentHashMap")
+    private static final Map<String, Sendable> tablesToData = new HashMap<>();
+    //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
     /**
      * Custom NetworkTable logger created by Glitch 2.0 in 2025. 
@@ -77,6 +72,7 @@ public class NetworkTableLogger {
         // your data. In this case, it's a table called datatable.
         table = inst.getTable(subsystemFor);
     }
+
 
     /**
      * Log method for logging a double to the network table (can be seen using AdvantageScope, Glass, Elastic, etc.)
@@ -128,14 +124,17 @@ public class NetworkTableLogger {
     }
 
     public void logPose2d(String key, Pose2d pose2d) {
+        if (!table.containsKey(key)) pose2dPublisher = table.getStructTopic("2DPose", Pose2d.struct).publish();
         pose2dPublisher.set(pose2d);
     }
 
     public void logPose3d(String key, Pose3d pose3d) {
+        if (!table.containsKey(key)) pose3dPublisher = table.getStructTopic("3DPose", Pose3d.struct).publish();
         pose3dPublisher.set(pose3d);
     }
 
     public void logSwerveModuleState(String key, SwerveModuleState[] swerveState) {
+        if (!table.containsKey(key)) swerveModuleStatePublisher = table.getStructArrayTopic("swerveModuleStates", SwerveModuleState.struct).publish();
         swerveModuleStatePublisher.set(swerveState);
     }
 
