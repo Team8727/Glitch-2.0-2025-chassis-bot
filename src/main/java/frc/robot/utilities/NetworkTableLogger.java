@@ -9,6 +9,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.PubSubOption;
 import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.StringPublisher;
@@ -64,12 +65,12 @@ public class NetworkTableLogger {
      * 
      * @param subsystemFor the subsystem this logger will log values for
      */
-    // Constructor for NetworkTableLogger that takes a subsystem name and creates a network table for the subsystem
     public NetworkTableLogger(String subsystemFor) {
 
         // Get the table within that instance that contains the data. There can
         // be as many tables as you like and exist to make it easier to organize
-        // your data. In this case, it's a table called datatable.
+        // your data. In this case, it's a table called what the parameter 
+        // subsystemFor holds: (the subsystem to log for).
         table = inst.getTable(subsystemFor);
     }
 
@@ -80,7 +81,6 @@ public class NetworkTableLogger {
      * @param key the key, a string, that will represent the value
      * @param value the value (double) that will be logged
      */
-    // Log methods for logging a double to the network table (can be seen using AdvantageScope, Glass, Elastic, etc.)
     public void logDouble(String key, double value) {
         if (!table.containsKey(key)) doublePublisher = table.getDoubleTopic(key).publish();
         doublePublisher.set(value);
@@ -92,7 +92,6 @@ public class NetworkTableLogger {
      * @param key the key, a string, that will represent the value
      * @param value the value (boolean) that will be logged
      */
-    // Log methods for logging a boolean to the network table (can be seen using AdvantageScope, Glass, Elastic, etc.)
     public void logBoolean(String key, boolean value) {
         if (!table.containsKey(key)) booleanPublisher = table.getBooleanTopic(key).publish();
         booleanPublisher.set(value);
@@ -104,18 +103,10 @@ public class NetworkTableLogger {
      * @param key the key, a string, that will represent the value
      * @param string the value (string) that will be logged
      */
-    // Log methods for logging a string to the network table (can be seen using AdvantageScope, Glass, Elastic, etc.)
     public void logString(String key, String string) {
         if (!table.containsKey(key)) stringPublisher = table.getStringTopic(key).publish();
         stringPublisher.set(string);
     }
-
-    /* //Use logFunction(key, value) instead
-    public void logField2d_SmartDashboard(String key, Field2d field2d) {
-        if (!table.containsKey(key)) stringPublisher = table.getStringTopic(key).publish();
-        SmartDashboard.putData(key, field2d);
-    }
-    */
     
     /**
      * Logs a function (Sendable) to the SmartDashboard (use for debug). 
@@ -135,7 +126,7 @@ public class NetworkTableLogger {
      * Log method for logging a Pose2d to the network table (can be seen using AdvantageScope, Glass, Elastic, etc.)
      * 
      * @param key the key, a string, that will represent the value
-     * @param value the value (Pose2d) that will be logged
+     * @param pose2d the value (Pose2d) that will be logged
      */
     public void logPose2d(String key, Pose2d pose2d) {
         if (!table.containsKey(key)) pose2dPublisher = table.getStructTopic(key, Pose2d.struct).publish();
@@ -146,7 +137,7 @@ public class NetworkTableLogger {
      * Log method for logging a Pose3d to the network table (can be seen using AdvantageScope, Glass, Elastic, etc.)
      * 
      * @param key the key, a string, that will represent the value
-     * @param value the value (Pose3d) that will be logged
+     * @param pose3d the value (Pose3d) that will be logged
      */
     public void logPose3d(String key, Pose3d pose3d) {
         if (!table.containsKey(key)) pose3dPublisher = table.getStructTopic(key, Pose3d.struct).publish();
@@ -157,11 +148,11 @@ public class NetworkTableLogger {
      * Log method for logging the ServeModuleStates to the network table (can be seen using AdvantageScope, Glass, Elastic, etc.)
      * 
      * @param key the key, a string, that will represent the value
-     * @param value the value (SwerveModuleState[]) that will be logged
+     * @param swerveModuleStateList the value (SwerveModuleState[]) that will be logged
      */
-    public void logSwerveModuleState(String key, SwerveModuleState[] swerveState) {
+    public void logSwerveModuleState(String key, SwerveModuleState[] swerveModuleStateList) {
         if (!table.containsKey(key)) swerveModuleStatePublisher = table.getStructArrayTopic(key, SwerveModuleState.struct).publish();
-        swerveModuleStatePublisher.set(swerveState);
+        swerveModuleStatePublisher.set(swerveModuleStateList);
     }
 
     /**
@@ -174,7 +165,7 @@ public class NetworkTableLogger {
      * @param key the key, a string, that will represent the value
      * @param field2d the value (Field2d) that will be logged 
      */
-    @SuppressWarnings("PMD.CompareObjectsWithEquals") //TODO Might need to get rid of <if (!table.containsKey(key))> AND <for (Sendable data : tablesToData.values())> depending on if it updates
+    @SuppressWarnings("PMD.CompareObjectsWithEquals") //TODO: Might need to get rid of <if (!table.containsKey(key))> AND <for (Sendable data : tablesToData.values())> depending on if it updates
     public void logField2d(String key, Field2d field2d) {
         if (!table.containsKey(key)) {
             Sendable sddata = tablesToData.get(key);
