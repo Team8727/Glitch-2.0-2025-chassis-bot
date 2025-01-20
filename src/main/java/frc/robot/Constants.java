@@ -77,8 +77,8 @@ public final class Constants {
     // , forward is +x, and a module order based on the quadrant system (front left is first)
     public static SwerveDriveKinematics kinematics =
         new SwerveDriveKinematics(
-            new Translation2d(length / 2, width / 2),
-            new Translation2d(-length / 2, width / 2),
+            new Translation2d(-length / 2, width / 2),// front left 
+            new Translation2d(length / 2, width / 2),// front right
             new Translation2d(-length / 2, -width / 2),
             new Translation2d(length / 2, -width / 2));
 
