@@ -48,11 +48,18 @@ public final class Constants {
     public static double length = width;
 
     // Speed & accel limits (m/s, rad/s, m/s^2 & rad/s^2)
+    // public static double maxTransSpeed = 5;//5
+    // public static double maxAngSpeed = 3 * Math.PI;//3
+
+    // public static double maxTransAccel = 1.35 * 9.81;//1.35
+    // public static double maxAngAccel = 10 * 2 * Math.PI;//10
+
+    //test speeds
     public static double maxTransSpeed = .5;//5
     public static double maxAngSpeed = .3 * Math.PI;//3
 
     public static double maxTransAccel = .135 * 9.81;//1.35
-    public static double maxAngAccel = 1.0 * 2 * Math.PI;//10
+    public static double maxAngAccel = 1 * 2 * Math.PI;//10
 
     // Operator interface constants
     public static class Teleop {
@@ -71,9 +78,9 @@ public final class Constants {
     public static SwerveDriveKinematics kinematics =
         new SwerveDriveKinematics(
             new Translation2d(length / 2, width / 2),
-            new Translation2d(length / 2, -width / 2),
             new Translation2d(-length / 2, width / 2),
-            new Translation2d(-length / 2, -width / 2));
+            new Translation2d(-length / 2, -width / 2),
+            new Translation2d(length / 2, -width / 2));
 
     // Module angular offsets (rad)
     public static class Offsets {
@@ -186,13 +193,13 @@ public final class Constants {
 
     // Motor CAN IDs
     public static class CANID {
-      public static int frontLeftDrive = 3;//
+      public static int frontLeftDrive = 5;//
       public static int frontLeftSteer = 2;//
       public static int backLeftDrive = 9;//
       public static int backLeftSteer = 8;//
       public static int backRightDrive = 7;//
       public static int backRightSteer = 6;//
-      public static int frontRightDrive = 5;
+      public static int frontRightDrive = 3;//
       public static int frontRightSteer = 4;//
     }
   }
@@ -202,8 +209,8 @@ public final class Constants {
     public static final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
     public static final Transform3d camera1Position =
         new Transform3d(
-            new Translation3d(0,0, 0),
-            new Rotation3d(0, 0, 0));
+            new Translation3d(0.2921,0.0381, 0.24765),
+            new Rotation3d(0, 25, 0));
     public static final Transform3d camera2Position =
         new Transform3d(
             new Translation3d(0, 0, 0),
