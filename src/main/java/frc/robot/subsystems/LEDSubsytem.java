@@ -37,13 +37,22 @@ public class LEDSubsytem extends SubsystemBase {
         // I honestly don't understand a lot of this so check the docs to be sure.
         lightStrip.setLength(stripBuffer.getLength());
 
-        // Create an LED pattern that sets the entire strip to solid red
-        LEDPattern red = LEDPattern.solid(Color.kRed);
+        // LEDPattern red = LEDPattern.solid(Color.kRed);
 
-        // Apply the LED pattern to the data buffer
-        red.applyTo(stripBuffer);
+        // LEDPattern rainbow = LEDPattern.rainbow(256, 128)
+        //   .mask(LEDPattern.steps(
+        //     Map.of(0, Color.kWhite, 0.3, Color.kBlack))
+        //   .scrollAtRelativeSpeed(
+        //     Percent.per(Second).of(0.25)));
 
-        // Write the data to the LED strip
+        LEDPattern blue = LEDPattern.gradient(
+          LEDPattern.GradientType.kContinuous, Color.kBlue, Color.kPurple)
+          .scrollAtRelativeSpeed(Percent.per(Second).of(0.25));
+  
+        // // Apply the LED pattern to the data buffer
+        blue.applyTo(stripBuffer);
+
+        // // Write the data to the LED strip
         lightStrip.setData(stripBuffer);
         lightStrip.start();
 
@@ -54,48 +63,49 @@ public class LEDSubsytem extends SubsystemBase {
     // This method will be called once per scheduler run
     // runPattern(LEDPattern.solid(Color.kWhite));
   }
-//   // This command significantly lightens my workload for all of the other commands
-//   // so I don't have to keep applying the data to the buffer manually.
-//   public Command runPattern(LEDPattern pattern) {
-//     return run(
-//       () -> pattern
-//       .applyTo(stripBuffer)).andThen(
-//         () -> lightStrip.setData(stripBuffer));
-//   }
+  // This command significantly lightens my workload for all of the other commands
+  // so I don't have to keep applying the data to the buffer manually.
+  public Command runPattern(LEDPattern pattern) {
+    return run(
+      () -> pattern
+      .applyTo(stripBuffer))
+      .andThen(() -> lightStrip.setData(stripBuffer))
+      .andThen(() -> lightStrip.start());
+  }
 
-//   // This command is incredibly straightforward. It just sets all the lights to red.
-//   public Command redLight() {
-//     return runPattern(
-//       LEDPattern.solid(Color.kRed));
-//   }
+  // This command is incredibly straightforward. It just sets all the lights to red.
+  public Command redLight() {
+    LEDPattern red = LEDPattern.solid(Color.kRed);
+    return runPattern(red);
+  }
   
-//   // This command calls the gradient method, which can be either continous or discontinous.
-//   // Continuous is good if you have multiple strips or if you are scrolling, like we are here.
-//   // After which, we call the .scrollAtRelativeSpeed method, which we do because it will scroll
-//   // at the exact same speed regardless of the size of the LED strip, which means that while it
-//   // is less intuitive than the .scrollAtAbsoluteSpeed method, it is more reliable for different situations.
-//   public Command scrollingGradient() {
-//     return runPattern(
-//       LEDPattern.gradient(
-//         LEDPattern.GradientType.kContinuous, Color.kBlue, Color.kPurple)
-//         .scrollAtRelativeSpeed(Percent.per(Second).of(0.25)));
-//   }
+  // This command calls the gradient method, which can be either continous or discontinous.
+  // Continuous is good if you have multiple strips or if you are scrolling, like we are here.
+  // After which, we call the .scrollAtRelativeSpeed method, which we do because it will scroll
+  // at the exact same speed regardless of the size of the LED strip, which means that while it
+  // is less intuitive than the .scrollAtAbsoluteSpeed method, it is more reliable for different situations.
+  public Command scrollingGradient() {
+    return runPattern(
+      LEDPattern.gradient(
+        LEDPattern.GradientType.kContinuous, Color.kBlue, Color.kPurple)
+        .scrollAtRelativeSpeed(Percent.per(Second).of(0.25)));
+  }
 
-//   // Rainbow command! The saturation is the intensity of the colors and the value is how bright they are.
-//   // 256 is the maximum for both values.
-//   // The mask is the tricky part. We make a map, which identifies sections of the LED strip as certain colors.
-//   // The number values indicate where each section of the mask starts, with the "white" section starting at the
-//   // beginning and the "black" section starting one-third of the way through.
-//   // What the mask does is it looks at whatever the color of the LED is that is beneath it and it checks it against
-//   // the mask's color. If it has a similar color value, then it stays. If it has a different one, then it is replaced
-//   // by the mask. Basically what the code here is doing is showing a small sliver of a rainbow that scrolls through the
-//   // strip, getting replaced by darkness along the way.
-//   public Command maskedRainbow() {
-//     return runPattern(
-//       LEDPattern.rainbow(256, 128)
-//       .mask(LEDPattern.steps(
-//         Map.of(0, Color.kWhite, 0.3, Color.kBlack))
-//       .scrollAtRelativeSpeed(
-//         Percent.per(Second).of(0.25))));
-//   }
+  // Rainbow command! The saturation is the intensity of the colors and the value is how bright they are.
+  // 256 is the maximum for both values.
+  // The mask is the tricky part. We make a map, which identifies sections of the LED strip as certain colors.
+  // The number values indicate where each section of the mask starts, with the "white" section starting at the
+  // beginning and the "black" section starting one-third of the way through.
+  // What the mask does is it looks at whatever the color of the LED is that is beneath it and it checks it against
+  // the mask's color. If it has a similar color value, then it stays. If it has a different one, then it is replaced
+  // by the mask. Basically what the code here is doing is showing a small sliver of a rainbow that scrolls through the
+  // strip, getting replaced by darkness along the way.
+  public Command maskedRainbow() {
+    return runPattern(
+      LEDPattern.rainbow(256, 128)
+      .mask(LEDPattern.steps(
+        Map.of(0, Color.kWhite, 0.3, Color.kBlack))
+      .scrollAtRelativeSpeed(
+        Percent.per(Second).of(0.25))));
+  }
 }
