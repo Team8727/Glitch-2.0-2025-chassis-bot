@@ -46,6 +46,7 @@ public class LEDSubsytem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    runPattern(LEDPattern.solid(Color.kWhite));
   }
   // This command significantly lightens my workload for all of the other commands
   // so I don't have to keep applying the data to the buffer manually.
