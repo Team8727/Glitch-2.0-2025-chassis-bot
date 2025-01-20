@@ -84,10 +84,10 @@ public final class Constants {
 
     // Module angular offsets (rad)
     public static class Offsets {
-      public static double frontLeft = 0;
-      public static double backLeft = Math.PI / 2;
-      public static double backRight = Math.PI;
-      public static double frontRight = -Math.PI / 2;
+      public static double frontLeft = Math.PI / 2;
+      public static double backLeft = Math.PI;
+      public static double backRight = -Math.PI / 2;
+      public static double frontRight = -Math.PI;
     }
 
     // Controller PID values for x/y translation, and z rotation
