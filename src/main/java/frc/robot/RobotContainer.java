@@ -63,9 +63,9 @@ public class RobotContainer {
     // m_driverController.y().toggleOnTrue(m_LedSubsytem.runPattern(LEDPattern.solid(Color.kGreen)).withName("Full Green"));
 
     // These triggers all reference commands already explained in LEDSubsystem. The names are just for fun.
-    m_driverController.y().toggleOnTrue(m_LedSubsytem.redLight().withName("Red Light"));
-    m_driverController.b().toggleOnTrue(m_LedSubsytem.scrollingGradient().withName("The Blues"));
-    m_driverController.leftBumper().toggleOnTrue(m_LedSubsytem.maskedRainbow().withName("Running Rainbow"));
+    // m_driverController.y().toggleOnTrue(m_LedSubsytem.redLight().withName("Red Light"));
+    // m_driverController.b().toggleOnTrue(m_LedSubsytem.scrollingGradient().withName("The Blues"));
+    // m_driverController.leftBumper().toggleOnTrue(m_LedSubsytem.maskedRainbow().withName("Running Rainbow"));
 
   }
 
