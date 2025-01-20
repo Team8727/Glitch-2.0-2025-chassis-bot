@@ -52,7 +52,6 @@ public class RobotContainer {
     m_driverController.a().onTrue(new InstantCommand(m_SwerveSubsystem::zeroHeading));
     // x configuration
     m_driverController.x().toggleOnTrue(m_SwerveSubsystem.XPosition());
-
   }
 
   /**
