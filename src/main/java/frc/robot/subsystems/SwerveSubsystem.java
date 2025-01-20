@@ -75,7 +75,7 @@ public class SwerveSubsystem extends SubsystemBase{
 
     //maybe = get corrected steer
     public double getHeading() {
-        return Math.IEEEremainder(navX.getAngle(), 360);
+        return navX.getAngle();
     }
 
     public Rotation2d getRotation2d() {

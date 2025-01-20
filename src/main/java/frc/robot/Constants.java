@@ -77,17 +77,17 @@ public final class Constants {
     // , forward is +x, and a module order based on the quadrant system (front left is first)
     public static SwerveDriveKinematics kinematics =
         new SwerveDriveKinematics(
-            new Translation2d(length / 2, width / 2),
-            new Translation2d(-length / 2, width / 2),
-            new Translation2d(-length / 2, -width / 2),
-            new Translation2d(length / 2, -width / 2));
+            new Translation2d(-length / 2, -width / 2),// front left 
+            new Translation2d(-length / 2, width / 2),// front right
+            new Translation2d(length / 2, -width / 2),//back left
+            new Translation2d(length / 2, width / 2));//back right
 
     // Module angular offsets (rad)
     public static class Offsets {
-      public static double frontLeft = 0;
-      public static double backLeft = Math.PI / 2;
-      public static double backRight = Math.PI;
-      public static double frontRight = -Math.PI / 2;
+      public static double frontLeft = Math.PI / 2;
+      public static double backLeft = -Math.PI;
+      public static double backRight = -Math.PI / 2;
+      public static double frontRight = 0;
     }
 
     // Controller PID values for x/y translation, and z rotation
