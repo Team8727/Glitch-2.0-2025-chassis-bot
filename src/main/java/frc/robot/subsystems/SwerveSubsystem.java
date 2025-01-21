@@ -16,6 +16,7 @@ import frc.robot.Constants.kSwerve.kModule;
 import frc.robot.utilities.NetworkTableLogger;
 
 public class SwerveSubsystem extends SubsystemBase{
+    // Create the swerve modules
     private final MAXSwerve frontLeftModule = new MAXSwerve(
         kSwerve.CANID.frontLeftDrive,
         kSwerve.CANID.frontLeftSteer,
@@ -32,18 +33,20 @@ public class SwerveSubsystem extends SubsystemBase{
         kSwerve.CANID.frontRightDrive,
         kSwerve.CANID.frontRightSteer,
         kSwerve.Offsets.frontRight);
-    
+
+    // Create the gyro
     public final AHRS navX = new AHRS(AHRS.NavXComType.kMXP_SPI);
 
+    // Create the network table logger to log data
     NetworkTableLogger networkTableLogger = new NetworkTableLogger(this.getName().toString());
 
+    // create the module positions 
     SwerveModulePosition[] modulePositions = new SwerveModulePosition[] {
         frontLeftModule.getPositon(),
         backLeftModule.getPositon(),
         backRightModule.getPositon(),
         frontRightModule.getPositon()
     };
-
     SwerveModuleState[] moduleStates = new SwerveModuleState[] {
         frontLeftModule.getState(),
         backLeftModule.getState(),
@@ -71,11 +74,13 @@ public class SwerveSubsystem extends SubsystemBase{
 
     public void zeroHeading() {
         navX.reset();
+        Pose3d pose3d = new Pose3d();
+        swervePoseEstimator.resetRotation(pose3d.getRotation());
     }
 
     //maybe = get corrected steer
     public double getHeading() {
-        return navX.getAngle();
+        return Math.toDegrees(swervePoseEstimator.getEstimatedPosition().getRotation().getZ());
     }
 
     public Rotation2d getRotation2d() {
