@@ -45,18 +45,17 @@ public class LEDSubsytem extends SubsystemBase {
 
         // LEDPattern red = LEDPattern.solid(Color.kRed);
 
-        LEDPattern rainbow = LEDPattern.rainbow(256, 128)
+        LEDPattern rainbowBase = LEDPattern.rainbow(256, 128)
           .mask(LEDPattern.steps(
-            Map.of(0, Color.kWhite, 0.5, Color.kBlack))
-          .scrollAtRelativeSpeed(
-            Percent.per(Second).of(0.25))
-            );
+            Map.of(0, Color.kWhite, 0.5, Color.kBlack)));
+        LEDPattern rainbow = rainbowBase.scrollAtRelativeSpeed(Percent.per(Second).of(0.25));
 
-        LEDPattern blue = LEDPattern.gradient(
-          LEDPattern.GradientType.kContinuous, Color.kBlue, Color.kPurple)
-          .scrollAtRelativeSpeed(Percent.per(Second).of(0.25));
+        LEDPattern blueBase = LEDPattern.gradient(
+          LEDPattern.GradientType.kContinuous, Color.kBlue, Color.kPurple);
+        LEDPattern blue = blueBase.scrollAtRelativeSpeed(Percent.per(Second).of(0.25));
 
-        LEDPattern green = LEDPattern.solid(Color.kGreen).breathe(Second.of(2));
+        LEDPattern greenBase = LEDPattern.solid(Color.kGreen);
+        LEDPattern green = greenBase.breathe(Second.of(2));
 
         setDefaultCommand(new InstantCommand(() -> LEDPattern.solid(Color.kWhite).applyTo(stripBuffer)));
         // // Write the data to the LED strip
