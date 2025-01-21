@@ -57,7 +57,7 @@ public class LEDSubsytem extends SubsystemBase {
         LEDPattern greenBase = LEDPattern.solid(Color.kGreen);
         LEDPattern green = greenBase.breathe(Second.of(2));
 
-        setDefaultCommand(new InstantCommand(() -> LEDPattern.solid(Color.kWhite).applyTo(stripBuffer)));
+        // setDefaultCommand(new InstantCommand(() -> LEDPattern.solid(Color.kWhite).applyTo(stripBuffer)));
         // // Write the data to the LED strip
         lightStrip.setData(stripBuffer);
         lightStrip.start();
