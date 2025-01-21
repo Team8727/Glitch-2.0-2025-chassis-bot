@@ -15,12 +15,18 @@ import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class LEDSubsytem extends SubsystemBase {
 
+  // IMPORTANT: Turns out we can't use commands normally with LEDs and I don't know why. It will not display any errors but it also won't work.
+
   AddressableLED lightStrip;
   AddressableLEDBuffer stripBuffer;
+
+  private final CommandXboxController m_driverController = new CommandXboxController(0);
 
   /** Creates a new LEDSubsytem. */
   public LEDSubsytem() {
@@ -39,57 +45,65 @@ public class LEDSubsytem extends SubsystemBase {
 
         // LEDPattern red = LEDPattern.solid(Color.kRed);
 
-        // LEDPattern rainbow = LEDPattern.rainbow(256, 128)
-        //   .mask(LEDPattern.steps(
-        //     Map.of(0, Color.kWhite, 0.3, Color.kBlack))
-        //   .scrollAtRelativeSpeed(
-        //     Percent.per(Second).of(0.25)));
+        LEDPattern rainbow = LEDPattern.rainbow(256, 128)
+          .mask(LEDPattern.steps(
+            Map.of(0, Color.kWhite, 0.5, Color.kBlack))
+          .scrollAtRelativeSpeed(
+            Percent.per(Second).of(0.25))
+            );
 
         LEDPattern blue = LEDPattern.gradient(
           LEDPattern.GradientType.kContinuous, Color.kBlue, Color.kPurple)
           .scrollAtRelativeSpeed(Percent.per(Second).of(0.25));
-  
-        // // Apply the LED pattern to the data buffer
-        blue.applyTo(stripBuffer);
 
+        LEDPattern green = LEDPattern.solid(Color.kGreen).breathe(Second.of(2));
+
+        setDefaultCommand(new InstantCommand(() -> LEDPattern.solid(Color.kWhite).applyTo(stripBuffer)));
         // // Write the data to the LED strip
         lightStrip.setData(stripBuffer);
         lightStrip.start();
 
-  }
+        m_driverController.y().onTrue(new InstantCommand(() -> rainbow.applyTo(stripBuffer)));
+        m_driverController.b().onTrue(new InstantCommand(() -> blue.applyTo(stripBuffer)));
+        m_driverController.leftBumper().onTrue(new InstantCommand(() -> LEDPattern.solid(Color.kRed).applyTo(stripBuffer)));
+        m_driverController.rightBumper().onTrue(new InstantCommand(() -> green.applyTo(stripBuffer)));
+      }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     // runPattern(LEDPattern.solid(Color.kWhite));
+    lightStrip.setData(stripBuffer);
   }
+  // Everything below this line was experimental and did not work. I am keeping it here for reference.
+  // ----------------------------------------------------------------------------------------------------------------------------
+  // ----------------------------------------------------------------------------------------------------------------------------
   // This command significantly lightens my workload for all of the other commands
   // so I don't have to keep applying the data to the buffer manually.
-  public Command runPattern(LEDPattern pattern) {
-    return run(
-      () -> pattern
-      .applyTo(stripBuffer))
-      .andThen(() -> lightStrip.setData(stripBuffer))
-      .andThen(() -> lightStrip.start());
-  }
+  // public Command runPattern(LEDPattern pattern) {
+  //   return run(
+  //     () -> pattern
+  //     .applyTo(stripBuffer))
+  //     .andThen(() -> lightStrip.setData(stripBuffer));
+  // }
 
   // This command is incredibly straightforward. It just sets all the lights to red.
-  public Command redLight() {
-    LEDPattern red = LEDPattern.solid(Color.kRed);
-    return runPattern(red);
-  }
+  // public Command redLight() {
+  //   LEDPattern red = LEDPattern.solid(Color.kRed);
+  //   return runPattern(red);
+  // }
   
   // This command calls the gradient method, which can be either continous or discontinous.
   // Continuous is good if you have multiple strips or if you are scrolling, like we are here.
   // After which, we call the .scrollAtRelativeSpeed method, which we do because it will scroll
   // at the exact same speed regardless of the size of the LED strip, which means that while it
   // is less intuitive than the .scrollAtAbsoluteSpeed method, it is more reliable for different situations.
-  public Command scrollingGradient() {
-    return runPattern(
-      LEDPattern.gradient(
-        LEDPattern.GradientType.kContinuous, Color.kBlue, Color.kPurple)
-        .scrollAtRelativeSpeed(Percent.per(Second).of(0.25)));
-  }
+  // public Command scrollingGradient() {
+  //   return runPattern(
+  //     LEDPattern.gradient(
+  //       LEDPattern.GradientType.kContinuous, Color.kBlue, Color.kPurple)
+  //       .scrollAtRelativeSpeed(Percent.per(Second).of(0.25)));
+  // }
 
   // Rainbow command! The saturation is the intensity of the colors and the value is how bright they are.
   // 256 is the maximum for both values.
@@ -100,12 +114,12 @@ public class LEDSubsytem extends SubsystemBase {
   // the mask's color. If it has a similar color value, then it stays. If it has a different one, then it is replaced
   // by the mask. Basically what the code here is doing is showing a small sliver of a rainbow that scrolls through the
   // strip, getting replaced by darkness along the way.
-  public Command maskedRainbow() {
-    return runPattern(
-      LEDPattern.rainbow(256, 128)
-      .mask(LEDPattern.steps(
-        Map.of(0, Color.kWhite, 0.3, Color.kBlack))
-      .scrollAtRelativeSpeed(
-        Percent.per(Second).of(0.25))));
-  }
+  // public Command maskedRainbow() {
+  //   return runPattern(
+  //     LEDPattern.rainbow(256, 128)
+  //     .mask(LEDPattern.steps(
+  //       Map.of(0, Color.kWhite, 0.3, Color.kBlack))
+  //     .scrollAtRelativeSpeed(
+  //       Percent.per(Second).of(0.25))));
+  //}
 }
