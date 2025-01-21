@@ -91,6 +91,10 @@ public class SwerveSubsystem extends SubsystemBase{
     public void periodic() {
         networkTableLogger.logDouble("robotHeading", getHeading());
         networkTableLogger.logSwerveModuleState("swerveModuleStates", moduleStates);
+        modulePositions[0] = frontLeftModule.getPositon();
+        modulePositions[1] = backLeftModule.getPositon();
+        modulePositions[2] = backRightModule.getPositon();
+        modulePositions[3] = frontRightModule.getPositon();
     }
     
     public Command XPosition() {
