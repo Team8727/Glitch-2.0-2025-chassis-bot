@@ -74,7 +74,8 @@ public class SwerveSubsystem extends SubsystemBase{
 
     public void zeroHeading() {
         navX.reset();
-        swervePoseEstimator.resetRotation(new Pose3d().getRotation());
+        Pose3d pose3d = new Pose3d();
+        swervePoseEstimator.resetRotation(pose3d.getRotation());
     }
 
     //maybe = get corrected steer
