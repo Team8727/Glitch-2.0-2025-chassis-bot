@@ -209,12 +209,12 @@ public final class Constants {
     public static final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
     public static final Transform3d camera1Position =
         new Transform3d(
-            new Translation3d(0.2921,0.0381, 0.24765),
-            new Rotation3d(0, 25, 0));
+            new Translation3d(-0.2921,0.0381, 0.24765),
+            new Rotation3d(0, Math.toRadians(25), Math.toRadians(180)));
     public static final Transform3d camera2Position =
         new Transform3d(
-            new Translation3d(0, 0, 0),
-            new Rotation3d(0, 0, 0));
+            new Translation3d(0.2921,0.0381, 0.24765),
+            new Rotation3d(0, Math.toRadians(25),0));
     public static final Transform3d camera3Position =
         new Transform3d(
             new Translation3d(0, 0, 0),
