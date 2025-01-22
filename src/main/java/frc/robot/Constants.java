@@ -211,7 +211,7 @@ public final class Constants {
     public static final Transform3d camera1Position =
         new Transform3d(
             new Translation3d(-0.2921,0.0381, 0.24765),
-            new Rotation3d(0, Math.toRadians(25), Math.toRadians(180)));
+            new Rotation3d(0, Math.toRadians(10), Math.toRadians(180)));
     public static final Transform3d camera2Position =
         new Transform3d(
             new Translation3d(0.2921,0.0381, 0.24765),
