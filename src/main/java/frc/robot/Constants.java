@@ -203,6 +203,7 @@ public final class Constants {
       public static int frontRightSteer = 4;//
     }
   }
+
   public static class kVision {
     // Vision
 
@@ -230,5 +231,18 @@ public final class Constants {
         MatBuilder.fill(Nat.N3(), Nat.N1(), 0.03, 0.03, 0.25);
     public static final double visionScalingFactor = 2.3; // scaling factor applied to the visionStdDevs per meter bigger means trust less at a
     // distance
+  }
+
+  public static class kIntake {
+    public static class kPivot {
+      public static int pivotMotorCANID = 0; //TODO: not set yet because intake is not built yet
+
+    }
+
+    public static class kRollers {
+      public static int rollerMotorCANID = 0; //TODO: not set yet because intake is not built yet
+
+    }
+
   }
 }
