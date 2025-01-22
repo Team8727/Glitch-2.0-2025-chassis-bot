@@ -77,17 +77,17 @@ public final class Constants {
     // , forward is +x, and a module order based on the quadrant system (front left is first)
     public static SwerveDriveKinematics kinematics =
         new SwerveDriveKinematics(
-            new Translation2d(length / 2, width / 2),
-            new Translation2d(-length / 2, width / 2),
-            new Translation2d(-length / 2, -width / 2),
-            new Translation2d(length / 2, -width / 2));
+            new Translation2d(-length / 2, -width / 2),// front left 
+            new Translation2d(-length / 2, width / 2),// front right
+            new Translation2d(length / 2, -width / 2),//back left
+            new Translation2d(length / 2, width / 2));//back right
 
     // Module angular offsets (rad)
     public static class Offsets {
-      public static double frontLeft = 0;
-      public static double backLeft = Math.PI / 2;
-      public static double backRight = Math.PI;
-      public static double frontRight = -Math.PI / 2;
+      public static double frontLeft = Math.PI / 2;
+      public static double backLeft = -Math.PI;
+      public static double backRight = -Math.PI / 2;
+      public static double frontRight = 0;
     }
 
     // Controller PID values for x/y translation, and z rotation
@@ -203,18 +203,19 @@ public final class Constants {
       public static int frontRightSteer = 4;//
     }
   }
+
   public static class kVision {
     // Vision
 
     public static final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
     public static final Transform3d camera1Position =
         new Transform3d(
-            new Translation3d(0.2921,0.0381, 0.24765),
-            new Rotation3d(0, 25, 0));
+            new Translation3d(-0.2921,0.0381, 0.24765),
+            new Rotation3d(0, Math.toRadians(10), Math.toRadians(180)));
     public static final Transform3d camera2Position =
         new Transform3d(
-            new Translation3d(0, 0, 0),
-            new Rotation3d(0, 0, 0));
+            new Translation3d(0.2921,0.0381, 0.24765),
+            new Rotation3d(0, Math.toRadians(25),0));
     public static final Transform3d camera3Position =
         new Transform3d(
             new Translation3d(0, 0, 0),
@@ -230,5 +231,18 @@ public final class Constants {
         MatBuilder.fill(Nat.N3(), Nat.N1(), 0.03, 0.03, 0.25);
     public static final double visionScalingFactor = 2.3; // scaling factor applied to the visionStdDevs per meter bigger means trust less at a
     // distance
+  }
+
+  public static class kIntake {
+    public static class kPivot {
+      public static int pivotMotorCANID = 0; //TODO: not set yet because intake is not built yet
+
+    }
+
+    public static class kRollers {
+      public static int rollerMotorCANID = 0; //TODO: not set yet because intake is not built yet
+
+    }
+
   }
 }
