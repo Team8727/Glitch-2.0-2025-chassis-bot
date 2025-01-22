@@ -44,12 +44,14 @@ public class LEDSubsytem extends SubsystemBase {
 
         // LEDPattern red = LEDPattern.solid(Color.kRed);
 
-        LEDPattern rainbowBase = LEDPattern.rainbow(256, 128)
-          .scrollAtRelativeSpeed(Percent.per(Second).of(25));
-        LEDPattern rainbow = rainbowBase.mask(
-          LEDPattern.steps(
+        LEDPattern rainbowBase = LEDPattern.rainbow(256, 128);
+        LEDPattern rainbowMask = LEDPattern.steps(
             Map.of(
-              0, Color.kWhite, 0.25, Color.kBlack, 0.5, Color.kWhite, 0.75, Color.kBlack)));
+              0, Color.kWhite, 
+              0.25, Color.kBlack, 
+              0.5, Color.kWhite, 0.75, Color.kBlack));
+        LEDPattern rainbow = rainbowBase.mask(rainbowMask)
+          .scrollAtRelativeSpeed(Percent.per(Second).of(25));
 
         LEDPattern blueBase = LEDPattern.gradient(
           LEDPattern.GradientType.kContinuous, Color.kBlue, Color.kPurple);
