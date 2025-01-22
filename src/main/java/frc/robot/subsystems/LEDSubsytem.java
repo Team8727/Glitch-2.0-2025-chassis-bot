@@ -7,8 +7,8 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.Percent;
 import static edu.wpi.first.units.Units.Second;
 
-import java.nio.Buffer;
 import java.util.Map;
+import java.util.concurrent.ConcurrentMap;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class LEDSubsytem extends SubsystemBase {
@@ -25,6 +24,7 @@ public class LEDSubsytem extends SubsystemBase {
 
   AddressableLED lightStrip;
   AddressableLEDBuffer stripBuffer;
+  LEDPattern currentPattern;
 
   private final CommandXboxController m_driverController = new CommandXboxController(0);
 
@@ -46,13 +46,15 @@ public class LEDSubsytem extends SubsystemBase {
         // LEDPattern red = LEDPattern.solid(Color.kRed);
 
         LEDPattern rainbowBase = LEDPattern.rainbow(256, 128)
-          .mask(LEDPattern.steps(
-            Map.of(0, Color.kWhite, 0.5, Color.kBlack)));
-        LEDPattern rainbow = rainbowBase.scrollAtRelativeSpeed(Percent.per(Second).of(0.25));
+          .scrollAtRelativeSpeed(Percent.per(Second).of(25));
+        LEDPattern rainbow = rainbowBase.mask(
+          LEDPattern.steps(
+            Map.of(
+              0, Color.kWhite, 0.25, Color.kBlack, 0.5, Color.kWhite, 0.75, Color.kBlack)));
 
         LEDPattern blueBase = LEDPattern.gradient(
           LEDPattern.GradientType.kContinuous, Color.kBlue, Color.kPurple);
-        LEDPattern blue = blueBase.scrollAtRelativeSpeed(Percent.per(Second).of(0.25));
+        LEDPattern blue = blueBase.scrollAtRelativeSpeed(Percent.per(Second).of(25));
 
         LEDPattern greenBase = LEDPattern.solid(Color.kGreen);
         LEDPattern green = greenBase.breathe(Second.of(2));
@@ -62,17 +64,28 @@ public class LEDSubsytem extends SubsystemBase {
         lightStrip.setData(stripBuffer);
         lightStrip.start();
 
-        m_driverController.y().onTrue(new InstantCommand(() -> rainbow.applyTo(stripBuffer)));
-        m_driverController.b().onTrue(new InstantCommand(() -> blue.applyTo(stripBuffer)));
-        m_driverController.leftBumper().onTrue(new InstantCommand(() -> LEDPattern.solid(Color.kRed).applyTo(stripBuffer)));
-        m_driverController.rightBumper().onTrue(new InstantCommand(() -> green.applyTo(stripBuffer)));
+        m_driverController.y().onTrue(new InstantCommand(() -> setPattern(rainbow)));
+        m_driverController.b().onTrue(new InstantCommand(() -> setPattern(blue)));
+        m_driverController.leftBumper().onTrue(new InstantCommand(() -> setPattern(LEDPattern.solid(Color.kRed))));
+        m_driverController.rightBumper().onTrue(new InstantCommand(() -> setPattern(green)));
       }
+
+  private void setPattern(LEDPattern pattern) {
+    currentPattern = pattern;
+    currentPattern.applyTo(stripBuffer);
+    lightStrip.setData(stripBuffer);
+    System.out.println("Pattern set");
+  }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     // runPattern(LEDPattern.solid(Color.kWhite));
-    lightStrip.setData(stripBuffer);
+    if (currentPattern != null) {
+      currentPattern.applyTo(stripBuffer);
+      lightStrip.setData(stripBuffer);
+      System.out.println("Pattern updated: " + currentPattern + ".");
+    }
   }
   // Everything below this line was experimental and did not work. I am keeping it here for reference.
   // ----------------------------------------------------------------------------------------------------------------------------
