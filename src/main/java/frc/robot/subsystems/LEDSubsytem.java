@@ -19,7 +19,9 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class LEDSubsytem extends SubsystemBase {
 
-  // IMPORTANT: Turns out we can't use commands normally with LEDs and I don't know why. It will not display any errors but it also won't work.
+  // IMPORTANT: Turns out we can't use commands normally with LEDs outside this subsystem and I don't know why.
+  // It may not display any errors but it also won't work.
+  // This may have been fixed but I can't be sure.
 
   AddressableLED lightStrip;
   AddressableLEDBuffer stripBuffer;
@@ -36,20 +38,28 @@ public class LEDSubsytem extends SubsystemBase {
         lightStrip = new AddressableLED(0); // The 2024 robot's port is 0
         
         // I think the buffer is just so we aren't directly setting the length of the LED, because apparently that is "expensive".
-        stripBuffer = new AddressableLEDBuffer(4); // The 2024 robot had 46 LEDs.
+        // Not sure what that means.
+        stripBuffer = new AddressableLEDBuffer(4); // The 2024 robot has 46 LEDs.
         
-        // Here we set the length of the strip, get the data from the buffer, and .start() writes the output continously.
+        // Here we set the length of the strip, get the data from the buffer,
+        // and .start() writes the output continously inside the periodic.
         // I honestly don't understand a lot of this so check the docs to be sure.
         lightStrip.setLength(stripBuffer.getLength());
 
-        // LEDPattern red = LEDPattern.solid(Color.kRed);
+        LEDPattern redbase = LEDPattern.solid(Color.kRed);
+        LEDPattern red = redbase.blink(Second.of(0.5));
+        // If you don't put in a second value, it will set the on and off times to the same value.
 
         LEDPattern rainbowBase = LEDPattern.rainbow(256, 128);
         LEDPattern rainbowMask = LEDPattern.steps(
             Map.of(
-              0, Color.kWhite, 
-              0.25, Color.kBlack, 
-              0.5, Color.kWhite, 0.75, Color.kBlack));
+              // Since each value represents where the section starts, this map creates a mask that
+              // makes four sections of the LED strip, one black, one white, one black, and one white.
+              // Though the white bits are actually just rainbow because this is a mask.
+              0, Color.kWhite,
+              0.25, Color.kBlack,
+              0.5, Color.kWhite,
+              0.75, Color.kBlack));
         LEDPattern rainbow = rainbowBase.mask(rainbowMask)
           .scrollAtRelativeSpeed(Percent.per(Second).of(25));
 
@@ -67,7 +77,7 @@ public class LEDSubsytem extends SubsystemBase {
 
         m_driverController.y().onTrue(new InstantCommand(() -> setPattern(rainbow)));
         m_driverController.b().onTrue(new InstantCommand(() -> setPattern(blue)));
-        m_driverController.leftBumper().onTrue(new InstantCommand(() -> setPattern(LEDPattern.solid(Color.kRed))));
+        m_driverController.leftBumper().onTrue(new InstantCommand(() -> setPattern(red)));
         m_driverController.rightBumper().onTrue(new InstantCommand(() -> setPattern(green)));
       }
 
