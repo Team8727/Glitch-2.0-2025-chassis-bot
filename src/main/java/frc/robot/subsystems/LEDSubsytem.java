@@ -50,18 +50,19 @@ public class LEDSubsytem extends SubsystemBase {
         LEDPattern red = redbase.blink(Second.of(0.5));
         // If you don't put in a second value, it will set the on and off times to the same value.
 
-        LEDPattern rainbowBase = LEDPattern.rainbow(256, 128);
+        LEDPattern rainbowBase = LEDPattern.rainbow(256, 128)
+          .scrollAtRelativeSpeed(Percent.per(Second).of(25));;
         LEDPattern rainbowMask = LEDPattern.steps(
-            Map.of(
-              // Since each value represents where the section starts, this map creates a mask that
-              // makes four sections of the LED strip, one black, one white, one black, and one white.
-              // Though the white bits are actually just rainbow because this is a mask.
-              0, Color.kWhite,
-              0.25, Color.kBlack,
-              0.5, Color.kWhite,
-              0.75, Color.kBlack));
-        LEDPattern rainbow = rainbowBase.mask(rainbowMask)
-          .scrollAtRelativeSpeed(Percent.per(Second).of(25));
+          // Since each value represents where the section starts, this map creates a mask that
+          // makes four sections of the LED strip, one black, one white, one black, and one white.
+          // Though the white bits are actually just rainbow because this is a mask.
+          Map.of(
+            0.0, Color.kWhite,
+            0.25, Color.kBlack,
+            0.5, Color.kWhite,
+            0.75, Color.kBlack)
+            ).scrollAtRelativeSpeed(Percent.per(Second).of(25));
+        LEDPattern rainbow = rainbowBase.reversed().mask(rainbowMask);
 
         LEDPattern blueBase = LEDPattern.gradient(
           LEDPattern.GradientType.kContinuous, Color.kBlue, Color.kPurple);
