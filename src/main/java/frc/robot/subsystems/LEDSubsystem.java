@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
-public class LEDSubsytem extends SubsystemBase {
+public class LEDSubsystem extends SubsystemBase {
 
   // IMPORTANT: Turns out we can't use commands normally with LEDs outside this subsystem and I don't know why.
   // It may not display any errors but it also won't work.
@@ -29,8 +29,8 @@ public class LEDSubsytem extends SubsystemBase {
 
   private final CommandXboxController m_driverController = new CommandXboxController(0);
 
-  /** Creates a new LEDSubsytem. */
-  public LEDSubsytem() {
+  /** Creates a new LEDSubsystem. */
+  public LEDSubsystem() {
         // Look for here for further info on LED stuff: https://docs.wpilib.org/en/stable/docs/software/hardware-apis/misc/addressable-leds.html#led-patterns
     // The density of the LED strip we have on the robot is 60 per meter
 
