@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.subsystems.LEDSubsytem;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.PoseEstimatior;
 
 /**
@@ -23,7 +23,7 @@ import frc.robot.subsystems.PoseEstimatior;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem m_SwerveSubsystem = new SwerveSubsystem();
-  private final LEDSubsytem m_LedSubsytem = new LEDSubsytem();
+  private final LEDSubsystem m_ledSubsytem = new LEDSubsystem();
   private final CommandXboxController m_driverController = new CommandXboxController(0);
   private final PoseEstimatior m_PoseEstimatior = new PoseEstimatior(m_SwerveSubsystem);
 

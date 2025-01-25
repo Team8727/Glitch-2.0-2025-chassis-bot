@@ -17,133 +17,66 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
-public class LEDSubsystem extends SubsystemBase {
+public class LEDSubsystem extends SubsystemBase { // Fixed class name
 
-  // IMPORTANT: Turns out we can't use commands normally with LEDs outside this subsystem and I don't know why.
-  // It may not display any errors but it also won't work.
-  // This may have been fixed but I can't be sure.
-
-  AddressableLED lightStrip;
-  AddressableLEDBuffer stripBuffer;
-  LEDPattern currentPattern;
+  private AddressableLED lightStrip;
+  private AddressableLEDBuffer stripBuffer;
+  private LEDPattern currentPattern;
 
   private final CommandXboxController m_driverController = new CommandXboxController(0);
 
   /** Creates a new LEDSubsystem. */
   public LEDSubsystem() {
-        // Look for here for further info on LED stuff: https://docs.wpilib.org/en/stable/docs/software/hardware-apis/misc/addressable-leds.html#led-patterns
-    // The density of the LED strip we have on the robot is 60 per meter
+    // LED setup and port configuration
+    lightStrip = new AddressableLED(0); // Correct PWM port
+    stripBuffer = new AddressableLEDBuffer(12); // Correct LED count
 
-        // Here we tell the code what PWM port the LED strip is connected to on the roboRio, so we can actually tell the LEDs what to do.
-        lightStrip = new AddressableLED(0); // The 2024 robot's port is 0
-        
-        // I think the buffer is just so we aren't directly setting the length of the LED, because apparently that is "expensive".
-        // Not sure what that means.
-        stripBuffer = new AddressableLEDBuffer(4); // The 2024 robot has 46 LEDs.
-        
-        // Here we set the length of the strip, get the data from the buffer,
-        // and .start() writes the output continously inside the periodic.
-        // I honestly don't understand a lot of this so check the docs to be sure.
-        lightStrip.setLength(stripBuffer.getLength());
+    lightStrip.setLength(stripBuffer.getLength());
 
-        LEDPattern redbase = LEDPattern.solid(Color.kRed);
-        LEDPattern red = redbase.blink(Second.of(0.5));
-        // If you don't put in a second value, it will set the on and off times to the same value.
+    // Define LED Patterns
+    LEDPattern red = LEDPattern.solid(Color.kRed).blink(Second.of(0.5));
 
-        LEDPattern rainbowBase = LEDPattern.rainbow(256, 128)
-          .scrollAtRelativeSpeed(Percent.per(Second).of(25));;
-        LEDPattern rainbowMask = LEDPattern.steps(
-          // Since each value represents where the section starts, this map creates a mask that
-          // makes four sections of the LED strip, one black, one white, one black, and one white.
-          // Though the white bits are actually just rainbow because this is a mask.
-          Map.of(
-            0.0, Color.kWhite,
-            0.25, Color.kBlack,
-            0.5, Color.kWhite,
-            0.75, Color.kBlack)
-            ).scrollAtRelativeSpeed(Percent.per(Second).of(25));
-        LEDPattern rainbow = rainbowBase.reversed().mask(rainbowMask);
+    LEDPattern rainbowBase = LEDPattern.rainbow(256, 128)
+      .scrollAtRelativeSpeed(Percent.per(Second).of(25));
+    LEDPattern rainbowMask = LEDPattern.steps(
+        Map.of(
+          0.0, Color.kWhite,
+          0.25, Color.kBlack,
+          0.5, Color.kWhite,
+          0.75, Color.kBlack))
+      .scrollAtRelativeSpeed(Percent.per(Second).of(25));
+    LEDPattern rainbow = rainbowBase.reversed().mask(rainbowMask);
 
-        LEDPattern blueBase = LEDPattern.gradient(
-          LEDPattern.GradientType.kContinuous, Color.kBlue, Color.kPurple);
-        LEDPattern blue = blueBase.scrollAtRelativeSpeed(Percent.per(Second).of(25));
+    LEDPattern blue = LEDPattern.gradient(
+      LEDPattern.GradientType.kContinuous, Color.kBlue, Color.kPurple)
+      .scrollAtRelativeSpeed(Percent.per(Second).of(25));
 
-        LEDPattern greenBase = LEDPattern.solid(Color.kGreen);
-        LEDPattern green = greenBase.breathe(Second.of(2));
+    LEDPattern green = LEDPattern.solid(Color.kGreen).breathe(Second.of(2));
 
-        // setDefaultCommand(new InstantCommand(() -> LEDPattern.solid(Color.kWhite).applyTo(stripBuffer)));
-        // // Write the data to the LED strip
-        lightStrip.setData(stripBuffer);
-        lightStrip.start();
+    // Set a default pattern (White Solid) to ensure LEDs are not blank initially
+    currentPattern = LEDPattern.solid(Color.kWhite);
+    currentPattern.applyTo(stripBuffer);
+    lightStrip.setData(stripBuffer);
+    lightStrip.start();
 
-        m_driverController.y().onTrue(new InstantCommand(() -> setPattern(rainbow)));
-        m_driverController.b().onTrue(new InstantCommand(() -> setPattern(blue)));
-        m_driverController.leftBumper().onTrue(new InstantCommand(() -> setPattern(red)));
-        m_driverController.rightBumper().onTrue(new InstantCommand(() -> setPattern(green)));
-      }
+    // Xbox Controller Bindings for LED Patterns
+    m_driverController.y().onTrue(new InstantCommand(() -> setPattern(rainbow), this));
+    m_driverController.b().onTrue(new InstantCommand(() -> setPattern(blue), this));
+    m_driverController.leftBumper().onTrue(new InstantCommand(() -> setPattern(red), this));
+    m_driverController.rightBumper().onTrue(new InstantCommand(() -> setPattern(green), this));
+  }
 
   private void setPattern(LEDPattern pattern) {
     currentPattern = pattern;
-    currentPattern.applyTo(stripBuffer);
-    lightStrip.setData(stripBuffer);
-    System.out.println("Pattern set");
+    System.out.println("Pattern set to: " + pattern);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    // runPattern(LEDPattern.solid(Color.kWhite));
     if (currentPattern != null) {
       currentPattern.applyTo(stripBuffer);
       lightStrip.setData(stripBuffer);
-      System.out.println("Pattern updated: " + currentPattern + ".");
     }
   }
-  // Everything below this line was experimental and did not work. I am keeping it here for reference.
-  // ----------------------------------------------------------------------------------------------------------------------------
-  // ----------------------------------------------------------------------------------------------------------------------------
-  // This command significantly lightens my workload for all of the other commands
-  // so I don't have to keep applying the data to the buffer manually.
-  // public Command runPattern(LEDPattern pattern) {
-  //   return run(
-  //     () -> pattern
-  //     .applyTo(stripBuffer))
-  //     .andThen(() -> lightStrip.setData(stripBuffer));
-  // }
-
-  // This command is incredibly straightforward. It just sets all the lights to red.
-  // public Command redLight() {
-  //   LEDPattern red = LEDPattern.solid(Color.kRed);
-  //   return runPattern(red);
-  // }
-  
-  // This command calls the gradient method, which can be either continous or discontinous.
-  // Continuous is good if you have multiple strips or if you are scrolling, like we are here.
-  // After which, we call the .scrollAtRelativeSpeed method, which we do because it will scroll
-  // at the exact same speed regardless of the size of the LED strip, which means that while it
-  // is less intuitive than the .scrollAtAbsoluteSpeed method, it is more reliable for different situations.
-  // public Command scrollingGradient() {
-  //   return runPattern(
-  //     LEDPattern.gradient(
-  //       LEDPattern.GradientType.kContinuous, Color.kBlue, Color.kPurple)
-  //       .scrollAtRelativeSpeed(Percent.per(Second).of(0.25)));
-  // }
-
-  // Rainbow command! The saturation is the intensity of the colors and the value is how bright they are.
-  // 256 is the maximum for both values.
-  // The mask is the tricky part. We make a map, which identifies sections of the LED strip as certain colors.
-  // The number values indicate where each section of the mask starts, with the "white" section starting at the
-  // beginning and the "black" section starting one-third of the way through.
-  // What the mask does is it looks at whatever the color of the LED is that is beneath it and it checks it against
-  // the mask's color. If it has a similar color value, then it stays. If it has a different one, then it is replaced
-  // by the mask. Basically what the code here is doing is showing a small sliver of a rainbow that scrolls through the
-  // strip, getting replaced by darkness along the way.
-  // public Command maskedRainbow() {
-  //   return runPattern(
-  //     LEDPattern.rainbow(256, 128)
-  //     .mask(LEDPattern.steps(
-  //       Map.of(0, Color.kWhite, 0.3, Color.kBlack))
-  //     .scrollAtRelativeSpeed(
-  //       Percent.per(Second).of(0.25))));
-  //}
 }
