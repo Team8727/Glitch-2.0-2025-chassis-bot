@@ -12,6 +12,7 @@ import java.util.Map;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.LEDPattern;
+import edu.wpi.first.wpilibj.LEDPattern.GradientType;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -29,29 +30,37 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
   public LEDSubsystem() {
     // LED setup and port configuration
     lightStrip = new AddressableLED(0); // Correct PWM port
-    stripBuffer = new AddressableLEDBuffer(12); // Correct LED count
+    stripBuffer = new AddressableLEDBuffer(108); // Correct LED count
 
     lightStrip.setLength(stripBuffer.getLength());
 
     // Define LED Patterns
+
+    // Blinking red pattern
     LEDPattern red = LEDPattern.solid(Color.kRed).blink(Second.of(0.5));
 
+    // Rainbow pattern with a scrolling mask
     LEDPattern rainbowBase = LEDPattern.rainbow(256, 128)
       .scrollAtRelativeSpeed(Percent.per(Second).of(25));
     LEDPattern rainbowMask = LEDPattern.steps(
         Map.of(
           0.0, Color.kWhite,
           0.25, Color.kBlack,
-          0.5, Color.kWhite,
-          0.75, Color.kBlack))
+          0.75, Color.kWhite))
       .scrollAtRelativeSpeed(Percent.per(Second).of(25));
     LEDPattern rainbow = rainbowBase.reversed().mask(rainbowMask);
 
+    // Blue gradient pattern with a scrolling mask
     LEDPattern blue = LEDPattern.gradient(
       LEDPattern.GradientType.kContinuous, Color.kBlue, Color.kPurple)
       .scrollAtRelativeSpeed(Percent.per(Second).of(25));
 
+    // Green pattern that breathes
     LEDPattern green = LEDPattern.solid(Color.kGreen).breathe(Second.of(2));
+
+    // Green to purple gradient pattern
+    LEDPattern ace = LEDPattern.gradient(GradientType.kContinuous, Color.kGreen, Color.kPurple)
+      .scrollAtRelativeSpeed(Percent.per(Second).of(25));
 
     // Set a default pattern (White Solid) to ensure LEDs are not blank initially
     currentPattern = LEDPattern.solid(Color.kWhite);
@@ -64,6 +73,7 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
     m_driverController.b().onTrue(new InstantCommand(() -> setPattern(blue), this));
     m_driverController.leftBumper().onTrue(new InstantCommand(() -> setPattern(red), this));
     m_driverController.rightBumper().onTrue(new InstantCommand(() -> setPattern(green), this));
+    m_driverController.povUp().onTrue(new InstantCommand(() -> setPattern(ace), this));
   }
 
   private void setPattern(LEDPattern pattern) {
