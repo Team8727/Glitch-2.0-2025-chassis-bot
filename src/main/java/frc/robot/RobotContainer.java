@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import frc.robot.Constants.kVision.kPoses;
 import frc.robot.commands.AutoAlign;
 import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.subsystems.PoseEstimatior;
@@ -59,7 +60,7 @@ public class RobotContainer {
     // x configuration
     m_driverController.x().toggleOnTrue(m_SwerveSubsystem.XPosition());
 
-    m_driverController.b().onTrue(m_AutoAlign.followPath(Kposes));//TODO: setup poses constants
+    m_driverController.b().onTrue(m_AutoAlign.followPath(kPoses.blueFrontLeft));//TODO: setup poses constants
   }
 
   /**
