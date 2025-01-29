@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import frc.robot.commands.AutoAlign;
 import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.subsystems.PoseEstimatior;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -13,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.PoseEstimatior;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -26,6 +28,7 @@ public class RobotContainer {
   private final LEDSubsystem m_ledSubsytem = new LEDSubsystem();
   private final CommandXboxController m_driverController = new CommandXboxController(0);
   private final PoseEstimatior m_PoseEstimatior = new PoseEstimatior(m_SwerveSubsystem);
+  private final AutoAlign m_AutoAlign = new AutoAlign(m_SwerveSubsystem, m_PoseEstimatior);
 
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -39,8 +42,6 @@ public class RobotContainer {
           () -> true));
       // Configure the trigger bindings
       configureBindings();
-
-    
   }
 
 
@@ -59,6 +60,8 @@ public class RobotContainer {
     m_driverController.a().onTrue(new InstantCommand(m_SwerveSubsystem::zeroHeading));
     // x configuration
     m_driverController.x().toggleOnTrue(m_SwerveSubsystem.XPosition());
+
+    m_driverController.b().onTrue(m_AutoAlign.followPath(Kposes));//TODO: setup poses constants
   }
 
   /**

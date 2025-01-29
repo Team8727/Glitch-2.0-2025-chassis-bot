@@ -4,6 +4,12 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.config.ModuleConfig;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.controllers.PathFollowingController;
+import com.pathplanner.lib.path.PathConstraints;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -34,6 +40,21 @@ import edu.wpi.first.math.Matrix;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+  public static class Kconfigs {
+    public static RobotConfig robotConfig = new RobotConfig(
+      65,
+      10,//TODO: find real value
+      new ModuleConfig(
+        .0381,
+        4.45,
+        1.4,
+        null,//TODO: find real value
+        5.08, 
+        60, 
+        1),
+      kSwerve.kinematics.getModules()
+    );
+  }
   public static int configurationSetRetries = 5;
 
   public static class kOI {
@@ -113,6 +134,15 @@ public final class Constants {
               new ProfiledPIDController(0, 0, 0, // TODO: tune this also figure out what it is
                 new Constraints(maxVel, maxAccel)));
 
+      public static final PPHolonomicDriveController pathFollowController = new PPHolonomicDriveController(
+        new PIDConstants(Auton.transP, 0, 0),
+        new PIDConstants(angP, 0, angD));
+
+      public static final PathConstraints constraints = new PathConstraints(
+        Auton.maxOnTheFlyVel,
+        Auton.maxOnTheFlyAcc,
+        Auton.maxAngVel,
+        Auton.maxAngAccel);
       // public static final HolonomicPathFollowerConfig pathFollowConfig =
       //     new HolonomicPathFollowerConfig(
       //         new PIDConstants(Auton.transP, 0.0, 0), // Translation PID constants

@@ -32,7 +32,7 @@ public class PoseEstimatior extends SubsystemBase {
     //subsystem setups
     m_SwerveSubsystem = swerveSubsystem;
     m_swervePoseEstimator = swerveSubsystem.swervePoseEstimator;
-    resetPose();
+    resetStartPose();
   };
 
   //setup cameras 
@@ -84,8 +84,13 @@ public class PoseEstimatior extends SubsystemBase {
     return pose3d;
   }
 
-  public void resetPose() {
+  private void resetStartPose() {
     m_swervePoseEstimator.resetPose(getPose3d());
+  }
+
+  public Pose2d resetpose() {
+    m_swervePoseEstimator.resetPose(new Pose3d());
+    return get2dPose();
   }
 
   // Get 2d pose: from the poseEstimator
