@@ -34,6 +34,12 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
 
     lightStrip.setLength(stripBuffer.getLength());
 
+    // For some reason the Color.k____ values are not working, so I re-defined them here. Red works fine though.
+    // I think the blue and green values got flipped somehow.
+    Color m_green = new Color(0, 0, 255);
+    Color m_blue = new Color(0, 255, 0);
+    Color m_purple = new Color(255, 255, 0);
+
     // Define LED Patterns
 
     // Blinking red pattern
@@ -52,15 +58,17 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
 
     // Blue gradient pattern with a scrolling mask
     LEDPattern blue = LEDPattern.gradient(
-      LEDPattern.GradientType.kContinuous, Color.kBlue, Color.kPurple)
+      LEDPattern.GradientType.kContinuous, m_blue, m_green)
       .scrollAtRelativeSpeed(Percent.per(Second).of(25));
 
     // Green pattern that breathes
-    LEDPattern green = LEDPattern.solid(Color.kGreen).breathe(Second.of(2));
+    LEDPattern green = LEDPattern.solid(m_green).breathe(Second.of(2));
 
     // Green to purple gradient pattern
-    LEDPattern ace = LEDPattern.gradient(GradientType.kContinuous, Color.kGreen, Color.kPurple)
+    LEDPattern ace = LEDPattern.gradient(GradientType.kContinuous, m_green, m_purple)
       .scrollAtRelativeSpeed(Percent.per(Second).of(25));
+
+    LEDPattern colorCheck = LEDPattern.solid(m_purple);
 
     // Set a default pattern (White Solid) to ensure LEDs are not blank initially
     currentPattern = LEDPattern.solid(Color.kWhite);
@@ -74,6 +82,7 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
     m_driverController.leftBumper().onTrue(new InstantCommand(() -> setPattern(red), this));
     m_driverController.rightBumper().onTrue(new InstantCommand(() -> setPattern(green), this));
     m_driverController.povUp().onTrue(new InstantCommand(() -> setPattern(ace), this));
+    m_driverController.povRight().onTrue(new InstantCommand(() -> setPattern(colorCheck), this));
   }
 
   private void setPattern(LEDPattern pattern) {
