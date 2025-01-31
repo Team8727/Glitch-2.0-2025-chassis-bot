@@ -16,6 +16,7 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
+
 import edu.wpi.first.math.controller.ArmFeedforward;
 //import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -24,6 +25,7 @@ public class PhantomIntakePivot extends SubsystemBase {
 
   private final SparkMax pivotMotor;
   private final SparkMaxConfig config;
+
 
   private final ArmFeedforward pivotFeedforward;
 
@@ -42,12 +44,13 @@ public class PhantomIntakePivot extends SubsystemBase {
 
     config = new SparkMaxConfig(); //TODO: figure out all values (figure out how to do maxvel and maxaccel) (pid is tuned through Rev Hardware Client for onboard PID on motor controller)
     config.closedLoop
-      .outputRange(0, 0)
+      .outputRange(-1, 1) //TODO: this is set to full range of motor speed, might want to scale down to test.
       .pid(0, 0, 0);
     config.closedLoop.maxMotion
       .maxVelocity(0)
       .maxAcceleration(0);
     pivotMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters); //TODO: Might need to be resetsafe and presistsafe, but nothing is set yet, so I said no
+
 
   //-=-=-=-=- Feedforward (Arm) for the IntakePivot -=-=-=-=-=-=-=-=-=-=-=-=
 
@@ -58,6 +61,7 @@ public class PhantomIntakePivot extends SubsystemBase {
   }
 
   public void calculateVoltage(double positionRadians, double velocityRadPerSec, double accelRadPerSecSquared) {
+    // pivotMotor.setReference() //To set built-in PID (maybe put the feedforward calculation in here as parameter?)
     // pivotFeedforward.calculate(positionRadians, velocityRadPerSec);  //For velocity and position control, acceleration assumed to be 0
     // pivotFeedforward.calculate(positionRadians, velocityRadPerSec, accelRadPerSecSquared);  //For control of all three values
     // pivotFeedforward.calculate(currentAngle, currentVelocity, nextVelocity, dt)  // For velocity control 
