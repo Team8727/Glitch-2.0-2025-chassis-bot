@@ -36,10 +36,10 @@ public class PoseEstimatior extends SubsystemBase {
   };
 
   //setup cameras 
-  PhotonCamera camera1 = new PhotonCamera("camera1");
-  PhotonCamera camera2 = new PhotonCamera("camera2");
-  PhotonCamera camera3 = new PhotonCamera("camera3");
-  PhotonCamera camera4 = new PhotonCamera("camera4");  
+  PhotonCamera camera1 = new PhotonCamera("frontCamera");
+  PhotonCamera camera2 = new PhotonCamera("backCamera");
+  PhotonCamera camera3 = new PhotonCamera("leftCamera");
+  PhotonCamera camera4 = new PhotonCamera("rightCamera");  
 
   //Field2d for logging the robot's 2d position on the field to the dashboard like AdvantageScope, Elastic or Glass.
   private Field2d field2d = new Field2d();
