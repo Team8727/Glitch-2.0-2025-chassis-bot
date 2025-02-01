@@ -19,15 +19,11 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator3d;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants.kVision;
 import frc.robot.utilities.NetworkTableLogger;
-import frc.robot.commands.DriveCmd;
-
-import choreo.trajectory.SwerveSample;
 
 public class PoseEstimatior extends SubsystemBase {
   SwerveSubsystem m_SwerveSubsystem;
@@ -97,7 +93,11 @@ public class PoseEstimatior extends SubsystemBase {
     return pose3d;
   }
 
-  public void resetPoseToValue(Pose2d pose2d) {
+  public void resetPoseToPose3d(Pose3d pose3d) {
+    m_3dSwervePoseEstimator.resetPose(pose3d);
+  }
+
+  public void resetPoseToPose2d(Pose2d pose2d) {
     Pose3d pose3d = new Pose3d(pose2d);
     m_3dSwervePoseEstimator.resetPose(pose3d);
   }
@@ -118,20 +118,6 @@ public class PoseEstimatior extends SubsystemBase {
     PoseEstimator.setReferencePose(prevEstimatedRobotPose);
     return PoseEstimator.update(cameraResult);
   }
-
-  public void followTrajectory(SwerveSample sample) {
-    // Get the current pose of the robot
-    Pose2d pose = get2dPose();
-
-    // Generate the next speeds of the robot
-    ChassisSpeeds speeds = new ChassisSpeeds(
-      sample.vx + xController.calculate(pose.getX(), sample.x),
-      sample.vy + yController.calculate(pose.getY(), sample.y),
-      sample.omega + headingController.calculate(pose.getRotation().getRadians(), sample.heading));
-
-    // Apply the generated speeds
-    new DriveCmd(m_SwerveSubsystem, speeds, () -> true);
-}
 
   @Override
   public void periodic() {
