@@ -56,7 +56,7 @@ public class SwerveSubsystem extends SubsystemBase{
 
     Pose3d pose3d = new Pose3d();
 
-    SwerveDrivePoseEstimator3d swervePoseEstimator = new SwerveDrivePoseEstimator3d(
+    SwerveDrivePoseEstimator3d SwervePoseEstimator3d = new SwerveDrivePoseEstimator3d(
         kSwerve.kinematics,
         navX.getRotation3d(),
         modulePositions, 
@@ -74,12 +74,12 @@ public class SwerveSubsystem extends SubsystemBase{
 
     public void zeroHeading() {
         navX.reset();
-        swervePoseEstimator.resetRotation(new Pose3d().getRotation());
+        SwervePoseEstimator3d.resetRotation(new Pose3d().getRotation());
     }
 
     //maybe = get corrected steer
     public double getHeading() {
-        return Math.toDegrees(swervePoseEstimator.getEstimatedPosition().getRotation().getZ());
+        return Math.toDegrees(SwervePoseEstimator3d.getEstimatedPosition().getRotation().getZ());
     }
 
     public Rotation2d getRotation2d() {

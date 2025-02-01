@@ -4,8 +4,14 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+
+import frc.robot.subsystems.Autos;
+import frc.robot.subsystems.PoseEstimatior;
+import frc.robot.subsystems.SwerveSubsystem;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -15,6 +21,9 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 public class Robot extends TimedRobot {
 
   private final RobotContainer m_robotContainer;
+  private final SwerveSubsystem m_SwerveSubsystem;
+  private final PoseEstimatior m_PoseEstimatior;
+  private final Autos m_Autos;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -24,6 +33,11 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+
+    m_SwerveSubsystem = m_robotContainer.m_SwerveSubsystem;
+    m_PoseEstimatior = m_robotContainer.m_PoseEstimatior;
+    m_Autos = m_robotContainer.m_Autos;
+
   }
 
   /**
@@ -52,8 +66,7 @@ public class Robot extends TimedRobot {
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
-  public void autonomousInit() {
-  }
+  public void autonomousInit() {}
 
   /** This function is called periodically during autonomous. */
   @Override
@@ -88,4 +101,9 @@ public class Robot extends TimedRobot {
   /** This function is called periodically whilst in simulation. */
   @Override
   public void simulationPeriodic() {}
+
+  // For Choreo
+  private boolean isRedAlliance() {
+    return DriverStation.getAlliance().orElse(Alliance.Blue).equals(Alliance.Red);
+  }
 }

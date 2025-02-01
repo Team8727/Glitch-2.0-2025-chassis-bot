@@ -14,24 +14,32 @@ import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator3d;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 import frc.robot.Constants.kVision;
 import frc.robot.utilities.NetworkTableLogger;
+import frc.robot.commands.DriveCmd;
+
+import choreo.trajectory.SwerveSample;
 
 public class PoseEstimatior extends SubsystemBase {
   SwerveSubsystem m_SwerveSubsystem;
-  SwerveDrivePoseEstimator3d m_swervePoseEstimator;
+  SwerveDrivePoseEstimator3d m_3dSwervePoseEstimator;
+  SwerveDrivePoseEstimator m_2dSwervePoseEstimator;
   NetworkTableLogger networkTableLogger = new NetworkTableLogger(this.getName().toString());
 
   /** Creates a new PoseEstimation. */
   public PoseEstimatior(SwerveSubsystem swerveSubsystem) {
     //subsystem setups
     m_SwerveSubsystem = swerveSubsystem;
-    m_swervePoseEstimator = swerveSubsystem.swervePoseEstimator;
+    m_3dSwervePoseEstimator = swerveSubsystem.SwervePoseEstimator3d;
     resetPose();
   };
 
@@ -61,6 +69,11 @@ public class PoseEstimatior extends SubsystemBase {
     kVision.aprilTagFieldLayout, 
     PoseStrategy.CLOSEST_TO_REFERENCE_POSE, 
     kVision.camera4Position);
+
+  // Choreo Translation and Rotation Controllers
+  private final PIDController xController = new PIDController(10.0, 0.0, 0.0); //TODO: Tune? (These are fake values currently)
+  private final PIDController yController = new PIDController(10.0, 0.0, 0.0);
+  private final PIDController headingController = new PIDController(7.5, 0.0, 0.0);
   
   // get starting pos with cam1
   public Pose3d getPose3d() {
@@ -84,13 +97,18 @@ public class PoseEstimatior extends SubsystemBase {
     return pose3d;
   }
 
+  public void resetPoseToValue(Pose2d pose2d) {
+    Pose3d pose3d = new Pose3d(pose2d);
+    m_3dSwervePoseEstimator.resetPose(pose3d);
+  }
+
   public void resetPose() {
-    m_swervePoseEstimator.resetPose(getPose3d());
+    m_3dSwervePoseEstimator.resetPose(getPose3d());
   }
 
   // Get 2d pose: from the poseEstimator
   public Pose2d get2dPose() {
-    return (m_swervePoseEstimator.getEstimatedPosition().toPose2d());
+    return (m_3dSwervePoseEstimator.getEstimatedPosition().toPose2d());
   }
 
   Optional<EstimatedRobotPose> getEstimatedGlobalPose(
@@ -100,16 +118,31 @@ public class PoseEstimatior extends SubsystemBase {
     PoseEstimator.setReferencePose(prevEstimatedRobotPose);
     return PoseEstimator.update(cameraResult);
   }
+
+  public void followTrajectory(SwerveSample sample) {
+    // Get the current pose of the robot
+    Pose2d pose = get2dPose();
+
+    // Generate the next speeds of the robot
+    ChassisSpeeds speeds = new ChassisSpeeds(
+      sample.vx + xController.calculate(pose.getX(), sample.x),
+      sample.vy + yController.calculate(pose.getY(), sample.y),
+      sample.omega + headingController.calculate(pose.getRotation().getRadians(), sample.heading));
+
+    // Apply the generated speeds
+    new DriveCmd(m_SwerveSubsystem, speeds, () -> true);
+}
+
   @Override
   public void periodic() {
     //camera 1 pose estimation
     PhotonPipelineResult camera1res = camera1.getLatestResult();
     Optional<EstimatedRobotPose> camera1pose = getEstimatedGlobalPose(
-      m_swervePoseEstimator.getEstimatedPosition(),
+      m_3dSwervePoseEstimator.getEstimatedPosition(),
       camera1res,
       PoseEstimator1);
     try {
-      m_swervePoseEstimator.addVisionMeasurement(
+      m_3dSwervePoseEstimator.addVisionMeasurement(
         camera1pose.get().estimatedPose,
         camera1pose.get().timestampSeconds);
         // System.out.println("not error");
@@ -120,11 +153,11 @@ public class PoseEstimatior extends SubsystemBase {
     //camera 2 pose estimation
     PhotonPipelineResult camera2res = camera2.getLatestResult();
     Optional<EstimatedRobotPose> camera2pose = getEstimatedGlobalPose(
-      m_swervePoseEstimator.getEstimatedPosition(),
+      m_3dSwervePoseEstimator.getEstimatedPosition(),
       camera2res,
       PoseEstimator2);
     try {
-      m_swervePoseEstimator.addVisionMeasurement(
+      m_3dSwervePoseEstimator.addVisionMeasurement(
         camera2pose.get().estimatedPose,
         camera2pose.get().timestampSeconds);
       } catch (Exception e) {
@@ -133,11 +166,11 @@ public class PoseEstimatior extends SubsystemBase {
     //camera 3 pose estimation
     PhotonPipelineResult camera3res = camera3.getLatestResult();
     Optional<EstimatedRobotPose> camera3pose = getEstimatedGlobalPose(
-      m_swervePoseEstimator.getEstimatedPosition(),
+      m_3dSwervePoseEstimator.getEstimatedPosition(),
       camera3res,
       PoseEstimator3);
     try {
-      m_swervePoseEstimator.addVisionMeasurement(
+      m_3dSwervePoseEstimator.addVisionMeasurement(
         camera3pose.get().estimatedPose,
         camera3pose.get().timestampSeconds);
       } catch (Exception e) {
@@ -146,18 +179,18 @@ public class PoseEstimatior extends SubsystemBase {
     //camera 4 pose estimation
     PhotonPipelineResult camera4res = camera4.getLatestResult();
     Optional<EstimatedRobotPose> camera4pose = getEstimatedGlobalPose(
-      m_swervePoseEstimator.getEstimatedPosition(),
+      m_3dSwervePoseEstimator.getEstimatedPosition(),
       camera4res,
       PoseEstimator4);
     try {
-      m_swervePoseEstimator.addVisionMeasurement(
+      m_3dSwervePoseEstimator.addVisionMeasurement(
         camera4pose.get().estimatedPose,
         camera4pose.get().timestampSeconds);
       } catch (Exception e) {
       }
 
       //gyro update
-      m_SwerveSubsystem.swervePoseEstimator.update(
+      m_SwerveSubsystem.SwervePoseEstimator3d.update(
         m_SwerveSubsystem.navX.getRotation3d(), m_SwerveSubsystem.modulePositions);
 
       //Update Field2d with pose to display the robot's visual position on the field to the dashboard
@@ -167,7 +200,7 @@ public class PoseEstimatior extends SubsystemBase {
       //Log the robot's 2d position on the field to the dashboard using the NetworkTableLogger Utility
       networkTableLogger.logField2d("Field2d", field2d);
       networkTableLogger.logPose2d("Robot 3d Pose", get2dPose());
-      networkTableLogger.logPose3d("Robot 2d Pose", m_swervePoseEstimator.getEstimatedPosition());
+      networkTableLogger.logPose3d("Robot 2d Pose", m_3dSwervePoseEstimator.getEstimatedPosition());
   }
 
 }
