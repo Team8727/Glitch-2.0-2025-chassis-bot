@@ -9,6 +9,7 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 
 import frc.robot.Constants;
+
 import java.util.Set;
 
 public class SparkConfigurator {

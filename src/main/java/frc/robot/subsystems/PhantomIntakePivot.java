@@ -6,19 +6,20 @@ package frc.robot.subsystems;
 
 import static frc.robot.utilities.SparkConfigurator.getSparkMax;
 
+import java.util.Set;
+
 import frc.robot.Constants.kIntake.kPivot;
 import frc.robot.utilities.SparkConfigurator.LogData;
 
-import java.util.Set;
-
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkBase;
+import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
-//import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class PhantomIntakePivot extends SubsystemBase {
@@ -28,6 +29,7 @@ public class PhantomIntakePivot extends SubsystemBase {
 
 
   private final ArmFeedforward pivotFeedforward;
+  private final SparkClosedLoopController pivotPID;
 
   /** Creates a new PhantomIntake. */
   public PhantomIntakePivot() {
@@ -42,15 +44,19 @@ public class PhantomIntakePivot extends SubsystemBase {
 
   //=-=-=-=- pivotMotor PID config and maxMotion Constraints config -=-=-=-=
 
+    //Setting the output range, PID, and maxMotion constraints for the motor
     config = new SparkMaxConfig(); //TODO: figure out all values (figure out how to do maxvel and maxaccel) (pid is tuned through Rev Hardware Client for onboard PID on motor controller)
     config.closedLoop
       .outputRange(-1, 1) //TODO: this is set to full range of motor speed, might want to scale down to test.
       .pid(0, 0, 0);
     config.closedLoop.maxMotion
-      .maxVelocity(0)
+      .maxVelocity(0)  //TODO: this is set to zero right now!!
       .maxAcceleration(0);
     pivotMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters); //TODO: Might need to be resetsafe and presistsafe, but nothing is set yet, so I said no
 
+  //-=-=-=-=- PID controller for the motor -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+    pivotPID = pivotMotor.getClosedLoopController();
 
   //-=-=-=-=- Feedforward (Arm) for the IntakePivot -=-=-=-=-=-=-=-=-=-=-=-=
 
@@ -60,12 +66,19 @@ public class PhantomIntakePivot extends SubsystemBase {
 
   }
 
-  public void calculateVoltage(double positionRadians, double velocityRadPerSec, double accelRadPerSecSquared) {
+  public void setMotorFFPID(double positionRadians, double velocityRadPerSec, double accelRadPerSecSquared) {
+    pivotPID.setReference(
+      pivotFeedforward.calculate(
+        positionRadians, 
+        velocityRadPerSec, 
+        accelRadPerSecSquared), 
+      SparkBase.ControlType.kVoltage);
+    
     // pivotMotor.setReference() //To set built-in PID (maybe put the feedforward calculation in here as parameter?)
-    // pivotFeedforward.calculate(positionRadians, velocityRadPerSec);  //For velocity and position control, acceleration assumed to be 0
-    // pivotFeedforward.calculate(positionRadians, velocityRadPerSec, accelRadPerSecSquared);  //For control of all three values
-    // pivotFeedforward.calculate(currentAngle, currentVelocity, nextVelocity, dt)  // For velocity control 
-    // pivotFeedforward.calculateWithVelocities(currentAngle, currentVelocity, nextVelocity); // Other method of velocity control
+      // pivotFeedforward.calculate(positionRadians, velocityRadPerSec);  //For velocity and position control, acceleration assumed to be 0
+      // pivotFeedforward.calculate(positionRadians, velocityRadPerSec, accelRadPerSecSquared);  //For control of all three values
+      // pivotFeedforward.calculate(currentAngle, currentVelocity, nextVelocity, dt)  // For velocity control 
+      // pivotFeedforward.calculateWithVelocities(currentAngle, currentVelocity, nextVelocity); // Other method of velocity control
     
   }
 
