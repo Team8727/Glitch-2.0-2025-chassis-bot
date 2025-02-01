@@ -9,12 +9,12 @@ import frc.robot.commands.AutoAlign;
 import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.subsystems.PoseEstimatior;
 import frc.robot.subsystems.SwerveSubsystem;
+import choreo.auto.AutoFactory;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.LEDSubsystem;
-import frc.robot.subsystems.PoseEstimatior;
 
 
 /**
@@ -25,22 +25,33 @@ import frc.robot.subsystems.PoseEstimatior;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final SwerveSubsystem m_SwerveSubsystem = new SwerveSubsystem();
-  private final LEDSubsystem m_ledSubsytem = new LEDSubsystem();
-  private final CommandXboxController m_driverController = new CommandXboxController(0);
-  private final PoseEstimatior m_PoseEstimatior = new PoseEstimatior(m_SwerveSubsystem);
-  private final AutoAlign m_AutoAlign = new AutoAlign(m_SwerveSubsystem, m_PoseEstimatior);
-
+  private final SwerveSubsystem m_SwerveSubsystem;
+  private final LEDSubsystem m_ledSubsytem;
+  private final CommandXboxController m_driverController;
+  private final PoseEstimatior m_PoseEstimatior;
+  private final AutoAlign m_AutoAlign;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
-  public RobotContainer() {
-    m_SwerveSubsystem.setDefaultCommand(
-      new SwerveJoystickCmd(
-        m_SwerveSubsystem,
-          () -> -m_driverController.getLeftY(),
-          () -> -m_driverController.getLeftX(),
-          () -> m_driverController.getRightX(),
-          () -> true));
+  public RobotContainer(
+      SwerveSubsystem swerveSubsystem,
+      LEDSubsystem ledSubsystem,
+      CommandXboxController driverController,
+      PoseEstimatior poseEstimatior,
+      AutoAlign autoAlign) {
+    m_SwerveSubsystem = swerveSubsystem;
+    m_ledSubsytem = ledSubsystem;
+    m_driverController = driverController;
+    m_PoseEstimatior = poseEstimatior;
+    m_AutoAlign = autoAlign;
+
+    // Configure the swerve bindings
+    // m_SwerveSubsystem.setDefaultCommand(
+    //   new SwerveJoystickCmd(
+    //     m_SwerveSubsystem,
+    //       () -> -m_driverController.getLeftY(),
+    //       () -> -m_driverController.getLeftX(),
+    //       () -> m_driverController.getRightX(),
+    //       () -> true));
       // Configure the trigger bindings
       configureBindings();
   }
@@ -62,7 +73,8 @@ public class RobotContainer {
     // x configuration
     m_driverController.x().toggleOnTrue(m_SwerveSubsystem.XPosition());
 
-    m_driverController.b().onTrue(m_AutoAlign.followPath(kPoses.blueFrontLeft));//TODO: setup poses constants
+    m_driverController.y().onTrue(m_AutoAlign.followPath(kPoses.blueFrontLeft));
+
   }
 
   /**

@@ -71,14 +71,14 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
     LEDPattern colorCheck = LEDPattern.solid(m_purple);
 
     // Set a default pattern (White Solid) to ensure LEDs are not blank initially
-    currentPattern = LEDPattern.solid(Color.kWhite);
+    currentPattern = LEDPattern.solid(Color.kBlack);
     currentPattern.applyTo(stripBuffer);
     lightStrip.setData(stripBuffer);
     lightStrip.start();
 
     // Xbox Controller Bindings for LED Patterns
     m_driverController.y().onTrue(new InstantCommand(() -> setPattern(rainbow), this));
-    m_driverController.b().onTrue(new InstantCommand(() -> setPattern(blue), this));
+    // m_driverController.b().onTrue(new InstantCommand(() -> setPattern(blue), this));
     m_driverController.leftBumper().onTrue(new InstantCommand(() -> setPattern(red), this));
     m_driverController.rightBumper().onTrue(new InstantCommand(() -> setPattern(green), this));
     m_driverController.povUp().onTrue(new InstantCommand(() -> setPattern(ace), this));

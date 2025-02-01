@@ -4,12 +4,17 @@
 
 package frc.robot.commands;
 
+import java.lang.reflect.Field;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.controllers.PathFollowingController;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.Kconfigs;
 import frc.robot.Constants.kSwerve;
@@ -24,6 +29,7 @@ public class AutoAlign extends Command {
 
   double turningSpeed = 0;
   double botHeading;
+  
   /** Creates a new AutoAlign. */
   public AutoAlign(SwerveSubsystem swerveSubsystem, PoseEstimatior poseEstimatior) {
     m_SwerveSubsystem = swerveSubsystem;
@@ -32,7 +38,16 @@ public class AutoAlign extends Command {
       m_PoseEstimatior::get2dPose,
       (pose) -> m_PoseEstimatior.resetpose(),
       m_SwerveSubsystem::getChassisSpeeds, 
-      (speeds, feedforwards) -> m_SwerveSubsystem.setModuleStates(kSwerve.kinematics.toSwerveModuleStates(speeds)),
+      (speeds) -> {
+        System.out.println("aligning");
+        // m_SwerveSubsystem.setModuleStates(
+        //   kSwerve.kinematics.toSwerveModuleStates(speeds)),
+        new SwerveJoystickCmd(
+          m_SwerveSubsystem,
+          () -> speeds.vxMetersPerSecond, 
+          () -> speeds.vyMetersPerSecond, 
+          () -> speeds.omegaRadiansPerSecond,
+          () -> true);},
       (PathFollowingController) kSwerve.Auton.pathFollowController,
       Kconfigs.robotConfig, 
       () -> {
@@ -41,6 +56,7 @@ public class AutoAlign extends Command {
         // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
         var alliance = DriverStation.getAlliance();
+
         if (alliance.isPresent()) {
           return alliance.get() == DriverStation.Alliance.Red;
         }
@@ -55,11 +71,11 @@ public class AutoAlign extends Command {
   
   public Command followPath(Pose2d goal) {
     return 
-      new RunCommand(
-        () -> AutoBuilder.pathfindToPose(
-          goal,
-          kSwerve.Auton.constraints,
-          0));
+      new RunCommand( 
+        () -> { 
+        System.out.println("pathfind start");
+        AutoBuilder.followPath(PathPlannerPath.waypointsFromPoses(m_PoseEstimatior.get2dPose(), goal));
+        System.out.println("pathfind end");});
   }
 
   // Called when the command is initially scheduled.
