@@ -8,7 +8,6 @@ import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import com.pathplanner.lib.controllers.PathFollowingController;
 import com.pathplanner.lib.path.PathConstraints;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
@@ -19,6 +18,8 @@ import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -26,6 +27,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
@@ -48,7 +50,13 @@ public final class Constants {
         .0381,
         4.45,
         1.4,
-        null,//TODO: find real value
+        new DCMotor(
+          12,
+          3.65, 
+          218, 
+          3.54, 
+          6704, //TODO: probobly wrong
+          1),
         5.08, 
         60, 
         1),
@@ -124,8 +132,8 @@ public final class Constants {
 
       public static final double transP = 12;
 
-      public static final double maxOnTheFlyVel = 3;
-      public static final double maxOnTheFlyAcc = 3;
+      public static final double maxOnTheFlyVel = 2;
+      public static final double maxOnTheFlyAcc = 2;
 
       public static final HolonomicDriveController controller =
           new HolonomicDriveController(
@@ -237,23 +245,27 @@ public final class Constants {
   public static class kVision {
     // Vision
 
+    public static class kPoses {
+      public static final Pose2d blueFrontLeft = 
+        new Pose2d(6.05,3.81 , Rotation2d.fromDegrees(180));//x,y in meters
+    }
     public static final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
     public static final Transform3d camera1Position =
         new Transform3d(
-            new Translation3d(-0.2921,0.0381, 0.24765),
-            new Rotation3d(0, Math.toRadians(10), Math.toRadians(180)));
+            new Translation3d(0.2921,0.0381, 0.24765),
+            new Rotation3d(0, Math.toRadians(25), 0));
     public static final Transform3d camera2Position =
         new Transform3d(
-            new Translation3d(0.2921,0.0381, 0.24765),
-            new Rotation3d(0, Math.toRadians(25),0));
+            new Translation3d(-0.2921,0.0381, 0.18),
+            new Rotation3d(0, Math.toRadians(10),Math.toRadians(180)));
     public static final Transform3d camera3Position =
         new Transform3d(
-            new Translation3d(0, 0, 0),
-            new Rotation3d(0, 0, 0));
+            new Translation3d(-0.0381, 0.2921, 0.18),
+            new Rotation3d(0, Math.toRadians(10), Math.toRadians(270)));
     public static final Transform3d camera4Position =
         new Transform3d(
-            new Translation3d(0, 0, 0),
-            new Rotation3d(0, 0, 0));
+            new Translation3d(0.0381, -0.2921, .18),
+            new Rotation3d(0, Math.toRadians(10), Math.toRadians(90)));
     
     public static final Matrix<N3, N1> stateStdDevs =
         MatBuilder.fill(Nat.N3(), Nat.N1(), 0.02, 0.02, 0.01);

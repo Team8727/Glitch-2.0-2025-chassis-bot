@@ -67,6 +67,7 @@ public class SwerveJoystickCmd extends Command{
 
         // Set the swerve module states
         SwerveModuleState[] moduleStates = kSwerve.kinematics.toSwerveModuleStates(chassisSpeeds);
+        // System.out.println("setting module states");
 
         // output to swerve modules
         m_SwerveSubsystem.setModuleStates(moduleStates);
@@ -74,7 +75,7 @@ public class SwerveJoystickCmd extends Command{
 
     @Override
     public void end(boolean interrupted) {
-        m_SwerveSubsystem.stopModules(); // does nothing
+        // m_SwerveSubsystem.stopModules(); // does nothing
     }
 
     @Override 
