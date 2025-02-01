@@ -9,9 +9,10 @@ import frc.robot.commands.AutoAlign;
 import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.subsystems.PoseEstimatior;
 import frc.robot.subsystems.SwerveSubsystem;
-import choreo.auto.AutoFactory;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.LEDSubsystem;
@@ -29,7 +30,7 @@ public class RobotContainer {
   private final LEDSubsystem m_ledSubsytem;
   private final CommandXboxController m_driverController;
   private final PoseEstimatior m_PoseEstimatior;
-  private final AutoAlign m_AutoAlign;
+  private final AutoAlign m_autoAlign;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer(
@@ -42,22 +43,25 @@ public class RobotContainer {
     m_ledSubsytem = ledSubsystem;
     m_driverController = driverController;
     m_PoseEstimatior = poseEstimatior;
-    m_AutoAlign = autoAlign;
+    m_autoAlign = autoAlign;
 
-    // Configure the swerve bindings
-    // m_SwerveSubsystem.setDefaultCommand(
-    //   new SwerveJoystickCmd(
-    //     m_SwerveSubsystem,
-    //       () -> -m_driverController.getLeftY(),
-    //       () -> -m_driverController.getLeftX(),
-    //       () -> m_driverController.getRightX(),
-    //       () -> true));
-      // Configure the trigger bindings
-      configureBindings();
+    // joystickOperated();
+
+    // Configure the trigger bindings
+    configureBindings();
   }
 
 
 
+  private void joystickOperated() {
+    m_SwerveSubsystem.setDefaultCommand(
+      new SwerveJoystickCmd(
+        m_SwerveSubsystem,
+        () -> -m_driverController.getLeftY(),
+        () -> -m_driverController.getLeftX(),
+        () -> m_driverController.getRightX(),
+        () -> true));
+  }
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
    * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
@@ -73,8 +77,21 @@ public class RobotContainer {
     // x configuration
     m_driverController.x().toggleOnTrue(m_SwerveSubsystem.XPosition());
 
-    m_driverController.y().onTrue(m_AutoAlign.followPath(kPoses.blueFrontLeft));
-
+    m_driverController.b().onTrue(m_autoAlign.align(kPoses.blueFrontLeft));
+      // .until(() -> 
+      //     m_PoseEstimatior.get2dPose()
+      //       .getTranslation()
+      //     .getDistance(
+      //       kPoses.blueFrontLeft.getTranslation())
+      //     < 0.1 
+      //   && 
+      //     m_PoseEstimatior.get2dPose()
+      //       .getRotation()
+      //     .minus(
+      //       kPoses.blueFrontLeft.getRotation())
+      //         .getDegrees()
+      //     < 0.1)
+      // .andThen(() -> joystickOperated())
   }
 
   /**

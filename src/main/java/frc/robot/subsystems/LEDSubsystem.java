@@ -77,7 +77,7 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
     lightStrip.start();
 
     // Xbox Controller Bindings for LED Patterns
-    m_driverController.y().onTrue(new InstantCommand(() -> setPattern(rainbow), this));
+    // m_driverController.y().onTrue(new InstantCommand(() -> setPattern(rainbow), this));
     // m_driverController.b().onTrue(new InstantCommand(() -> setPattern(blue), this));
     m_driverController.leftBumper().onTrue(new InstantCommand(() -> setPattern(red), this));
     m_driverController.rightBumper().onTrue(new InstantCommand(() -> setPattern(green), this));
