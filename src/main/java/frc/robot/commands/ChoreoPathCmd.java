@@ -13,14 +13,14 @@ import frc.robot.subsystems.PoseEstimatior;
 import frc.robot.subsystems.SwerveSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class choreoPath extends Command {
+public class ChoreoPathCmd extends Command {
   SwerveSubsystem m_SwerveSubsystem;
   PoseEstimatior m_PoseEstimatior;
   AutoFactory m_AutoFactory;
 
 
   /** Creates a new choreoPath. */
-  public choreoPath(
+  public ChoreoPathCmd(
       SwerveSubsystem swerveSubsystem, 
       PoseEstimatior poseEstimatior) {
     m_SwerveSubsystem = swerveSubsystem;
@@ -28,7 +28,7 @@ public class choreoPath extends Command {
 
     m_AutoFactory = new AutoFactory(
       m_PoseEstimatior::get2dPose, // A function that returns the current robot pose
-      (pose) -> m_PoseEstimatior.resetpose(), // A function that resets the current robot pose to the provided Pose2d
+      m_PoseEstimatior::resetpose, // A function that resets the current robot pose to the provided Pose2d
       swerveSubsystem::followTrajectory,
       true, // If alliance flipping should be enabled 
       m_SwerveSubsystem // The drive subsystem

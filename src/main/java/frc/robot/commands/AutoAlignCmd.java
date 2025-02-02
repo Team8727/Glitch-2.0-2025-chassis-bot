@@ -14,7 +14,7 @@ import frc.robot.subsystems.PoseEstimatior;
 import frc.robot.subsystems.SwerveSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class AutoAlign extends Command {
+public class AutoAlignCmd extends Command {
   SwerveSubsystem m_SwerveSubsystem;
   PoseEstimatior m_PoseEstimatior;
 
@@ -22,7 +22,7 @@ public class AutoAlign extends Command {
   double botHeading;
   
   /** Creates a new AutoAlign. */
-  public AutoAlign(SwerveSubsystem swerveSubsystem, PoseEstimatior poseEstimatior) {
+  public AutoAlignCmd(SwerveSubsystem swerveSubsystem, PoseEstimatior poseEstimatior) {
     m_SwerveSubsystem = swerveSubsystem;
     m_PoseEstimatior = poseEstimatior;
     addRequirements(swerveSubsystem);

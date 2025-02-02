@@ -88,9 +88,9 @@ public class PoseEstimatior extends SubsystemBase {
     m_swervePoseEstimator.resetPose(getPose3d());
   }
 
-  public Pose2d resetpose() {
-    m_swervePoseEstimator.resetPose(new Pose3d());
-    return get2dPose();
+  public void resetpose(Pose2d pose2d) {
+    Pose3d pose3d = new Pose3d(pose2d);
+    m_swervePoseEstimator.resetPose(pose3d);
   }
 
   // Get 2d pose: from the poseEstimator
