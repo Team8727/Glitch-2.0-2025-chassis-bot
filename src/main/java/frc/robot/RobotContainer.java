@@ -50,7 +50,7 @@ public class RobotContainer {
     configureBindings();
   }
 
-  private void joystickOperated() {
+  public void initiateJoystickOperated() {
     m_SwerveSubsystem.setDefaultCommand(
       new SwerveJoystickCmd(
         m_SwerveSubsystem,
@@ -69,9 +69,9 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // zero heading
+    // Zero heading
     m_driverController.a().onTrue(new InstantCommand(m_SwerveSubsystem::zeroHeading));
-    // x configuration
+    // X configuration
     m_driverController.x().toggleOnTrue(m_SwerveSubsystem.XPosition());
 
     m_driverController.b().onTrue(m_autoAlign.align(kPoses.blueFrontLeft));
