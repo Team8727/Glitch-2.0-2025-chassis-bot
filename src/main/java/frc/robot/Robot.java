@@ -4,11 +4,10 @@
 
 package frc.robot;
 
+import choreo.auto.AutoFactory;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.controllers.PathFollowingController;
-
-import choreo.auto.AutoFactory;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -16,8 +15,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.Kconfigs;
 import frc.robot.Constants.kSwerve;
 import frc.robot.commands.AutoAlignCmd;
-import frc.robot.commands.DriveCmd;
 import frc.robot.commands.ChoreoPathCmd;
+import frc.robot.commands.DriveCmd;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.PoseEstimatior;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -35,7 +34,7 @@ public class Robot extends TimedRobot {
   private final LEDSubsystem m_ledSubsytem = new LEDSubsystem();
   private final CommandXboxController m_driverController = new CommandXboxController(0);
   private final PoseEstimatior m_PoseEstimatior = new PoseEstimatior(m_SwerveSubsystem);
-  private final ChoreoPathCmd m_choreoPath  = new ChoreoPathCmd(m_SwerveSubsystem, m_PoseEstimatior);
+  private final ChoreoPathCmd m_choreoPath = new ChoreoPathCmd(m_SwerveSubsystem, m_PoseEstimatior);
   private final AutoAlignCmd m_AutoAlign = new AutoAlignCmd(m_SwerveSubsystem, m_PoseEstimatior);
 
   /**
@@ -43,50 +42,49 @@ public class Robot extends TimedRobot {
    * initialization code.
    */
   public Robot() {
-    AutoFactory m_AutoFactory = new AutoFactory(
-      m_PoseEstimatior::get2dPose, // A function that returns the current robot pose
-      m_PoseEstimatior::resetpose, // A function that resets the current robot pose to the provided Pose2d
-      m_SwerveSubsystem::followTrajectory,
-      true, // If alliance flipping should be enabled 
-      m_SwerveSubsystem // The drive subsystem
-    );
+    AutoFactory m_AutoFactory =
+        new AutoFactory(
+            m_PoseEstimatior::get2dPose, // A function that returns the current robot pose
+            m_PoseEstimatior::resetpose, // A function that resets the current robot pose to the provided Pose2d
+            m_SwerveSubsystem::followTrajectory,
+            true, // If alliance flipping should be enabled
+            m_SwerveSubsystem // The drive subsystem
+            );
 
     AutoBuilder.configure(
-      m_PoseEstimatior::get2dPose,
-      m_PoseEstimatior::resetpose,
-      m_SwerveSubsystem::getChassisSpeeds, 
-      (ChassisSpeeds, driveff) -> {
-        System.out.println("aligning");
-        // m_SwerveSubsystem.setModuleStates(
-        //   kSwerve.kinematics.toSwerveModuleStates(speeds)),
-        new DriveCmd(
-          m_SwerveSubsystem,
-          ChassisSpeeds,
-          () -> true);
+        m_PoseEstimatior::get2dPose,
+        m_PoseEstimatior::resetpose,
+        m_SwerveSubsystem::getChassisSpeeds,
+        (ChassisSpeeds, driveff) -> {
+          System.out.println("aligning");
+          // m_SwerveSubsystem.setModuleStates(
+          //   kSwerve.kinematics.toSwerveModuleStates(speeds)),
+          new DriveCmd(m_SwerveSubsystem, ChassisSpeeds, () -> true);
         },
-      (PathFollowingController) kSwerve.Auton.pathFollowController,
-      Kconfigs.robotConfig, 
-      () -> {
-        // Boolean supplier that controls when the path will be mirrored for the red alliance
-        // This will flip the path being followed to the red side of the field.
-        // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+        (PathFollowingController) kSwerve.Auton.pathFollowController,
+        Kconfigs.robotConfig,
+        () -> {
+          // Boolean supplier that controls when the path will be mirrored for the red alliance
+          // This will flip the path being followed to the red side of the field.
+          // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-        var alliance = DriverStation.getAlliance();
+          var alliance = DriverStation.getAlliance();
 
-        if (alliance.isPresent()) {
-          return alliance.get() == DriverStation.Alliance.Red;
-        }
-        return false;
-      },
-      m_SwerveSubsystem,
-      m_PoseEstimatior);
+          if (alliance.isPresent()) {
+            return alliance.get() == DriverStation.Alliance.Red;
+          }
+          return false;
+        },
+        m_SwerveSubsystem,
+        m_PoseEstimatior);
 
-    m_robotContainer = new RobotContainer(
-      m_SwerveSubsystem, 
-      m_ledSubsytem, 
-      m_driverController, 
-      m_PoseEstimatior,
-      m_AutoAlign);
+    m_robotContainer =
+        new RobotContainer(
+            m_SwerveSubsystem, 
+            m_ledSubsytem, 
+            m_driverController, 
+            m_PoseEstimatior, 
+            m_AutoAlign);
 
     PathfindingCommand.warmupCommand().schedule();
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
@@ -107,7 +105,6 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
-    
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -119,8 +116,7 @@ public class Robot extends TimedRobot {
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
-  public void autonomousInit() {
-  }
+  public void autonomousInit() {}
 
   /** This function is called periodically during autonomous. */
   @Override

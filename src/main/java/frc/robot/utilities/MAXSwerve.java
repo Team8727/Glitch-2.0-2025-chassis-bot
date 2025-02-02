@@ -4,19 +4,18 @@ import static frc.robot.utilities.SparkConfigurator.*;
 
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -25,9 +24,7 @@ import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.Constants.kSwerve.kModule;
 import frc.robot.utilities.SparkConfigurator.LogData;
 import frc.robot.utilities.SparkConfigurator.Sensors;
-
 import java.util.Set;
-
 
 public class MAXSwerve {
   private SwerveModuleState targetState = new SwerveModuleState();
@@ -67,32 +64,42 @@ public class MAXSwerve {
             Set.of(Sensors.ABSOLUTE),
             Set.of(LogData.VOLTAGE, LogData.POSITION, LogData.VELOCITY));
 
-
     SparkFlexConfig driveConfig = new SparkFlexConfig();
-      driveConfig.encoder
+    driveConfig
+        .encoder
         .positionConversionFactor(kModule.drivingEncoderPositionFactor)
         .velocityConversionFactor(kModule.drivingEncoderVelocityFactor);
-      // steerConfig.closedLoop                 somethings wrong here but im too dumb to figure out what
-      //   .feedbackSensor(driveEncoder);
-      driveConfig.closedLoop
+    // steerConfig.closedLoop                 somethings wrong here but im too dumb to figure out
+    // what
+    //   .feedbackSensor(driveEncoder);
+    driveConfig
+        .closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
         .outputRange(kModule.kDrive.minOutput, kModule.kDrive.maxOutput)
         .p(kModule.kDrive.kP)
         .d(kModule.kDrive.kD);
-      driveConfig
+    driveConfig
         .idleMode(IdleMode.kBrake)
         .smartCurrentLimit(kModule.driveSmartCurrentLimit)
         .secondaryCurrentLimit(kModule.driveMaxCurrent);
-    driveNEO.configure(driveConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters); //TODO: this might need to be reset and persist instead of noreset and nopersist for "burning flash" on the motor
-    
+    driveNEO.configure(
+        driveConfig,
+        ResetMode.kNoResetSafeParameters,
+        PersistMode
+            .kNoPersistParameters); // TODO: this might need to be reset and persist instead of
+    // noreset and nopersist for "burning flash" on the motor
+
     SparkMaxConfig steerConfig = new SparkMaxConfig();
-      steerConfig.absoluteEncoder
+    steerConfig
+        .absoluteEncoder
         .inverted(kModule.invertSteerEncoder)
         .positionConversionFactor(kModule.steeringEncoderPositionFactor)
         .velocityConversionFactor(kModule.steeringEncoderVelocityFactor);
-      // steerConfig.closedLoop                 somethings wrong here but im too dumb to figure out what
-      //   .feedbackSensor(driveEncoder);
-      steerConfig.closedLoop
+    // steerConfig.closedLoop                 somethings wrong here but im too dumb to figure out
+    // what
+    //   .feedbackSensor(driveEncoder);
+    steerConfig
+        .closedLoop
         .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
         .outputRange(kModule.kSteer.minOutput, kModule.kSteer.maxOutput)
         .positionWrappingEnabled(true)
@@ -100,11 +107,16 @@ public class MAXSwerve {
         .positionWrappingMinInput(kModule.steeringEncoderPositionPIDMinInput)
         .p(kModule.kSteer.kP)
         .d(kModule.kSteer.kD);
-      steerConfig
+    steerConfig
         .idleMode(IdleMode.kBrake)
         .smartCurrentLimit(kModule.driveSmartCurrentLimit)
         .secondaryCurrentLimit(kModule.driveMaxCurrent);
-    steerNEO.configure(steerConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters); //TODO: this might need to be reset and persist instead of noreset and nopersist for "burning flash" on the motor
+    steerNEO.configure(
+        steerConfig,
+        ResetMode.kNoResetSafeParameters,
+        PersistMode
+            .kNoPersistParameters); // TODO: this might need to be reset and persist instead of
+    // noreset and nopersist for "burning flash" on the motor
 
     driveEncoder = driveNEO.getEncoder();
     steerEncoder = steerNEO.getAbsoluteEncoder();
@@ -204,7 +216,8 @@ public class MAXSwerve {
 
   // Sets motors all to look like an O from birdseye view, used for angular SysId
   public void setO() {
-    setTargetState(new SwerveModuleState(0, new Rotation2d(3 * Math.PI / 4 + chassisOffset)), false);
+    setTargetState(
+        new SwerveModuleState(0, new Rotation2d(3 * Math.PI / 4 + chassisOffset)), false);
   }
 
   // Reset the drive encoder to zero (reset for odometry)
@@ -218,11 +231,13 @@ public class MAXSwerve {
     if (brake) {
       SparkMaxConfig driveconfig = new SparkMaxConfig();
       driveconfig.idleMode(IdleMode.kBrake);
-      driveNEO.configure(driveconfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+      driveNEO.configure(
+          driveconfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
     } else {
       SparkMaxConfig driveconfig = new SparkMaxConfig();
       driveconfig.idleMode(IdleMode.kCoast);
-      driveNEO.configure(driveconfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+      driveNEO.configure(
+          driveconfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
     }
   }
 
