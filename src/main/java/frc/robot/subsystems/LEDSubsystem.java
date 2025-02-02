@@ -49,9 +49,9 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
       .scrollAtRelativeSpeed(Percent.per(Second).of(25));
     LEDPattern rainbowMask = LEDPattern.steps(
         Map.of(
-              0.0, Color.kWhite,
-              0.25, Color.kBlack,
-              0.75, Color.kWhite))
+          0.0, Color.kWhite,
+          0.25, Color.kBlack,
+          0.75, Color.kWhite))
       .scrollAtRelativeSpeed(Percent.per(Second).of(25));
     LEDPattern rainbow = rainbowBase.reversed().mask(rainbowMask);
 
