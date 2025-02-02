@@ -38,15 +38,13 @@ public class DriveCmd extends Command{
         ChassisSpeeds finalChassisSpeeds;
         if (m_fieldOrientedFunction.get()) {
             finalChassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                m_speeds.vxMetersPerSecond,
-                m_speeds.vyMetersPerSecond,
-                m_speeds.omegaRadiansPerSecond,
-                m_SwerveSubsystem.getRotation2d());
+              m_speeds, 
+              m_SwerveSubsystem.getRotation2d());
         } else {
             finalChassisSpeeds = new ChassisSpeeds(
-                m_speeds.vxMetersPerSecond,
-                m_speeds.vyMetersPerSecond,
-                m_speeds.omegaRadiansPerSecond);
+              m_speeds.vxMetersPerSecond, 
+              m_speeds.vyMetersPerSecond, 
+              m_speeds.omegaRadiansPerSecond);
         }
 
         // Set the swerve module states
