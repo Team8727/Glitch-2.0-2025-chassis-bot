@@ -1,33 +1,69 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.commands;
 
+import java.util.function.Supplier;
+
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.Command;
 
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class DriveCmd extends Command {
-  /** Creates a new DriveCmd. */
-  public DriveCmd() {
-    // Use addRequirements() here to declare subsystem dependencies.
-  }
+import frc.robot.Constants.kSwerve;
+import frc.robot.subsystems.SwerveSubsystem;
 
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {}
+public class DriveCmd extends Command{
 
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {}
+    private final SwerveSubsystem m_SwerveSubsystem;
+    private final ChassisSpeeds m_speeds;
+    private final Supplier<Boolean> m_fieldOrientedFunction;
 
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {}
 
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return false;
-  }
+    public DriveCmd(
+            SwerveSubsystem swerveSubsystem,
+            ChassisSpeeds speeds,
+            Supplier<Boolean> fieldOrientedFunction) {
+        m_SwerveSubsystem = swerveSubsystem;
+        m_speeds = speeds;
+        m_fieldOrientedFunction = fieldOrientedFunction;
+        addRequirements(swerveSubsystem);
+    }
+
+    @Override
+    public void initialize() {
+
+    }
+
+    @Override
+    public void execute() {
+
+        //Set chassis speed 
+        ChassisSpeeds finalChassisSpeeds;
+        if (m_fieldOrientedFunction.get()) {
+            finalChassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+                m_speeds.vxMetersPerSecond,
+                m_speeds.vyMetersPerSecond,
+                m_speeds.omegaRadiansPerSecond,
+                m_SwerveSubsystem.getRotation2d());
+        } else {
+            finalChassisSpeeds = new ChassisSpeeds(
+                m_speeds.vxMetersPerSecond,
+                m_speeds.vyMetersPerSecond,
+                m_speeds.omegaRadiansPerSecond);
+        }
+
+        // Set the swerve module states
+        SwerveModuleState[] moduleStates = kSwerve.kinematics.toSwerveModuleStates(finalChassisSpeeds);
+
+        // output to swerve modules
+        m_SwerveSubsystem.setModuleStates(moduleStates);
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        m_SwerveSubsystem.stopModules(); // does nothing
+    }
+
+    @Override 
+    public boolean isFinished() {
+        return false;
+    }
+
 }
