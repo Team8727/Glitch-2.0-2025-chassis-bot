@@ -18,21 +18,19 @@ public class ChoreoPathCmd extends Command {
   PoseEstimatior m_PoseEstimatior;
   AutoFactory m_AutoFactory;
 
-
   /** Creates a new choreoPath. */
-  public ChoreoPathCmd(
-      SwerveSubsystem swerveSubsystem, 
-      PoseEstimatior poseEstimatior) {
+  public ChoreoPathCmd(SwerveSubsystem swerveSubsystem, PoseEstimatior poseEstimatior) {
     m_SwerveSubsystem = swerveSubsystem;
     m_PoseEstimatior = poseEstimatior;
 
-    m_AutoFactory = new AutoFactory(
-      m_PoseEstimatior::get2dPose, // A function that returns the current robot pose
-      m_PoseEstimatior::resetpose, // A function that resets the current robot pose to the provided Pose2d
-      swerveSubsystem::followTrajectory,
-      true, // If alliance flipping should be enabled 
-      m_SwerveSubsystem // The drive subsystem
-    );
+    m_AutoFactory =
+        new AutoFactory(
+            m_PoseEstimatior::get2dPose, // A function that returns the current robot pose
+            m_PoseEstimatior::resetpose, // A function that resets the current robot pose to the provided Pose2d
+            swerveSubsystem::followTrajectory,
+            true, // If alliance flipping should be enabled
+            m_SwerveSubsystem // The drive subsystem
+            );
   }
 
   public AutoRoutine pickupAndScoreAuto() {
@@ -42,15 +40,10 @@ public class ChoreoPathCmd extends Command {
     AutoTrajectory driveToMiddle = routine.trajectory("driveToMiddle");
 
     // When the routine begins, reset odometry and start the first trajectory (1)
-    routine.active().onTrue(
-      Commands.sequence(
-        driveToMiddle.resetOdometry(),
-        driveToMiddle.cmd()
-      )
-    );
+    routine.active().onTrue(Commands.sequence(driveToMiddle.resetOdometry(), driveToMiddle.cmd()));
     return routine;
   }
-  
+
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {}

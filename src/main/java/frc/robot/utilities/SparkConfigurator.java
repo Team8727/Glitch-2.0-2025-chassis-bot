@@ -1,13 +1,12 @@
 package frc.robot.utilities;
 
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.SparkFlexConfig;
-import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.SparkFlex;
-import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
-
+import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkFlexConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
 import frc.robot.Constants;
 import java.util.Set;
 
@@ -38,7 +37,7 @@ public class SparkConfigurator {
   public static SparkMax getSparkMax(int id, MotorType motorType) {
     return getSparkMax(id, motorType, false, Set.of(), Set.of());
   }
-  
+
   public static SparkFlex getSparkFlex(int id, MotorType motorType) {
     return getSparkFlex(id, motorType, false, Set.of(), Set.of());
   }
@@ -60,11 +59,11 @@ public class SparkConfigurator {
       Set<Sensors> sensors,
       Set<LogData> logData) {
 
-    //NEW 2025 CREATION OF SPARKMAX, CANSPARKMAX was removed
+    // NEW 2025 CREATION OF SPARKMAX, CANSPARKMAX was removed
     SparkMax spark = new SparkMax(id, motorType);
     SparkMaxConfig config = new SparkMaxConfig();
 
-    //spark.restoreFactoryDefaults();
+    // spark.restoreFactoryDefaults();
 
     int[] status = {FAST, SLOW, SLOW, OFF, OFF, OFF, OFF};
     // status0 Applied Output & Faults
@@ -99,11 +98,10 @@ public class SparkConfigurator {
     for (int i = 0; i < 7; i++) {
       for (int j = 0; j < Constants.configurationSetRetries; j++) {
 
-        //NEW FOR 2025
+        // NEW FOR 2025
         config.signals.primaryEncoderPositionPeriodMs(status[i]);
-        //spark.setPeriodicFramePeriod(PeriodicFrame.values()[i], status[i]);
+        // spark.setPeriodicFramePeriod(PeriodicFrame.values()[i], status[i]);
         spark.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-
       }
     }
 
@@ -118,11 +116,11 @@ public class SparkConfigurator {
       Set<Sensors> sensors,
       Set<LogData> logData) {
 
-    //NEW 2025 CREATION OF SPARKMAX, CANSPARKMAX was removed
+    // NEW 2025 CREATION OF SPARKMAX, CANSPARKMAX was removed
     SparkFlex spark = new SparkFlex(id, motorType);
     SparkFlexConfig config = new SparkFlexConfig();
 
-    //spark.restoreFactoryDefaults();
+    // spark.restoreFactoryDefaults();
 
     int[] status = {FAST, SLOW, SLOW, OFF, OFF, OFF, OFF};
     // status0 Applied Output & Faults
@@ -157,11 +155,10 @@ public class SparkConfigurator {
     for (int i = 0; i < 7; i++) {
       for (int j = 0; j < Constants.configurationSetRetries; j++) {
 
-        //NEW FOR 2025
+        // NEW FOR 2025
         config.signals.primaryEncoderPositionPeriodMs(status[i]);
-        //spark.setPeriodicFramePeriod(PeriodicFrame.values()[i], status[i]);
+        // spark.setPeriodicFramePeriod(PeriodicFrame.values()[i], status[i]);
         spark.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-
       }
     }
 
@@ -170,11 +167,15 @@ public class SparkConfigurator {
 
   public static SparkMax getFollowerMax(
       SparkMax leader, int id, MotorType motorType, boolean invert) {
-    
-    //NEW FOR 2025, CANSPARKMAX WAS REMOVED, NOW SPARKMAX is used and TO CONFIGURE A SPARK MAX WE HAVE TO MAKE A SPARKMAXCONFIG OBJECT 
+
+    // NEW FOR 2025, CANSPARKMAX WAS REMOVED, NOW SPARKMAX is used and TO CONFIGURE A SPARK MAX WE
+    // HAVE TO MAKE A SPARKMAXCONFIG OBJECT
     SparkMax spark = new SparkMax(id, motorType);
-    spark.configure(new SparkMaxConfig().follow(leader, invert), ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-    //spark.follow(leader, invert);
+    spark.configure(
+        new SparkMaxConfig().follow(leader, invert),
+        ResetMode.kNoResetSafeParameters,
+        PersistMode.kNoPersistParameters);
+    // spark.follow(leader, invert);
 
     int[] status = {SLOW, SLOW, SLOW, OFF, OFF, OFF, OFF};
     // status0 Applied Output & Faults
@@ -188,12 +189,12 @@ public class SparkConfigurator {
     for (int i = 0; i < 7; i++) {
       for (int j = 0; j < Constants.configurationSetRetries; j++) {
 
-        //NEW FOR 2025
+        // NEW FOR 2025
         SparkMaxConfig c = new SparkMaxConfig();
         c.signals.primaryEncoderPositionPeriodMs(status[i]);
         spark.configure(c, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-        //spark.setPeriodicFramePeriod(PeriodicFrame.values()[i], status[i]);
-        
+        // spark.setPeriodicFramePeriod(PeriodicFrame.values()[i], status[i]);
+
         try {
           Thread.sleep(5);
         } catch (Exception e) {
@@ -203,15 +204,18 @@ public class SparkConfigurator {
 
     return spark;
   }
+
   public static SparkFlex getFollowerFlex(
       SparkFlex leader, int id, MotorType motorType, boolean invert) {
-    
-    //NEW FOR 2025, CANSPARKMAX WAS REMOVED, NOW SPARKMAX is used and TO CONFIGURE A SPARK MAX WE HAVE TO MAKE A SPARKMAXCONFIG OBJECT 
-    SparkFlex spark = new SparkFlex(id, motorType);
-    // spark.configure(new SparkFlexConfig().follow(leader, invert), ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-    //spark.follow(leader, invert);
 
-    //int[] status = {SLOW, SLOW, SLOW, OFF, OFF, OFF, OFF};
+    // NEW FOR 2025, CANSPARKMAX WAS REMOVED, NOW SPARKMAX is used and TO CONFIGURE A SPARK MAX WE
+    // HAVE TO MAKE A SPARKMAXCONFIG OBJECT
+    SparkFlex spark = new SparkFlex(id, motorType);
+    // spark.configure(new SparkFlexConfig().follow(leader, invert),
+    // ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+    // spark.follow(leader, invert);
+
+    // int[] status = {SLOW, SLOW, SLOW, OFF, OFF, OFF, OFF};
     // status0 Applied Output & Faults
     // status1 Velocity, Voltage, & Current
     // status2 Position
@@ -223,12 +227,12 @@ public class SparkConfigurator {
     for (int i = 0; i < 7; i++) {
       for (int j = 0; j < Constants.configurationSetRetries; j++) {
 
-        //NEW FOR 2025
-        //SparkFlexConfig c = new SparkFlexConfig();
-        //c.signals.primaryEncoderPositionPeriodMs(status[i]);
-        //spark.configure(c, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-        //spark.setPeriodicFramePeriod(PeriodicFrame.values()[i], status[i]);
-        
+        // NEW FOR 2025
+        // SparkFlexConfig c = new SparkFlexConfig();
+        // c.signals.primaryEncoderPositionPeriodMs(status[i]);
+        // spark.configure(c, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+        // spark.setPeriodicFramePeriod(PeriodicFrame.values()[i], status[i]);
+
         try {
           Thread.sleep(5);
         } catch (Exception e) {

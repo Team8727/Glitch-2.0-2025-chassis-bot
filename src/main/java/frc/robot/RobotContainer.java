@@ -5,14 +5,13 @@
 package frc.robot;
 
 import frc.robot.Constants.kVision.kPoses;
-import frc.robot.commands.AutoAlign;
+import frc.robot.commands.AutoAlignCmd;
 import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.subsystems.PoseEstimatior;
 import frc.robot.subsystems.SwerveSubsystem;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.LEDSubsystem;
@@ -30,7 +29,7 @@ public class RobotContainer {
   private final LEDSubsystem m_ledSubsytem;
   private final CommandXboxController m_driverController;
   private final PoseEstimatior m_PoseEstimatior;
-  private final AutoAlign m_autoAlign;
+  private final AutoAlignCmd m_autoAlign;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer(
@@ -38,7 +37,7 @@ public class RobotContainer {
       LEDSubsystem ledSubsystem,
       CommandXboxController driverController,
       PoseEstimatior poseEstimatior,
-      AutoAlign autoAlign) {
+      AutoAlignCmd autoAlign) {
     m_SwerveSubsystem = swerveSubsystem;
     m_ledSubsytem = ledSubsystem;
     m_driverController = driverController;
@@ -50,8 +49,6 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
   }
-
-
 
   private void joystickOperated() {
     m_SwerveSubsystem.setDefaultCommand(
