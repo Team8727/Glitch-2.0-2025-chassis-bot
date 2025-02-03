@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.Constants.kVision.kPoses;
 import frc.robot.commands.AutoAlignCmd;
 import frc.robot.commands.SwerveJoystickCmd;
+import frc.robot.subsystems.Autos;
 import frc.robot.subsystems.PoseEstimatior;
 import frc.robot.subsystems.SwerveSubsystem;
 
@@ -30,6 +31,7 @@ public class RobotContainer {
   private final CommandXboxController m_driverController;
   private final PoseEstimatior m_PoseEstimatior;
   private final AutoAlignCmd m_autoAlign;
+  private final Autos m_Autos;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer(
@@ -37,12 +39,14 @@ public class RobotContainer {
       LEDSubsystem ledSubsystem,
       CommandXboxController driverController,
       PoseEstimatior poseEstimatior,
-      AutoAlignCmd autoAlign) {
+      AutoAlignCmd autoAlign,
+      Autos autos) {
     m_SwerveSubsystem = swerveSubsystem;
     m_ledSubsytem = ledSubsystem;
     m_driverController = driverController;
     m_PoseEstimatior = poseEstimatior;
     m_autoAlign = autoAlign;
+    m_Autos = autos;
 
     // joystickOperated();
 

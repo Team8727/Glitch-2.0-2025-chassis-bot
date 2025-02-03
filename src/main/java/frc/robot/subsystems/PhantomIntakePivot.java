@@ -13,6 +13,7 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
+
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.kIntake.kPivot;
@@ -23,6 +24,7 @@ public class PhantomIntakePivot extends SubsystemBase {
 
   private final SparkMax pivotMotor;
   private final SparkMaxConfig config;
+
 
   private final ArmFeedforward pivotFeedforward;
   private final SparkClosedLoopController pivotPID;

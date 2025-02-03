@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import choreo.auto.AutoFactory;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.controllers.PathFollowingController;
@@ -15,11 +14,12 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.Kconfigs;
 import frc.robot.Constants.kSwerve;
 import frc.robot.commands.AutoAlignCmd;
-import frc.robot.commands.ChoreoPathCmd;
 import frc.robot.commands.DriveCmd;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.PoseEstimatior;
 import frc.robot.subsystems.SwerveSubsystem;
+
+import frc.robot.subsystems.Autos;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -29,31 +29,23 @@ import frc.robot.subsystems.SwerveSubsystem;
 public class Robot extends TimedRobot {
 
   private final RobotContainer m_robotContainer;
-
   private final SwerveSubsystem m_SwerveSubsystem = new SwerveSubsystem();
   private final LEDSubsystem m_ledSubsytem = new LEDSubsystem();
   private final CommandXboxController m_driverController = new CommandXboxController(0);
   private final PoseEstimatior m_PoseEstimatior = new PoseEstimatior(m_SwerveSubsystem);
-  private final ChoreoPathCmd m_choreoPath = new ChoreoPathCmd(m_SwerveSubsystem, m_PoseEstimatior);
   private final AutoAlignCmd m_AutoAlign = new AutoAlignCmd(m_SwerveSubsystem, m_PoseEstimatior);
+  private final Autos m_Autos = new Autos(m_SwerveSubsystem, m_PoseEstimatior, null);
+
 
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
   public Robot() {
-    AutoFactory m_AutoFactory =
-        new AutoFactory(
-            m_PoseEstimatior::get2dPose, // A function that returns the current robot pose
-            m_PoseEstimatior::resetpose, // A function that resets the current robot pose to the provided Pose2d
-            m_SwerveSubsystem::followTrajectory,
-            true, // If alliance flipping should be enabled
-            m_SwerveSubsystem // The drive subsystem
-            );
-
+    
     AutoBuilder.configure(
         m_PoseEstimatior::get2dPose,
-        m_PoseEstimatior::resetpose,
+        m_PoseEstimatior::resetPoseToPose2d,
         m_SwerveSubsystem::getChassisSpeeds,
         (ChassisSpeeds, driveff) -> {
           System.out.println("aligning");
@@ -84,7 +76,8 @@ public class Robot extends TimedRobot {
             m_ledSubsytem, 
             m_driverController, 
             m_PoseEstimatior, 
-            m_AutoAlign);
+            m_AutoAlign,
+            m_Autos);
 
     PathfindingCommand.warmupCommand().schedule();
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
@@ -155,4 +148,8 @@ public class Robot extends TimedRobot {
   /** This function is called periodically whilst in simulation. */
   @Override
   public void simulationPeriodic() {}
+
+  // private boolean isRedAlliance() {
+  //   return DriverStation.getAlliance().orElse(Alliance.Blue).equals(Alliance.Red);
+  // }
 }

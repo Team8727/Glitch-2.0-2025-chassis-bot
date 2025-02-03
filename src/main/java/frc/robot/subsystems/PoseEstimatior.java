@@ -4,14 +4,8 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator3d;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.kVision;
-import frc.robot.utilities.NetworkTableLogger;
 import java.util.Optional;
+
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
@@ -20,16 +14,25 @@ import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator3d;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import frc.robot.Constants.kVision;
+import frc.robot.utilities.NetworkTableLogger;
+
 public class PoseEstimatior extends SubsystemBase {
   SwerveSubsystem m_SwerveSubsystem;
-  SwerveDrivePoseEstimator3d m_swervePoseEstimator;
+  SwerveDrivePoseEstimator3d m_SwervePoseEstimator;
   NetworkTableLogger networkTableLogger = new NetworkTableLogger(this.getName().toString());
 
   /** Creates a new PoseEstimation. */
   public PoseEstimatior(SwerveSubsystem swerveSubsystem) {
     // subsystem setups
     m_SwerveSubsystem = swerveSubsystem;
-    m_swervePoseEstimator = swerveSubsystem.swervePoseEstimator;
+    m_SwervePoseEstimator = swerveSubsystem.SwervePoseEstimator;
     resetStartPose();
   }
 
@@ -44,27 +47,28 @@ public class PoseEstimatior extends SubsystemBase {
   private Field2d field2d = new Field2d();
 
   // photon pose estimators
-  PhotonPoseEstimator PoseEstimator1 =
-    new PhotonPoseEstimator(
-      kVision.aprilTagFieldLayout,
-      PoseStrategy.CLOSEST_TO_REFERENCE_POSE,
-      kVision.camera1Position);
-  PhotonPoseEstimator PoseEstimator2 =
-    new PhotonPoseEstimator(
-      kVision.aprilTagFieldLayout,
-      PoseStrategy.CLOSEST_TO_REFERENCE_POSE,
-      kVision.camera2Position);
-  PhotonPoseEstimator PoseEstimator3 =
-    new PhotonPoseEstimator(
-      kVision.aprilTagFieldLayout,
-      PoseStrategy.CLOSEST_TO_REFERENCE_POSE,
-      kVision.camera3Position);
-  PhotonPoseEstimator PoseEstimator4 =
-    new PhotonPoseEstimator(
-      kVision.aprilTagFieldLayout,
-      PoseStrategy.CLOSEST_TO_REFERENCE_POSE,
-      kVision.camera4Position);
+  PhotonPoseEstimator PoseEstimator1 = new PhotonPoseEstimator(
+    kVision.aprilTagFieldLayout, 
+    PoseStrategy.CLOSEST_TO_REFERENCE_POSE, 
+    kVision.camera1Position);
+  PhotonPoseEstimator PoseEstimator2 = new PhotonPoseEstimator(
+    kVision.aprilTagFieldLayout, 
+    PoseStrategy.CLOSEST_TO_REFERENCE_POSE, 
+    kVision.camera2Position);
+  PhotonPoseEstimator PoseEstimator3 = new PhotonPoseEstimator(
+    kVision.aprilTagFieldLayout, 
+    PoseStrategy.CLOSEST_TO_REFERENCE_POSE, 
+    kVision.camera3Position);
+  PhotonPoseEstimator PoseEstimator4 = new PhotonPoseEstimator(
+    kVision.aprilTagFieldLayout, 
+    PoseStrategy.CLOSEST_TO_REFERENCE_POSE, 
+    kVision.camera4Position);
 
+  // // Choreo Translation and Rotation Controllers
+  // private final PIDController xController = new PIDController(10.0, 0.0, 0.0); //TODO: Tune? (These are fake values currently)
+  // private final PIDController yController = new PIDController(10.0, 0.0, 0.0);
+  // private final PIDController headingController = new PIDController(7.5, 0.0, 0.0);
+  
   // get starting pos with cam1
   public Pose3d getPose3d() {
     // vars
@@ -86,18 +90,27 @@ public class PoseEstimatior extends SubsystemBase {
     return pose3d;
   }
 
-  private void resetStartPose() {
-    m_swervePoseEstimator.resetPose(getPose3d());
+  public void resetPoseToPose3d(Pose3d pose3d) {
+    m_SwervePoseEstimator.resetPose(pose3d);
   }
 
-  public void resetpose(Pose2d pose2d) {
+  public void resetPoseToPose2d(Pose2d pose2d) {
     Pose3d pose3d = new Pose3d(pose2d);
-    m_swervePoseEstimator.resetPose(pose3d);
+    m_SwervePoseEstimator.resetPose(pose3d);
+  }
+
+  public void resetStartPose() {
+    m_SwervePoseEstimator.resetPose(getPose3d());
+  }
+
+  public void resetToEmptyPose() {
+    Pose3d pose3d = new Pose3d();
+    m_SwervePoseEstimator.resetPose(pose3d);
   }
 
   // Get 2d pose: from the poseEstimator
   public Pose2d get2dPose() {
-    return (m_swervePoseEstimator.getEstimatedPosition().toPose2d());
+    return (m_SwervePoseEstimator.getEstimatedPosition().toPose2d());
   }
 
   Optional<EstimatedRobotPose> getEstimatedGlobalPose(
@@ -107,18 +120,17 @@ public class PoseEstimatior extends SubsystemBase {
     PoseEstimator.setReferencePose(prevEstimatedRobotPose);
     return PoseEstimator.update(cameraResult);
   }
-
   @Override
   public void periodic() {
     // camera 1 pose estimation
     PhotonPipelineResult camera1res = camera1.getLatestResult();
     Optional<EstimatedRobotPose> camera1pose =
         getEstimatedGlobalPose(
-            m_swervePoseEstimator.getEstimatedPosition(), 
+            m_SwervePoseEstimator.getEstimatedPosition(), 
             camera1res, 
             PoseEstimator1);
     try {
-      m_swervePoseEstimator.addVisionMeasurement(
+      m_SwervePoseEstimator.addVisionMeasurement(
           camera1pose.get().estimatedPose, 
           camera1pose.get().timestampSeconds);
       // System.out.println("not error");
@@ -130,11 +142,11 @@ public class PoseEstimatior extends SubsystemBase {
     PhotonPipelineResult camera2res = camera2.getLatestResult();
     Optional<EstimatedRobotPose> camera2pose =
         getEstimatedGlobalPose(
-            m_swervePoseEstimator.getEstimatedPosition(), 
+            m_SwervePoseEstimator.getEstimatedPosition(), 
             camera2res, 
             PoseEstimator2);
     try {
-      m_swervePoseEstimator.addVisionMeasurement(
+      m_SwervePoseEstimator.addVisionMeasurement(
           camera2pose.get().estimatedPose, 
           camera2pose.get().timestampSeconds);
     } catch (Exception e) {
@@ -144,11 +156,11 @@ public class PoseEstimatior extends SubsystemBase {
     PhotonPipelineResult camera3res = camera3.getLatestResult();
     Optional<EstimatedRobotPose> camera3pose =
         getEstimatedGlobalPose(
-            m_swervePoseEstimator.getEstimatedPosition(), 
+            m_SwervePoseEstimator.getEstimatedPosition(), 
             camera3res, 
             PoseEstimator3);
     try {
-      m_swervePoseEstimator.addVisionMeasurement(
+      m_SwervePoseEstimator.addVisionMeasurement(
           camera3pose.get().estimatedPose, 
           camera3pose.get().timestampSeconds);
     } catch (Exception e) {
@@ -158,18 +170,18 @@ public class PoseEstimatior extends SubsystemBase {
     PhotonPipelineResult camera4res = camera4.getLatestResult();
     Optional<EstimatedRobotPose> camera4pose =
         getEstimatedGlobalPose(
-            m_swervePoseEstimator.getEstimatedPosition(), 
+            m_SwervePoseEstimator.getEstimatedPosition(), 
             camera4res, 
             PoseEstimator4);
     try {
-      m_swervePoseEstimator.addVisionMeasurement(
+      m_SwervePoseEstimator.addVisionMeasurement(
           camera4pose.get().estimatedPose, 
           camera4pose.get().timestampSeconds);
     } catch (Exception e) {
     }
 
     // gyro update
-    m_SwerveSubsystem.swervePoseEstimator.update(
+    m_SwervePoseEstimator.update(
         m_SwerveSubsystem.navX.getRotation3d(), m_SwerveSubsystem.modulePositions);
 
     // Update Field2d with pose to display the robot's visual position on the field to the dashboard
@@ -181,6 +193,6 @@ public class PoseEstimatior extends SubsystemBase {
     // Utility
     networkTableLogger.logField2d("Field2d", field2d);
     networkTableLogger.logPose2d("Robot 3d Pose", get2dPose());
-    networkTableLogger.logPose3d("Robot 2d Pose", m_swervePoseEstimator.getEstimatedPosition());
+    networkTableLogger.logPose3d("Robot 2d Pose", m_SwervePoseEstimator.getEstimatedPosition());
   }
 }
