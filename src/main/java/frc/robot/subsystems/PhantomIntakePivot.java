@@ -36,7 +36,7 @@ public class PhantomIntakePivot extends SubsystemBase {
 
     pivotMotor =
         getSparkMax(
-            kPivot.pivotMotorCANID,
+            kPivot.intakePivotMotorCANID,
             SparkLowLevel.MotorType.kBrushless,
             false,
             Set.of(),
