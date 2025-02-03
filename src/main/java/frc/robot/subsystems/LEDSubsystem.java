@@ -7,16 +7,15 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.Percent;
 import static edu.wpi.first.units.Units.Second;
 
-import java.util.Map;
-
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.LEDPattern.GradientType;
 import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
+import java.util.Map;
 
 public class LEDSubsystem extends SubsystemBase { // Fixed class name
 
@@ -65,7 +64,8 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
     LEDPattern green = LEDPattern.solid(m_green).breathe(Second.of(2));
 
     // Green to purple gradient pattern
-    LEDPattern ace = LEDPattern.gradient(GradientType.kContinuous, m_green, m_purple)
+    LEDPattern ace = LEDPattern.gradient(
+      GradientType.kContinuous, m_green, m_purple)
       .scrollAtRelativeSpeed(Percent.per(Second).of(25));
 
     LEDPattern colorCheck = LEDPattern.solid(m_purple);
