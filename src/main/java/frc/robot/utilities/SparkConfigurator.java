@@ -8,6 +8,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import frc.robot.Constants;
+
 import java.util.Set;
 
 public class SparkConfigurator {
@@ -62,8 +63,8 @@ public class SparkConfigurator {
     // NEW 2025 CREATION OF SPARKMAX, CANSPARKMAX was removed
     SparkMax spark = new SparkMax(id, motorType);
     SparkMaxConfig config = new SparkMaxConfig();
-
-    // spark.restoreFactoryDefaults();
+    spark.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters); //TODO: this line might need to be removed. It wasn't there before, but I added it to set the spark to an empty config (factory reset)
+    //spark.restoreFactoryDefaults();
 
     int[] status = {FAST, SLOW, SLOW, OFF, OFF, OFF, OFF};
     // status0 Applied Output & Faults
@@ -98,10 +99,38 @@ public class SparkConfigurator {
     for (int i = 0; i < 7; i++) {
       for (int j = 0; j < Constants.configurationSetRetries; j++) {
 
-        // NEW FOR 2025
-        config.signals.primaryEncoderPositionPeriodMs(status[i]);
-        // spark.setPeriodicFramePeriod(PeriodicFrame.values()[i], status[i]);
+        //NEW FOR 2025
+        switch (i) {
+          case 0:
+            config.signals.appliedOutputPeriodMs(status[i]); // Applied Output
+            config.signals.faultsPeriodMs(status[i]); // All faults logging
+            config.signals.busVoltagePeriodMs(status[i]);
+            config.signals.outputCurrentPeriodMs(status[i]);
+            config.signals.motorTemperaturePeriodMs(status[i]);
+          case 1:
+            //TODO: Add motor velocity, voltage and current periods (research if still exists)
+            config.signals.primaryEncoderVelocityPeriodMs(status[i]);
+          case 2:
+            //TODO: Add motor position period (research if still exists)
+            config.signals.primaryEncoderPositionPeriodMs(status[i]);
+          case 3:
+            config.signals.analogVoltagePeriodMs(status[i]);
+            config.signals.analogVelocityPeriodMs(status[i]);
+            config.signals.analogPositionPeriodMs(status[i]);
+          case 4:
+            config.signals.externalOrAltEncoderVelocity(status[i]);
+            config.signals.externalOrAltEncoderPosition(status[i]);
+          case 5:
+            config.signals.absoluteEncoderPositionPeriodMs(status[i]);
+            //Absolute (duty cycle) encoder angle?
+          case 6:
+            config.signals.absoluteEncoderVelocityPeriodMs(status[i]);
+            //Absolute (duty cycle) encoder frequency?
+        }
         spark.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+
+        //OLD//spark.setPeriodicFramePeriod(PeriodicFrame.values()[i], status[i]);
+        
       }
     }
 
@@ -119,8 +148,8 @@ public class SparkConfigurator {
     // NEW 2025 CREATION OF SPARKMAX, CANSPARKMAX was removed
     SparkFlex spark = new SparkFlex(id, motorType);
     SparkFlexConfig config = new SparkFlexConfig();
-
-    // spark.restoreFactoryDefaults();
+    spark.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters); //TODO: this line might need to be removed. It wasn't there before, but I added it to set the spark to an empty config (factory reset)
+    //spark.restoreFactoryDefaults();
 
     int[] status = {FAST, SLOW, SLOW, OFF, OFF, OFF, OFF};
     // status0 Applied Output & Faults
@@ -155,10 +184,38 @@ public class SparkConfigurator {
     for (int i = 0; i < 7; i++) {
       for (int j = 0; j < Constants.configurationSetRetries; j++) {
 
-        // NEW FOR 2025
-        config.signals.primaryEncoderPositionPeriodMs(status[i]);
-        // spark.setPeriodicFramePeriod(PeriodicFrame.values()[i], status[i]);
+        //NEW FOR 2025
+        switch (i) {
+          case 0:
+            config.signals.appliedOutputPeriodMs(status[i]); // Applied Output
+            config.signals.faultsPeriodMs(status[i]); // All faults logging
+            config.signals.busVoltagePeriodMs(status[i]);
+            config.signals.outputCurrentPeriodMs(status[i]);
+            config.signals.motorTemperaturePeriodMs(status[i]);
+          case 1:
+            //TODO: Add motor velocity, voltage and current periods (research if still exists)
+            config.signals.primaryEncoderVelocityPeriodMs(status[i]);
+          case 2:
+            //TODO: Add motor position period (research if still exists)
+            config.signals.primaryEncoderPositionPeriodMs(status[i]);
+          case 3:
+            config.signals.analogVoltagePeriodMs(status[i]);
+            config.signals.analogVelocityPeriodMs(status[i]);
+            config.signals.analogPositionPeriodMs(status[i]);
+          case 4:
+            config.signals.externalOrAltEncoderVelocity(status[i]);
+            config.signals.externalOrAltEncoderPosition(status[i]);
+          case 5:
+            config.signals.absoluteEncoderPositionPeriodMs(status[i]);
+            //Absolute (duty cycle) encoder angle?
+          case 6:
+            config.signals.absoluteEncoderVelocityPeriodMs(status[i]);
+            //Absolute (duty cycle) encoder frequency?
+        }
         spark.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+
+        //OLD//spark.setPeriodicFramePeriod(PeriodicFrame.values()[i], status[i]);
+        
       }
     }
 
@@ -171,11 +228,72 @@ public class SparkConfigurator {
     // NEW FOR 2025, CANSPARKMAX WAS REMOVED, NOW SPARKMAX is used and TO CONFIGURE A SPARK MAX WE
     // HAVE TO MAKE A SPARKMAXCONFIG OBJECT
     SparkMax spark = new SparkMax(id, motorType);
-    spark.configure(
-        new SparkMaxConfig().follow(leader, invert),
-        ResetMode.kNoResetSafeParameters,
-        PersistMode.kNoPersistParameters);
-    // spark.follow(leader, invert);
+    SparkMaxConfig config = new SparkMaxConfig();
+        config.follow(leader, invert);
+    spark.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+    //spark.follow(leader, invert);
+
+    int[] status = {SLOW, SLOW, SLOW, OFF, OFF, OFF, OFF};
+    // status0 Applied Output & Faults
+    // status1 Velocity, Voltage, & Current
+    // status2 Position
+    // status3 Analog Sensor
+    // status4 Alternate Encoder
+    // status5 Absolute Encoder Position
+    // status6 Absolute Encoder Velocity
+
+    for (int i = 0; i < 7; i++) {
+      for (int j = 0; j < Constants.configurationSetRetries; j++) {
+        //NEW FOR 2025
+        switch (i) {
+          case 0:
+            config.signals.appliedOutputPeriodMs(status[i]); // Applied Output
+            config.signals.faultsPeriodMs(status[i]); // All faults logging
+            config.signals.busVoltagePeriodMs(status[i]);
+            config.signals.outputCurrentPeriodMs(status[i]);
+            config.signals.motorTemperaturePeriodMs(status[i]);
+          case 1:
+            //TODO: Add motor velocity, voltage and current periods (research if still exists)
+            config.signals.primaryEncoderVelocityPeriodMs(status[i]);
+          case 2:
+            //TODO: Add motor position period (research if still exists)
+            config.signals.primaryEncoderPositionPeriodMs(status[i]);
+          case 3:
+            config.signals.analogVoltagePeriodMs(status[i]);
+            config.signals.analogVelocityPeriodMs(status[i]);
+            config.signals.analogPositionPeriodMs(status[i]);
+          case 4:
+            config.signals.externalOrAltEncoderVelocity(status[i]);
+            config.signals.externalOrAltEncoderPosition(status[i]);
+          case 5:
+            config.signals.absoluteEncoderPositionPeriodMs(status[i]);
+            //Absolute (duty cycle) encoder angle?
+          case 6:
+            config.signals.absoluteEncoderVelocityPeriodMs(status[i]);
+            //Absolute (duty cycle) encoder frequency?
+        }
+        spark.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+
+        //OLD//spark.setPeriodicFramePeriod(PeriodicFrame.values()[i], status[i]);
+        
+        try {
+          Thread.sleep(5);
+        } catch (Exception e) {
+        }
+      }
+    }
+
+    return spark;
+  }
+  public static SparkFlex getFollowerFlex(
+      SparkFlex leader, int id, MotorType motorType, boolean invert) {
+    
+    //NEW FOR 2025, CANSPARKMAX WAS REMOVED, NOW SPARKMAX (SparkFlex) is used and TO CONFIGURE A SPARK MAX (SparkFlex) WE HAVE TO MAKE A SPARKMAXCONFIG (SparkFlexConfig) OBJECT 
+    SparkFlex spark = new SparkFlex(id, motorType);
+    SparkFlexConfig config = new SparkFlexConfig();
+        config.follow(leader, invert);
+    spark.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+    //spark.follow(leader, invert);
 
     int[] status = {SLOW, SLOW, SLOW, OFF, OFF, OFF, OFF};
     // status0 Applied Output & Faults
@@ -189,50 +307,38 @@ public class SparkConfigurator {
     for (int i = 0; i < 7; i++) {
       for (int j = 0; j < Constants.configurationSetRetries; j++) {
 
-        // NEW FOR 2025
-        SparkMaxConfig c = new SparkMaxConfig();
-        c.signals.primaryEncoderPositionPeriodMs(status[i]);
-        spark.configure(c, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-        // spark.setPeriodicFramePeriod(PeriodicFrame.values()[i], status[i]);
-
-        try {
-          Thread.sleep(5);
-        } catch (Exception e) {
+        //NEW FOR 2025
+        switch (i) {
+          case 0:
+            config.signals.appliedOutputPeriodMs(status[i]); // Applied Output
+            config.signals.faultsPeriodMs(status[i]); // All faults logging
+            config.signals.busVoltagePeriodMs(status[i]);
+            config.signals.outputCurrentPeriodMs(status[i]);
+            config.signals.motorTemperaturePeriodMs(status[i]);
+          case 1:
+            //TODO: Add motor velocity, voltage and current periods (research if still exists)
+            config.signals.primaryEncoderVelocityPeriodMs(status[i]);
+          case 2:
+            //TODO: Add motor position period (research if still exists)
+            config.signals.primaryEncoderPositionPeriodMs(status[i]);
+          case 3:
+            config.signals.analogVoltagePeriodMs(status[i]);
+            config.signals.analogVelocityPeriodMs(status[i]);
+            config.signals.analogPositionPeriodMs(status[i]);
+          case 4:
+            config.signals.externalOrAltEncoderVelocity(status[i]);
+            config.signals.externalOrAltEncoderPosition(status[i]);
+          case 5:
+            config.signals.absoluteEncoderPositionPeriodMs(status[i]);
+            //Absolute (duty cycle) encoder angle?
+          case 6:
+            config.signals.absoluteEncoderVelocityPeriodMs(status[i]);
+            //Absolute (duty cycle) encoder frequency?
         }
-      }
-    }
+        spark.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
-    return spark;
-  }
-
-  public static SparkFlex getFollowerFlex(
-      SparkFlex leader, int id, MotorType motorType, boolean invert) {
-
-    // NEW FOR 2025, CANSPARKMAX WAS REMOVED, NOW SPARKMAX is used and TO CONFIGURE A SPARK MAX WE
-    // HAVE TO MAKE A SPARKMAXCONFIG OBJECT
-    SparkFlex spark = new SparkFlex(id, motorType);
-    // spark.configure(new SparkFlexConfig().follow(leader, invert),
-    // ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-    // spark.follow(leader, invert);
-
-    // int[] status = {SLOW, SLOW, SLOW, OFF, OFF, OFF, OFF};
-    // status0 Applied Output & Faults
-    // status1 Velocity, Voltage, & Current
-    // status2 Position
-    // status3 Analog Sensor
-    // status4 Alternate Encoder
-    // status5 Absolute Encoder Position
-    // status6 Absolute Encoder Velocity
-
-    for (int i = 0; i < 7; i++) {
-      for (int j = 0; j < Constants.configurationSetRetries; j++) {
-
-        // NEW FOR 2025
-        // SparkFlexConfig c = new SparkFlexConfig();
-        // c.signals.primaryEncoderPositionPeriodMs(status[i]);
-        // spark.configure(c, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-        // spark.setPeriodicFramePeriod(PeriodicFrame.values()[i], status[i]);
-
+        //OLD//spark.setPeriodicFramePeriod(PeriodicFrame.values()[i], status[i]);
+        
         try {
           Thread.sleep(5);
         } catch (Exception e) {

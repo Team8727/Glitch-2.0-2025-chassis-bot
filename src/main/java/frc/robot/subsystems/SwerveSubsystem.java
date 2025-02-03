@@ -12,9 +12,10 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import frc.robot.utilities.MAXSwerve;
 import frc.robot.Constants.kSwerve;
 import frc.robot.Constants.kSwerve.kModule;
-import frc.robot.utilities.MAXSwerve;
 import frc.robot.utilities.NetworkTableLogger;
 
 public class SwerveSubsystem extends SubsystemBase {
@@ -56,7 +57,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
   Pose3d pose3d = new Pose3d();
 
-  SwerveDrivePoseEstimator3d swervePoseEstimator =
+  SwerveDrivePoseEstimator3d SwervePoseEstimator =
       new SwerveDrivePoseEstimator3d(
           kSwerve.kinematics, navX.getRotation3d(), modulePositions, pose3d);
 
@@ -79,12 +80,12 @@ public class SwerveSubsystem extends SubsystemBase {
   public void zeroHeading() {
     navX.reset();
     Pose3d pose3d = new Pose3d();
-    swervePoseEstimator.resetRotation(pose3d.getRotation());
+    SwervePoseEstimator.resetRotation(pose3d.getRotation());
   }
 
   // maybe = get corrected steer
   public double getHeading() {
-    return Math.toDegrees(swervePoseEstimator.getEstimatedPosition().getRotation().getZ());
+    return Math.toDegrees(SwervePoseEstimator.getEstimatedPosition().getRotation().getZ());
   }
 
   public Rotation2d getRotation2d() {
@@ -115,7 +116,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public void followTrajectory(SwerveSample sample) {
     // Get the current pose of the robot
-    Pose2d pose = swervePoseEstimator.getEstimatedPosition().toPose2d();
+    Pose2d pose = SwervePoseEstimator.getEstimatedPosition().toPose2d();
 
     // Generate the next speeds for the robot
     ChassisSpeeds speeds =
