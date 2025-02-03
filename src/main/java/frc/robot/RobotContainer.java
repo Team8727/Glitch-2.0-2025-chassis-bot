@@ -78,7 +78,7 @@ public class RobotContainer {
     m_driverController.povUp().onTrue(new InstantCommand(() -> m_ledSubsytem.setPattern(m_ledSubsytem.ace), m_ledSubsytem));
     m_driverController.povRight().onTrue(new InstantCommand(() -> m_ledSubsytem.setPattern(m_ledSubsytem.colorCheck), m_ledSubsytem));
     
-    m_driverController.b().onTrue(m_Autos.align(kPoses.blueFrontLeft));
+    m_driverController.b().onTrue(m_Autos.align(kPoses.blueFrontLeft).repeatedly());
       // .until(() -> 
       //     m_PoseEstimatior.get2dPose()
       //       .getTranslation()

@@ -54,7 +54,7 @@ public class Robot extends TimedRobot {
           //   chassisSpeeds.vyMetersPerSecond, 
           //   chassisSpeeds.omegaRadiansPerSecond, 
           //   true)
-          new DriveCmd(m_SwerveSubsystem, () -> chassisSpeeds, () -> true);
+          new DriveCmd(m_SwerveSubsystem, () -> chassisSpeeds, () -> true).execute();
         },
         (PathFollowingController) kSwerve.Auton.pathFollowController,
         Kconfigs.robotConfig,
