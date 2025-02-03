@@ -22,7 +22,7 @@ import java.util.Set;
 
 public class PhantomIntakePivot extends SubsystemBase {
 
-  private final SparkMax pivotMotor;
+  private final SparkMax intakePivotMotor;
   private final SparkMaxConfig config;
 
 
