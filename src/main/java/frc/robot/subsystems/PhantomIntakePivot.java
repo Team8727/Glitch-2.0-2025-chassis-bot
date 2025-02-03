@@ -22,7 +22,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class PhantomIntakePivot extends SubsystemBase {
 
-  private final SparkMax pivotMotor;
+  private final SparkMax intakePivotMotor;
   private final SparkMaxConfig config;
 
   private final ArmFeedforward pivotFeedforward;
@@ -30,15 +30,15 @@ public class PhantomIntakePivot extends SubsystemBase {
   /** Creates a new PhantomIntake. */
   public PhantomIntakePivot() {
 
-  //=-=-=-=- pivotMotor Initialization -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+  //=-=-=-=- intakePivotMotor Initialization -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-    pivotMotor = 
+    intakePivotMotor = 
       getSparkMax(
-          kPivot.pivotMotorCANID, SparkLowLevel.MotorType.kBrushless, false, 
+          kPivot.intakePivotMotorCANID, SparkLowLevel.MotorType.kBrushless, false, 
           Set.of(), 
           Set.of(LogData.POSITION, LogData.VELOCITY, LogData.VOLTAGE, LogData.CURRENT)); //TODO: logging everything for now
 
-  //=-=-=-=- pivotMotor PID config and maxMotion Constraints config -=-=-=-=
+  //=-=-=-=- intakePivotMotor PID config and maxMotion Constraints config -=-=-=-=
 
     config = new SparkMaxConfig(); //TODO: figure out all values (figure out how to do maxvel and maxaccel) (pid is tuned through Rev Hardware Client for onboard PID on motor controller)
     config.closedLoop
@@ -47,7 +47,7 @@ public class PhantomIntakePivot extends SubsystemBase {
     config.closedLoop.maxMotion
       .maxVelocity(0)
       .maxAcceleration(0);
-    pivotMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters); //TODO: Might need to be resetsafe and presistsafe, but nothing is set yet, so I said no
+    intakePivotMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters); //TODO: Might need to be resetsafe and presistsafe, but nothing is set yet, so I said no
 
   //-=-=-=-=- Feedforward (Arm) for the IntakePivot -=-=-=-=-=-=-=-=-=-=-=-=
 
