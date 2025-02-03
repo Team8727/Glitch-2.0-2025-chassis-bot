@@ -5,14 +5,14 @@
 package frc.robot;
 
 import frc.robot.Constants.kVision.kPoses;
-import frc.robot.commands.AutoAlign;
+import frc.robot.commands.AutoAlignCmd;
 import frc.robot.commands.SwerveJoystickCmd;
+import frc.robot.subsystems.Autos;
 import frc.robot.subsystems.PoseEstimatior;
 import frc.robot.subsystems.SwerveSubsystem;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.LEDSubsystem;
@@ -30,7 +30,8 @@ public class RobotContainer {
   private final LEDSubsystem m_ledSubsytem;
   private final CommandXboxController m_driverController;
   private final PoseEstimatior m_PoseEstimatior;
-  private final AutoAlign m_autoAlign;
+  private final AutoAlignCmd m_autoAlign;
+  private final Autos m_Autos;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer(
@@ -38,12 +39,14 @@ public class RobotContainer {
       LEDSubsystem ledSubsystem,
       CommandXboxController driverController,
       PoseEstimatior poseEstimatior,
-      AutoAlign autoAlign) {
+      AutoAlignCmd autoAlign,
+      Autos autos) {
     m_SwerveSubsystem = swerveSubsystem;
     m_ledSubsytem = ledSubsystem;
     m_driverController = driverController;
     m_PoseEstimatior = poseEstimatior;
     m_autoAlign = autoAlign;
+    m_Autos = autos;
 
     // joystickOperated();
 
@@ -51,9 +54,7 @@ public class RobotContainer {
     configureBindings();
   }
 
-
-
-  private void joystickOperated() {
+  public void initiateJoystickOperated() {
     m_SwerveSubsystem.setDefaultCommand(
       new SwerveJoystickCmd(
         m_SwerveSubsystem,
@@ -72,9 +73,9 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // zero heading
+    // Zero heading
     m_driverController.a().onTrue(new InstantCommand(m_SwerveSubsystem::zeroHeading));
-    // x configuration
+    // X configuration
     m_driverController.x().toggleOnTrue(m_SwerveSubsystem.XPosition());
 
     m_driverController.b().onTrue(m_autoAlign.align(kPoses.blueFrontLeft));
