@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.Calendar;
+
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
@@ -275,15 +277,22 @@ public final class Constants {
     // distance
   }
 
+  public static class kRemover {
+    public static class kPivot {
+      public static int removerPivotMotorCANID = 0; //TODO: not set yet because remover is not built yet
+    }
+
+    public static class kRollers {
+      public static int rollerMotorCANID = 0; //TODO: not set yet because remover is not built yet
+    }
+  }
   public static class kIntake {
     public static class kPivot {
-      public static int pivotMotorCANID = 0; //TODO: not set yet because intake is not built yet
-
+      public static int intakePivotMotorCANID = 0; //TODO: not set yet because intake is not built yet
     }
 
     public static class kRollers {
       public static int rollerMotorCANID = 0; //TODO: not set yet because intake is not built yet
-
     }
 
   }
