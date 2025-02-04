@@ -19,12 +19,12 @@ import frc.robot.Constants.kRemover;
 import frc.robot.utilities.SparkConfigurator.LogData;
 import frc.robot.utilities.SparkConfigurator.Sensors;
 
-public class AlgaePivot extends SubsystemBase {
+public class AlgaeRemoverPivot extends SubsystemBase {
   private final SparkMax removerPivotMotor;
   private final SparkMaxConfig config;
 
   /** Creates a new AlgaePivot. */
-  public AlgaePivot() {
+  public AlgaeRemoverPivot() {
     removerPivotMotor = getSparkMax(
         kRemover.kPivot.removerPivotMotorCANID, 
         SparkLowLevel.MotorType.kBrushless, 
