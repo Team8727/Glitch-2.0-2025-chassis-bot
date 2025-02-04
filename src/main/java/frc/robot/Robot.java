@@ -48,13 +48,9 @@ public class Robot extends TimedRobot {
         m_SwerveSubsystem::getChassisSpeeds,
         (chassisSpeeds, driveff) -> {
           System.out.println("aligning");
-          // new SwerveJoystickCmd(
-          //   m_SwerveSubsystem, 
-          //   chassisSpeeds.vxMetersPerSecond, 
-          //   chassisSpeeds.vyMetersPerSecond, 
-          //   chassisSpeeds.omegaRadiansPerSecond, 
-          //   true)
-          new DriveCmd(m_SwerveSubsystem, () -> chassisSpeeds, () -> true).execute();
+          m_SwerveSubsystem.setModuleStates(
+            kSwerve.kinematics.toSwerveModuleStates(chassisSpeeds));
+          // new DriveCmd(m_SwerveSubsystem, () -> chassisSpeeds, () -> true).execute();
         },
         (PathFollowingController) kSwerve.Auton.pathFollowController,
         Kconfigs.robotConfig,
@@ -125,7 +121,7 @@ public class Robot extends TimedRobot {
     // continue until interrupted by another command, remove
     // this line or comment it out.
 
-    m_robotContainer.initiateJoystickOperated();
+    // m_robotContainer.initiateJoystickOperated();
   }
 
   /** This function is called periodically during operator control. */
