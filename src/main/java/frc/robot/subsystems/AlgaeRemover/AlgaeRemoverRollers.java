@@ -19,7 +19,6 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.kRemover;
-import frc.robot.commands.DriveCmd;
 import frc.robot.utilities.SparkConfigurator.LogData;
 
 public class AlgaeRemoverRollers extends SubsystemBase {
