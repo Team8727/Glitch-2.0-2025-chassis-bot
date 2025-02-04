@@ -5,10 +5,8 @@
 package frc.robot;
 
 import frc.robot.Constants.kVision.kPoses;
-import frc.robot.commands.AutoAlignCmd;
 import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.subsystems.Autos;
-import frc.robot.subsystems.PoseEstimatior;
 import frc.robot.subsystems.SwerveSubsystem;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -29,8 +27,6 @@ public class RobotContainer {
   private final SwerveSubsystem m_SwerveSubsystem;
   private final LEDSubsystem m_ledSubsytem;
   private final CommandXboxController m_driverController;
-  private final PoseEstimatior m_PoseEstimatior;
-  private final AutoAlignCmd m_autoAlign;
   private final Autos m_Autos;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -38,14 +34,10 @@ public class RobotContainer {
       SwerveSubsystem swerveSubsystem,
       LEDSubsystem ledSubsystem,
       CommandXboxController driverController,
-      PoseEstimatior poseEstimatior,
-      AutoAlignCmd autoAlign,
       Autos autos) {
     m_SwerveSubsystem = swerveSubsystem;
     m_ledSubsytem = ledSubsystem;
     m_driverController = driverController;
-    m_PoseEstimatior = poseEstimatior;
-    m_autoAlign = autoAlign;
     m_Autos = autos;
 
     // joystickOperated();
@@ -78,7 +70,15 @@ public class RobotContainer {
     // X configuration
     m_driverController.x().toggleOnTrue(m_SwerveSubsystem.XPosition());
 
-    m_driverController.b().onTrue(m_autoAlign.align(kPoses.blueFrontLeft));
+    // Xbox Controller Bindings for LED Patterns
+    m_driverController.y().onTrue(new InstantCommand(() -> m_ledSubsytem.setPattern(m_ledSubsytem.rainbow), m_ledSubsytem));
+    // m_driverController.b().onTrue(new InstantCommand(() -> m_ledSubsytem.setPattern(m_ledSubsytem.blue), m_ledSubsytem));
+    m_driverController.leftBumper().onTrue(new InstantCommand(() -> m_ledSubsytem.setPattern(m_ledSubsytem.red), m_ledSubsytem));
+    m_driverController.rightBumper().onTrue(new InstantCommand(() -> m_ledSubsytem.setPattern(m_ledSubsytem.green), m_ledSubsytem));
+    m_driverController.povUp().onTrue(new InstantCommand(() -> m_ledSubsytem.setPattern(m_ledSubsytem.ace), m_ledSubsytem));
+    m_driverController.povRight().onTrue(new InstantCommand(() -> m_ledSubsytem.setPattern(m_ledSubsytem.colorCheck), m_ledSubsytem));
+    
+    m_driverController.b().onTrue(m_Autos.align(kPoses.blueFrontLeft));
       // .until(() -> 
       //     m_PoseEstimatior.get2dPose()
       //       .getTranslation()
