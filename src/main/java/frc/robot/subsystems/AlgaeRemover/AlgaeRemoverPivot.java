@@ -6,6 +6,7 @@ package frc.robot.subsystems.AlgaeRemover;
 
 import java.util.Set;
 
+import static frc.robot.utilities.SparkConfigurator.getSparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel;
