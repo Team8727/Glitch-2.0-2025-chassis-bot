@@ -13,8 +13,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.Kconfigs;
 import frc.robot.Constants.kSwerve;
-import frc.robot.commands.AutoAlignCmd;
 import frc.robot.commands.DriveCmd;
+import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.PoseEstimatior;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -33,8 +33,7 @@ public class Robot extends TimedRobot {
   private final LEDSubsystem m_ledSubsytem = new LEDSubsystem();
   private final CommandXboxController m_driverController = new CommandXboxController(0);
   private final PoseEstimatior m_PoseEstimatior = new PoseEstimatior(m_SwerveSubsystem);
-  private final AutoAlignCmd m_AutoAlign = new AutoAlignCmd(m_SwerveSubsystem, m_PoseEstimatior);
-  private final Autos m_Autos = new Autos(m_SwerveSubsystem, m_PoseEstimatior, null);
+  private final Autos m_Autos = new Autos();
 
 
   /**
@@ -47,11 +46,11 @@ public class Robot extends TimedRobot {
         m_PoseEstimatior::get2dPose,
         m_PoseEstimatior::resetPoseToPose2d,
         m_SwerveSubsystem::getChassisSpeeds,
-        (ChassisSpeeds, driveff) -> {
+        (chassisSpeeds, driveff) -> {
           System.out.println("aligning");
-          // m_SwerveSubsystem.setModuleStates(
-          //   kSwerve.kinematics.toSwerveModuleStates(speeds)),
-          new DriveCmd(m_SwerveSubsystem, ChassisSpeeds, () -> true);
+          m_SwerveSubsystem.setModuleStates(
+            kSwerve.kinematics.toSwerveModuleStates(chassisSpeeds));
+          // new DriveCmd(m_SwerveSubsystem, () -> chassisSpeeds, () -> true).execute();
         },
         (PathFollowingController) kSwerve.Auton.pathFollowController,
         Kconfigs.robotConfig,
@@ -75,8 +74,6 @@ public class Robot extends TimedRobot {
             m_SwerveSubsystem, 
             m_ledSubsytem, 
             m_driverController, 
-            m_PoseEstimatior, 
-            m_AutoAlign,
             m_Autos);
 
     PathfindingCommand.warmupCommand().schedule();
@@ -124,7 +121,7 @@ public class Robot extends TimedRobot {
     // continue until interrupted by another command, remove
     // this line or comment it out.
 
-    m_robotContainer.initiateJoystickOperated();
+    // m_robotContainer.initiateJoystickOperated();
   }
 
   /** This function is called periodically during operator control. */
