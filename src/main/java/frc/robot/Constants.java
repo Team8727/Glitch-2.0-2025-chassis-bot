@@ -289,13 +289,33 @@ public final class Constants {
       public static int rollerMotorCANID = 0; //TODO: not set yet because remover is not built yet
     }
   }
-  public static class kIntake {
+  public static class kAlgaeIntake {
     public static class kPivot {
       public static int intakePivotMotorCANID = 0; //TODO: not set yet because intake is not built yet
     }
 
     public static class kRollers {
       public static int rollerMotorCANID = 0; //TODO: not set yet because intake is not built yet
+
+      public static int sensorChannel = 0; //TODO: not set yet because intake is not built yet
+
+      public static int intakeVoltage = 11; //TODO: not set yet because intake is not built yet
+      public static int outtakeVoltage = -5; //TODO: not set yet because intake is not built yet
+    }
+  }
+  public static class kCoralIntake {
+    public static class kPivot {
+      public static int intakePivotMotorCANID = 0; //TODO: not set yet because intake is not built yet
+    }
+
+    public static class kRollers {
+      public static int rollerMotorCANID = 0; //TODO: not set yet because intake is not built yet
+
+      public static int frontSensorChannel = 0; //TODO: not set yet because intake is not built yet
+      public static int backSensorChannel = 0; //TODO: not set yet because intake is not built yet
+
+      public static int intakeVoltage = 11; //TODO: not set yet because intake is not built yet
+      public static int outtakeVoltage = -5; //TODO: not set yet because intake is not built yet
     }
   }
 }
