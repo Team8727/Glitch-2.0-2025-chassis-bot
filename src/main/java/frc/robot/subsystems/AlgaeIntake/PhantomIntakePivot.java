@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.subsystems.AlgaeIntake;
 
 import static frc.robot.utilities.SparkConfigurator.getSparkMax;
 
@@ -34,7 +34,7 @@ public class PhantomIntakePivot extends SubsystemBase {
 
     // =-=-=-=- pivotMotor Initialization -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-    pivotMotor =
+    intakePivotMotor =
         getSparkMax(
             kPivot.intakePivotMotorCANID,
             SparkLowLevel.MotorType.kBrushless,
@@ -63,7 +63,7 @@ public class PhantomIntakePivot extends SubsystemBase {
         .maxMotion
         .maxVelocity(0) // TODO: this is set to zero right now!!
         .maxAcceleration(0);
-    pivotMotor.configure(
+    intakePivotMotor.configure(
         config,
         ResetMode.kNoResetSafeParameters,
         PersistMode
@@ -72,7 +72,7 @@ public class PhantomIntakePivot extends SubsystemBase {
 
     // -=-=-=-=- PID controller for the motor -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-    pivotPID = pivotMotor.getClosedLoopController();
+    pivotPID = intakePivotMotor.getClosedLoopController();
 
     // -=-=-=-=- Feedforward (Arm) for the IntakePivot -=-=-=-=-=-=-=-=-=-=-=-=
 
