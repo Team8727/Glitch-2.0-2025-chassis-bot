@@ -16,7 +16,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.kIntake.kPivot;
+import frc.robot.Constants.kAlgaeIntake.kPivot;
 import frc.robot.utilities.SparkConfigurator.LogData;
 import java.util.Set;
 
@@ -99,6 +99,10 @@ public class PhantomIntakePivot extends SubsystemBase {
     // pivotFeedforward.calculateWithVelocities(currentAngle, currentVelocity, nextVelocity); //
     // Other method of velocity control
 
+  }
+
+  public void setIntakePosition(double positionRadians) {
+    pivotPID.setReference(positionRadians, SparkBase.ControlType.kPosition);
   }
 
   @Override
