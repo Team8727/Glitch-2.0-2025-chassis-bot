@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import java.util.Calendar;
-
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
