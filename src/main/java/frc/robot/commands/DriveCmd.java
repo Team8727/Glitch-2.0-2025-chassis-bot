@@ -10,12 +10,12 @@ import java.util.function.Supplier;
 public class DriveCmd extends Command {
 
   private final SwerveSubsystem m_SwerveSubsystem;
-  private final ChassisSpeeds m_speeds;
+  private final Supplier<ChassisSpeeds> m_speeds;
   private final Supplier<Boolean> m_fieldOrientedFunction;
 
   public DriveCmd(
       SwerveSubsystem swerveSubsystem,
-      ChassisSpeeds speeds,
+      Supplier<ChassisSpeeds> speeds,
       Supplier<Boolean> fieldOrientedFunction) {
     m_SwerveSubsystem = swerveSubsystem;
     m_speeds = speeds;
@@ -33,13 +33,9 @@ public class DriveCmd extends Command {
     ChassisSpeeds finalChassisSpeeds;
     if (m_fieldOrientedFunction.get()) {
       finalChassisSpeeds =
-          ChassisSpeeds.fromFieldRelativeSpeeds(m_speeds, m_SwerveSubsystem.getRotation2d());
+          ChassisSpeeds.fromFieldRelativeSpeeds(m_speeds.get(), m_SwerveSubsystem.getRotation2d());
     } else {
-      finalChassisSpeeds =
-          new ChassisSpeeds(
-              m_speeds.vxMetersPerSecond,
-              m_speeds.vyMetersPerSecond,
-              m_speeds.omegaRadiansPerSecond);
+      finalChassisSpeeds = m_speeds.get();
     }
 
     // Set the swerve module states
@@ -51,7 +47,6 @@ public class DriveCmd extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    m_SwerveSubsystem.stopModules(); // does nothing
   }
 
   @Override
