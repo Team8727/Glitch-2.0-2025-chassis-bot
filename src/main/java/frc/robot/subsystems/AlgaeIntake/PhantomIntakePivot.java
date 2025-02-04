@@ -54,21 +54,18 @@ public class PhantomIntakePivot extends SubsystemBase {
     // on motor controller)
     config
         .closedLoop
-        .outputRange(
-            -1,
-            1) // TODO: this is set to full range of motor speed, might want to scale down to test.
+        .outputRange(-1,1) // TODO: this is set to full range of motor speed, might want to scale down to test.
         .pid(0, 0, 0);
     config
         .closedLoop
-        .maxMotion
-        .maxVelocity(0) // TODO: this is set to zero right now!!
-        .maxAcceleration(0);
+          .maxMotion
+            .maxVelocity(0) // TODO: this is set to zero right now!!
+            .maxAcceleration(0);
     intakePivotMotor.configure(
         config,
         ResetMode.kNoResetSafeParameters,
         PersistMode
-            .kNoPersistParameters); // TODO: Might need to be resetsafe and presistsafe, but nothing
-    // is set yet, so I said no
+            .kNoPersistParameters); // TODO: Might need to be resetsafe and presistsafe, but nothing is set yet, so I said no
 
     // -=-=-=-=- PID controller for the motor -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
