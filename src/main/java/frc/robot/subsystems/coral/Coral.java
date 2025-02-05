@@ -5,6 +5,7 @@
 package frc.robot.subsystems.coral;
 
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -61,19 +62,19 @@ public class Coral extends SubsystemBase {
   }
 
   private void setIntakeSpeed(double speed) {
-    coralIntake.set(speed);
+    coralIntake.getClosedLoopController().setReference(speed, ControlType.kVelocity);
   }
 
   private void setIntakeVoltage(double voltage) {
-    coralIntake.setVoltage(voltage);
+    coralIntake.getClosedLoopController().setReference(voltage, ControlType.kVoltage);
   }
 
   private void setOuttakeSpeed(double speed) {
-    coralOuttake.set(speed);
+    coralOuttake.getClosedLoopController().setReference(speed, ControlType.kVelocity);
   }
 
   private void setOuttakeVoltage(double voltage) {
-    coralOuttake.setVoltage(voltage);
+    coralOuttake.getClosedLoopController().setReference(voltage, ControlType.kVoltage);
   }
 
   public void stopCoralIntake() {
