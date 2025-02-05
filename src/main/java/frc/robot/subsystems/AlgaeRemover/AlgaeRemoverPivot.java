@@ -60,6 +60,7 @@ public class AlgaeRemoverPivot extends SubsystemBase {
   }
   // set pivot position
   public void setRemoverPos(double goal) {
+    goal = goal * 75.0 / 2.0 / 360;
     removerPivotPID.setReference(goal, ControlType.kPosition);
   }
   // private double calculateVoltage(double goal) {
