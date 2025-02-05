@@ -309,7 +309,8 @@ public final class Constants {
     }
 
     public static class kRollers {
-      public static int rollerMotorCANID = 0; //TODO: not set yet because intake is not built yet
+      public static int intakeRollerMotorCANID = 0; //TODO: not set yet because intake is not built yet
+      public static int outtakeRollerMotorCANID = 0; //TODO: not set yet because intake is not built yet
 
       public static int frontSensorChannel = 0; //TODO: not set yet because intake is not built yet
       public static int backSensorChannel = 0; //TODO: not set yet because intake is not built yet
