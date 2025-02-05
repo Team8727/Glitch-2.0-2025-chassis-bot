@@ -14,7 +14,6 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -46,7 +45,6 @@ public class AlgaeRemoverRollers extends SubsystemBase {
     .closedLoop
       .velocityFF(0)// TODO: tune
       .pid(0, 0, 0)
-      .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
       .maxMotion
         .maxAcceleration(0)
         .maxAcceleration(0)

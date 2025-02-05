@@ -4,8 +4,6 @@
 
 package frc.robot.commands;
 
-import com.fasterxml.jackson.databind.node.DoubleNode;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.AlgaeRemover.AlgaeRemoverPivot;
 import frc.robot.subsystems.AlgaeRemover.AlgaeRemoverRollers;
