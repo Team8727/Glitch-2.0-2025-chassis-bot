@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.subsystems.AlgaeIntake;
 
 import static frc.robot.utilities.SparkConfigurator.getSparkMax;
 
@@ -16,13 +16,13 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.kIntake.kPivot;
+import frc.robot.Constants.kAlgaeIntake.kPivot;
 import frc.robot.utilities.SparkConfigurator.LogData;
 import java.util.Set;
 
 public class PhantomIntakePivot extends SubsystemBase {
 
-  private final SparkMax pivotMotor;
+  private final SparkMax intakePivotMotor;
   private final SparkMaxConfig config;
 
 
@@ -34,7 +34,7 @@ public class PhantomIntakePivot extends SubsystemBase {
 
     // =-=-=-=- pivotMotor Initialization -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-    pivotMotor =
+    intakePivotMotor =
         getSparkMax(
             kPivot.intakePivotMotorCANID,
             SparkLowLevel.MotorType.kBrushless,
@@ -54,25 +54,22 @@ public class PhantomIntakePivot extends SubsystemBase {
     // on motor controller)
     config
         .closedLoop
-        .outputRange(
-            -1,
-            1) // TODO: this is set to full range of motor speed, might want to scale down to test.
+        .outputRange(-1,1) // TODO: this is set to full range of motor speed, might want to scale down to test.
         .pid(0, 0, 0);
     config
         .closedLoop
-        .maxMotion
-        .maxVelocity(0) // TODO: this is set to zero right now!!
-        .maxAcceleration(0);
-    pivotMotor.configure(
+          .maxMotion
+            .maxVelocity(0) // TODO: this is set to zero right now!!
+            .maxAcceleration(0);
+    intakePivotMotor.configure(
         config,
         ResetMode.kNoResetSafeParameters,
         PersistMode
-            .kNoPersistParameters); // TODO: Might need to be resetsafe and presistsafe, but nothing
-    // is set yet, so I said no
+            .kNoPersistParameters); // TODO: Might need to be resetsafe and presistsafe, but nothing is set yet, so I said no
 
     // -=-=-=-=- PID controller for the motor -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-    pivotPID = pivotMotor.getClosedLoopController();
+    pivotPID = intakePivotMotor.getClosedLoopController();
 
     // -=-=-=-=- Feedforward (Arm) for the IntakePivot -=-=-=-=-=-=-=-=-=-=-=-=
 
@@ -99,6 +96,10 @@ public class PhantomIntakePivot extends SubsystemBase {
     // pivotFeedforward.calculateWithVelocities(currentAngle, currentVelocity, nextVelocity); //
     // Other method of velocity control
 
+  }
+
+  public void setIntakePosition(double positionRadians) {
+    pivotPID.setReference(positionRadians, SparkBase.ControlType.kPosition);
   }
 
   @Override

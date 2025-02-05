@@ -13,12 +13,11 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.Kconfigs;
 import frc.robot.Constants.kSwerve;
-import frc.robot.commands.DriveCmd;
-import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.PoseEstimatior;
 import frc.robot.subsystems.SwerveSubsystem;
-
+import frc.robot.subsystems.AlgaeRemover.AlgaeRemoverPivot;
+import frc.robot.subsystems.AlgaeRemover.AlgaeRemoverRollers;
 import frc.robot.subsystems.Autos;
 
 /**
@@ -34,6 +33,8 @@ public class Robot extends TimedRobot {
   private final CommandXboxController m_driverController = new CommandXboxController(0);
   private final PoseEstimatior m_PoseEstimatior = new PoseEstimatior(m_SwerveSubsystem);
   private final Autos m_Autos = new Autos();
+  private final AlgaeRemoverRollers m_AlgeaRemoverRollers = new AlgaeRemoverRollers();
+  private final AlgaeRemoverPivot m_AlgaeRemoverPivot = new AlgaeRemoverPivot();
 
 
   /**
@@ -74,7 +75,9 @@ public class Robot extends TimedRobot {
             m_SwerveSubsystem, 
             m_ledSubsytem, 
             m_driverController, 
-            m_Autos);
+            m_Autos,
+            m_AlgaeRemoverPivot,
+            m_AlgeaRemoverRollers);
 
     PathfindingCommand.warmupCommand().schedule();
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
@@ -120,8 +123,9 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
+    m_robotContainer.getAutonomousCommand().cancel();
 
-    // m_robotContainer.initiateJoystickOperated();
+    m_robotContainer.initiateJoystickOperated();
   }
 
   /** This function is called periodically during operator control. */
