@@ -36,38 +36,33 @@ public class coralDeployer extends Command {
     return new RunCommand(() -> m_coral.setOuttakeSpeed(kCoralIntake.kRollers.outtakeSpeed));
   }
 
-  public Command coralDeploy() {
-    flywheelSpeed = 0;
-    if (m_elevatorPos == 0) {
-      flywheelSpeed = 0; // TODO: this should be set later
-    } 
-    else if (m_elevatorPos == 1 || m_elevatorPos == 2) {
-      flywheelSpeed = 0; // TODO: this should be set later
-    }
-    else if (m_elevatorPos == 3) {
-      flywheelSpeed = 0; // TODO: this should be set later
-    }
-
-    if (!m_coral.backCoralSensor.get() && !m_coral.frontCoralSensor.get()) {
-      return coralIntake(flywheelSpeed);
-    } 
-    else if (!m_coral.backCoralSensor.get() && m_coral.frontCoralSensor.get()) {
-      return coralOuttake(flywheelSpeed);
-    } 
-    else {
-      return new RunCommand(() -> m_coral.stopCoral());
-    }
-  }
-
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_elevatorPos = getElevatorPos();
+    m_elevatorPos = 0 /*getElevatorPos()*/;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    flywheelSpeed = 0;
+    if (m_elevatorPos == 0) {
+      flywheelSpeed = 0; // TODO: this should be set later
+    } else if (m_elevatorPos == 1 || m_elevatorPos == 2) {
+      flywheelSpeed = 0; // TODO: this should be set later
+    } else if (m_elevatorPos == 3) {
+      flywheelSpeed = 0; // TODO: this should be set later
+    }
+
+    if (!m_coral.backCoralSensor.get() && !m_coral.frontCoralSensor.get()) {
+      coralIntake(flywheelSpeed);
+    } else if (!m_coral.backCoralSensor.get() && m_coral.frontCoralSensor.get()) {
+      coralOuttake(flywheelSpeed);
+    } else {
+      m_coral.stopCoral();
+    }
+    
+  }
 
   // Called once the command ends or is interrupted.
   @Override

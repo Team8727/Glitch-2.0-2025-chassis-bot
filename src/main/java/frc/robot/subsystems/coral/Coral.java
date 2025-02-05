@@ -24,10 +24,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utilities.SparkConfigurator.LogData;
 
 public class Coral extends SubsystemBase {
-  public SparkMax coralIntake;
-  public SparkMaxConfig intakeConfig;
-  public SparkMax coralOuttake;
-  public SparkMaxConfig outtakeConfig;
+  private final SparkMax coralIntake;
+  private final SparkMaxConfig intakeConfig;
+  private final SparkMax coralOuttake;
+  private final SparkMaxConfig outtakeConfig;
   public DigitalInput frontCoralSensor;
   public DigitalInput backCoralSensor;
   /** Creates a new Coral. */
@@ -42,9 +42,7 @@ public class Coral extends SubsystemBase {
     intakeConfig = new SparkMaxConfig();
     intakeConfig.idleMode(IdleMode.kBrake);
 
-    coralIntake.configure(intakeConfig, 
-    ResetMode.kNoResetSafeParameters, 
-    PersistMode.kNoPersistParameters);
+    coralIntake.configure(intakeConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
     coralOuttake = getSparkMax(
       kCoralIntake.kRollers.outtakeRollerMotorCANID, 
@@ -56,55 +54,53 @@ public class Coral extends SubsystemBase {
     outtakeConfig = new SparkMaxConfig();
     outtakeConfig.idleMode(IdleMode.kBrake);
 
-    coralOuttake.configure(outtakeConfig,
-    ResetMode.kNoResetSafeParameters,
-    PersistMode.kNoPersistParameters);
+    coralOuttake.configure(outtakeConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
   }
 
   public void setIntakeSpeed(double speed) {
     coralIntake.getClosedLoopController().setReference(speed, ControlType.kVelocity);
   }
 
-  private void setIntakeVoltage(double voltage) {
-    coralIntake.getClosedLoopController().setReference(voltage, ControlType.kVoltage);
-  }
-
   public void setOuttakeSpeed(double speed) {
     coralOuttake.getClosedLoopController().setReference(speed, ControlType.kVelocity);
   }
 
-  private void setOuttakeVoltage(double voltage) {
-    coralOuttake.getClosedLoopController().setReference(voltage, ControlType.kVoltage);
-  }
+  // private void setOuttakeVoltage(double voltage) {
+  //   coralOuttake.getClosedLoopController().setReference(voltage, ControlType.kVoltage);
+  // }
 
-  public void stopCoralIntake() {
-    coralIntake.set(0);
-  }
+  // private void setIntakeVoltage(double voltage) {
+  //   coralIntake.getClosedLoopController().setReference(voltage, ControlType.kVoltage);
+  // }
 
-  public void stopCoralOuttake() {
-    coralOuttake.set(0);
-  }
+  // public void stopCoralIntake() {
+  //   coralIntake.set(0);
+  // }
+
+  // public void stopCoralOuttake() {
+  //   coralOuttake.set(0);
+  // }
 
   public Command stopCoral() {
     return new ParallelCommandGroup(
-      new RunCommand(() -> stopCoralIntake()), 
-      new RunCommand(() -> stopCoralOuttake()));
+      new RunCommand(() -> setIntakeSpeed(0)), 
+      new RunCommand(() -> setOuttakeSpeed(0)));
   }
 
-  public Command coralIntake() {
-    return new RunCommand(
-      () -> setIntakeSpeed(kCoralIntake.kRollers.intakeSpeed))
-      .until(() -> backCoralSensor.get())
-      .andThen(
-        new ParallelCommandGroup(
-          new RunCommand(() -> setIntakeSpeed(kCoralIntake.kRollers.intakeSpeed)),
-          new RunCommand(() -> setIntakeSpeed(kCoralIntake.kRollers.intakeSpeed)))
-        .until(() -> !backCoralSensor.get() && frontCoralSensor.get()));
-  }
+  // public Command coralIntake() {
+  //   return new RunCommand(
+  //     () -> setIntakeSpeed(kCoralIntake.kRollers.intakeSpeed))
+  //     .until(() -> backCoralSensor.get())
+  //     .andThen(
+  //       new ParallelCommandGroup(
+  //         new RunCommand(() -> setIntakeSpeed(kCoralIntake.kRollers.intakeSpeed)),
+  //         new RunCommand(() -> setIntakeSpeed(kCoralIntake.kRollers.intakeSpeed)))
+  //       .until(() -> !backCoralSensor.get() && frontCoralSensor.get()));
+  // }
 
-  public Command coralOuttake() {
-    return new RunCommand(() -> setOuttakeSpeed(kCoralIntake.kRollers.intakeSpeed));
-  }
+  // public Command coralOuttake() {
+  //   return new RunCommand(() -> setOuttakeSpeed(kCoralIntake.kRollers.intakeSpeed));
+  // }
 
   @Override
   public void periodic() {
