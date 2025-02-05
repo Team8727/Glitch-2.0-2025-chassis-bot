@@ -56,8 +56,8 @@ public class AlgaeRemoverRollers extends SubsystemBase {
   removerRollerPID = removerRollerMotor.getClosedLoopController();
   }
 
-  public void spinnnnnnn(){
-    removerRollerPID.setReference(2000, ControlType.kVelocity);
+  public void spinnnnnnn(double speed){
+    removerRollerPID.setReference(speed, ControlType.kVelocity);
   }
 
   @Override
