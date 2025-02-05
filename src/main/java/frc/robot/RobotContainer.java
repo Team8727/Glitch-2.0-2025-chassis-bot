@@ -32,7 +32,6 @@ public class RobotContainer {
   private final Autos m_Autos;
   private final AlgaeRemoverPivot m_AlgaeRemoverPivot;
   private final AlgaeRemoverRollers m_AlgeaRemoverRollers;
-  private final removeAlgae m_removeAlgae;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer(
@@ -48,8 +47,6 @@ public class RobotContainer {
     m_Autos = autos;
     m_AlgaeRemoverPivot = AlgaeRemoverPivot;
     m_AlgeaRemoverRollers = AlgaeRemoverRollers;
-    m_removeAlgae = new removeAlgae(m_AlgaeRemoverPivot, m_AlgeaRemoverRollers);
-
     // joystickOperated();
 
     // Configure the trigger bindings
@@ -76,13 +73,16 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Zero heading
-    m_driverController.a().onTrue(new InstantCommand(m_SwerveSubsystem::zeroHeading));
+    m_driverController.start().onTrue(new InstantCommand(m_SwerveSubsystem::zeroHeading));
     // X configuration
     m_driverController.x().toggleOnTrue(m_SwerveSubsystem.XPosition());
     // Align to pose
     m_driverController.b().onTrue(m_Autos.align(kPoses.blueFrontLeft));
-    // Remove algae
-    m_driverController.y().onTrue(new InstantCommand(() -> m_removeAlgae.execute()));
+
+    // Remove algae L3
+    m_driverController.povUp().onTrue(new removeAlgae(m_AlgaeRemoverPivot, m_AlgeaRemoverRollers, 3));
+    // Remove algae L2
+    m_driverController.povDown().onTrue(new removeAlgae(m_AlgaeRemoverPivot, m_AlgeaRemoverRollers, 2));
 
 
     // Xbox Controller Bindings for LED Patterns
@@ -90,8 +90,8 @@ public class RobotContainer {
     // m_driverController.b().onTrue(new InstantCommand(() -> m_ledSubsytem.setPattern(m_ledSubsytem.blue), m_ledSubsytem));
     m_driverController.leftBumper().onTrue(new InstantCommand(() -> m_ledSubsytem.setPattern(m_ledSubsytem.red), m_ledSubsytem));
     m_driverController.rightBumper().onTrue(new InstantCommand(() -> m_ledSubsytem.setPattern(m_ledSubsytem.green), m_ledSubsytem));
-    m_driverController.povUp().onTrue(new InstantCommand(() -> m_ledSubsytem.setPattern(m_ledSubsytem.ace), m_ledSubsytem));
-    m_driverController.povRight().onTrue(new InstantCommand(() -> m_ledSubsytem.setPattern(m_ledSubsytem.colorCheck), m_ledSubsytem));
+    m_driverController.a().onTrue(new InstantCommand(() -> m_ledSubsytem.setPattern(m_ledSubsytem.ace), m_ledSubsytem));
+    m_driverController.y().onTrue(new InstantCommand(() -> m_ledSubsytem.setPattern(m_ledSubsytem.colorCheck), m_ledSubsytem));
     
       // .until(() -> 
       //     m_PoseEstimatior.get2dPose()
