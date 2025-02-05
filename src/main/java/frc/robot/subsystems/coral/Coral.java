@@ -61,7 +61,7 @@ public class Coral extends SubsystemBase {
     PersistMode.kNoPersistParameters);
   }
 
-  private void setIntakeSpeed(double speed) {
+  public void setIntakeSpeed(double speed) {
     coralIntake.getClosedLoopController().setReference(speed, ControlType.kVelocity);
   }
 
@@ -69,7 +69,7 @@ public class Coral extends SubsystemBase {
     coralIntake.getClosedLoopController().setReference(voltage, ControlType.kVoltage);
   }
 
-  private void setOuttakeSpeed(double speed) {
+  public void setOuttakeSpeed(double speed) {
     coralOuttake.getClosedLoopController().setReference(speed, ControlType.kVelocity);
   }
 
@@ -83,6 +83,12 @@ public class Coral extends SubsystemBase {
 
   public void stopCoralOuttake() {
     coralOuttake.set(0);
+  }
+
+  public Command stopCoral() {
+    return new ParallelCommandGroup(
+      new RunCommand(() -> stopCoralIntake()), 
+      new RunCommand(() -> stopCoralOuttake()));
   }
 
   public Command coralIntake() {
