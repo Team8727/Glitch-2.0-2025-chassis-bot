@@ -6,9 +6,11 @@ package frc.robot;
 
 import frc.robot.Constants.kVision.kPoses;
 import frc.robot.commands.SwerveJoystickCmd;
+import frc.robot.commands.removeAlgae;
 import frc.robot.subsystems.Autos;
 import frc.robot.subsystems.SwerveSubsystem;
-
+import frc.robot.subsystems.AlgaeRemover.AlgaeRemoverPivot;
+import frc.robot.subsystems.AlgaeRemover.AlgaeRemoverRollers;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -28,17 +30,25 @@ public class RobotContainer {
   private final LEDSubsystem m_ledSubsytem;
   private final CommandXboxController m_driverController;
   private final Autos m_Autos;
+  private final AlgaeRemoverPivot m_AlgaeRemoverPivot;
+  private final AlgaeRemoverRollers m_AlgeaRemoverRollers;
+  private final removeAlgae m_removeAlgae;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer(
       SwerveSubsystem swerveSubsystem,
       LEDSubsystem ledSubsystem,
       CommandXboxController driverController,
-      Autos autos) {
+      Autos autos,
+      AlgaeRemoverPivot AlgaeRemoverPivot,
+      AlgaeRemoverRollers AlgaeRemoverRollers) {
     m_SwerveSubsystem = swerveSubsystem;
     m_ledSubsytem = ledSubsystem;
     m_driverController = driverController;
     m_Autos = autos;
+    m_AlgaeRemoverPivot = AlgaeRemoverPivot;
+    m_AlgeaRemoverRollers = AlgaeRemoverRollers;
+    m_removeAlgae = new removeAlgae(m_AlgaeRemoverPivot, m_AlgeaRemoverRollers);
 
     // joystickOperated();
 
@@ -69,16 +79,20 @@ public class RobotContainer {
     m_driverController.a().onTrue(new InstantCommand(m_SwerveSubsystem::zeroHeading));
     // X configuration
     m_driverController.x().toggleOnTrue(m_SwerveSubsystem.XPosition());
+    // Align to pose
+    m_driverController.b().onTrue(m_Autos.align(kPoses.blueFrontLeft));
+    // Remove algae
+    m_driverController.y().onTrue(new InstantCommand(() -> m_removeAlgae.execute()));
+
 
     // Xbox Controller Bindings for LED Patterns
-    m_driverController.y().onTrue(new InstantCommand(() -> m_ledSubsytem.setPattern(m_ledSubsytem.rainbow), m_ledSubsytem));
+    // m_driverController.y().onTrue(new InstantCommand(() -> m_ledSubsytem.setPattern(m_ledSubsytem.rainbow), m_ledSubsytem));
     // m_driverController.b().onTrue(new InstantCommand(() -> m_ledSubsytem.setPattern(m_ledSubsytem.blue), m_ledSubsytem));
     m_driverController.leftBumper().onTrue(new InstantCommand(() -> m_ledSubsytem.setPattern(m_ledSubsytem.red), m_ledSubsytem));
     m_driverController.rightBumper().onTrue(new InstantCommand(() -> m_ledSubsytem.setPattern(m_ledSubsytem.green), m_ledSubsytem));
     m_driverController.povUp().onTrue(new InstantCommand(() -> m_ledSubsytem.setPattern(m_ledSubsytem.ace), m_ledSubsytem));
     m_driverController.povRight().onTrue(new InstantCommand(() -> m_ledSubsytem.setPattern(m_ledSubsytem.colorCheck), m_ledSubsytem));
     
-    m_driverController.b().onTrue(m_Autos.align(kPoses.blueFrontLeft));
       // .until(() -> 
       //     m_PoseEstimatior.get2dPose()
       //       .getTranslation()
