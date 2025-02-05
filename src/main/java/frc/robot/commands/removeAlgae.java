@@ -30,8 +30,10 @@ public class removeAlgae extends Command {
   @Override
   public void execute() {
     if (m_setPos == 2) {
+      //TODO: move elevator to position
       m_pivot.setRemoverPos(0);// TODO: set positions
     } else if (m_setPos == 3) {
+      //TODO: move elevator to position
       m_pivot.setRemoverPos(0);// TODO: set positions
     }
     m_rollers.spinnnnnnn();// TODO: set speed

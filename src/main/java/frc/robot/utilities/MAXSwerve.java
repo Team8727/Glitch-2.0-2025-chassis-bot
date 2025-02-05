@@ -171,7 +171,7 @@ public class MAXSwerve {
     SwerveModuleState optimizedState = desiredState;
     if (optimizeHeading) {
       optimizedState =
-          SwerveModuleState.optimize(
+          SwerveModuleState.optimize(//TODO:fix this sometime before comp
               new SwerveModuleState(desiredState.speedMetersPerSecond, desiredState.angle),
               getCorrectedSteer());
     }
