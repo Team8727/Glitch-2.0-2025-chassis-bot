@@ -25,7 +25,6 @@ public class AlgaeIntakeRollers extends SubsystemBase {
   public SparkMax intakeRollerMotor;
   public SparkMaxConfig intakeRollerConfig;
   public DigitalInput algaeCheck;
-  public int intakePivotReduction = 1/48;
 
   /** Creates a new AlgaeIntakeRollers. */
   public AlgaeIntakeRollers() {
