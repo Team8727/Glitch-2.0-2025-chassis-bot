@@ -87,17 +87,17 @@ public class Coral extends SubsystemBase {
 
   public Command coralIntake() {
     return new RunCommand(
-      () -> setIntakeVoltage(-kCoralIntake.kRollers.intakeVoltage), this)
+      () -> setIntakeSpeed(kCoralIntake.kRollers.intakeSpeed))
       .until(() -> backCoralSensor.get())
       .andThen(
         new ParallelCommandGroup(
-          new RunCommand(() -> setIntakeVoltage(-kCoralIntake.kRollers.intakeVoltage), this),
-          new RunCommand(() -> setOuttakeVoltage(-kCoralIntake.kRollers.intakeVoltage), this))
+          new RunCommand(() -> setIntakeSpeed(kCoralIntake.kRollers.intakeSpeed)),
+          new RunCommand(() -> setIntakeSpeed(kCoralIntake.kRollers.intakeSpeed)))
         .until(() -> !backCoralSensor.get() && frontCoralSensor.get()));
   }
 
   public Command coralOuttake() {
-    return new RunCommand(() -> setOuttakeVoltage(-kCoralIntake.kRollers.outtakeVoltage), this);
+    return new RunCommand(() -> setOuttakeSpeed(kCoralIntake.kRollers.intakeSpeed));
   }
 
   @Override
