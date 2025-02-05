@@ -46,6 +46,8 @@ public class Coral extends SubsystemBase {
     ResetMode.kNoResetSafeParameters, 
     PersistMode.kNoPersistParameters);
 
+    frontCoralSensor = new DigitalInput(kCoralIntake.kRollers.frontSensorChannel);
+
     coralOuttake = getSparkMax(
       kCoralIntake.kRollers.outtakeRollerMotorCANID, 
       SparkMax.MotorType.kBrushless, 
@@ -59,6 +61,8 @@ public class Coral extends SubsystemBase {
     coralOuttake.configure(outtakeConfig,
     ResetMode.kNoResetSafeParameters,
     PersistMode.kNoPersistParameters);
+
+    backCoralSensor = new DigitalInput(kCoralIntake.kRollers.backSensorChannel);
   }
 
   public void setIntakeSpeed(double speed) {
