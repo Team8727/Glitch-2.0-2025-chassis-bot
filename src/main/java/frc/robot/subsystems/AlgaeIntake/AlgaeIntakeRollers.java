@@ -7,7 +7,7 @@ package frc.robot.subsystems.AlgaeIntake;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.kAlgaeIntake;
+import frc.robot.Constants.kAlgaeIntake.kAlgaeIntakeRollers;
 import frc.robot.utilities.SparkConfigurator.LogData;
 
 import static frc.robot.utilities.SparkConfigurator.getSparkMax;
@@ -30,7 +30,7 @@ public class AlgaeIntakeRollers extends SubsystemBase {
   /** Creates a new AlgaeIntakeRollers. */
   public AlgaeIntakeRollers() {
     intakeRollerMotor = getSparkMax(
-      kAlgaeIntake.kRollers.rollerMotorCANID, 
+      kAlgaeIntakeRollers.rollerMotorCANID, 
       SparkLowLevel.MotorType.kBrushless,
       false,
       Set.of(),
@@ -42,7 +42,7 @@ public class AlgaeIntakeRollers extends SubsystemBase {
 
     intakeRollerMotor.configure(intakeRollerConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
-    algaeCheck = new DigitalInput(kAlgaeIntake.kRollers.sensorChannel);
+    algaeCheck = new DigitalInput(kAlgaeIntakeRollers.sensorChannel);
   }
 
   public void setRollerSpeed(double speed) {
@@ -63,17 +63,17 @@ public class AlgaeIntakeRollers extends SubsystemBase {
 
   public Command intake() {
     return 
-      run(() -> setRollerVoltage(-kAlgaeIntake.kRollers.intakeVoltage))
+      run(() -> setRollerVoltage(-kAlgaeIntakeRollers.intakeVoltage))
      .until(() -> getAlgaeCheck())
      .andThen(
-          run(() -> setRollerVoltage(-kAlgaeIntake.kRollers.intakeVoltage))
-         .withTimeout(0.5))
+          run(() -> setRollerVoltage(-kAlgaeIntakeRollers.intakeVoltage))
+         .withTimeout(0.5)) //TODO: this additional time may have to be modified or removed
      .finallyDo(() -> setRollerVoltage(0));
   }
 
   public Command outtake() {
     return
-      run(() -> setRollerVoltage(-kAlgaeIntake.kRollers.outtakeVoltage))
+      run(() -> setRollerVoltage(-kAlgaeIntakeRollers.outtakeVoltage))
       .until(() -> !getAlgaeCheck())
       .finallyDo(() -> setRollerVoltage(0));
   }
