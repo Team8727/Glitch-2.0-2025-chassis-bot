@@ -5,8 +5,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import frc.robot.Constants.kCoralIntake;
 import frc.robot.subsystems.Elevator.Coral.Coral;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -22,12 +20,6 @@ public class DeployCoral extends Command {
     m_elevatorGoalPos = scoreLevel;
   }
 
-  private Command coralOuttake(double speed) {
-    return new RunCommand(() -> m_coral.setOuttakeSpeed(kCoralIntake.kRollers.outtakeSpeed))
-        .until(() -> !m_coral.frontCoralSensor.get())
-        .andThen(() -> m_coral.setOuttakeSpeed(0));
-  }
-
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {}
@@ -39,19 +31,19 @@ public class DeployCoral extends Command {
     if (m_elevatorGoalPos == 0) {
       flywheelSpeed = 0; // TODO: this should be set later
       // TODO: move elevator to position
-      coralOuttake(flywheelSpeed);
+      m_coral.coralOuttake(flywheelSpeed);
     } else if (m_elevatorGoalPos == 1) {
       flywheelSpeed = 0; // TODO: this should be set later
       // TODO: move elevator to position
-      coralOuttake(flywheelSpeed);
+      m_coral.coralOuttake(flywheelSpeed);
     } else if (m_elevatorGoalPos == 2) {
       flywheelSpeed = 0; // TODO: this should be set later
       // TODO: move elevator to position
-      coralOuttake(flywheelSpeed);
+      m_coral.coralOuttake(flywheelSpeed);
     } else if (m_elevatorGoalPos == 3) {
       flywheelSpeed = 0; // TODO: this should be set later
       // TODO: move elevator to position
-      coralOuttake(flywheelSpeed);
+      m_coral.coralOuttake(flywheelSpeed);
     }
   }
 

@@ -99,13 +99,11 @@ public class Coral extends SubsystemBase {
     coralOuttake.getClosedLoopController().setReference(speed, ControlType.kVelocity);
   }
 
-  // private void setOuttakeVoltage(double voltage) {
-  //   coralOuttake.getClosedLoopController().setReference(voltage, ControlType.kVoltage);
-  // }
-
-  // private void setIntakeVoltage(double voltage) {
-  //   coralIntake.getClosedLoopController().setReference(voltage, ControlType.kVoltage);
-  // }
+  public Command coralOuttake(double speed) {
+    return new RunCommand(() -> setOuttakeSpeed(kCoralIntake.kRollers.outtakeSpeed))
+        .until(() -> !frontCoralSensor.get())
+        .andThen(() -> setOuttakeSpeed(0));
+  }
 
   public Command coralIntake(double speed) {
     return new RunCommand(() -> setIntakeSpeed(kCoralIntake.kRollers.intakeSpeed))
