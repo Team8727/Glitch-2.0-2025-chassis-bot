@@ -30,7 +30,7 @@ public class Coral extends SubsystemBase {
   public final DigitalInput frontCoralSensor;
   public final DigitalInput backCoralSensor;
 
-  /** Creates a new Coral. */
+  /** Creates a new Coral */
   public Coral() {
     coralIntake =
         getSparkMax(
