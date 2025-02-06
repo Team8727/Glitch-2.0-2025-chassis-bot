@@ -15,6 +15,7 @@ import frc.robot.commands.DriveCommands.SwerveJoystickCmd;
 import frc.robot.subsystems.Autos;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.AlgaeRemover.AlgaeRemoverPivot;
 import frc.robot.subsystems.Elevator.AlgaeRemover.AlgaeRemoverRollers;
 import frc.robot.subsystems.Elevator.Coral.Coral;
@@ -34,6 +35,7 @@ public class RobotContainer {
   private final AlgaeRemoverPivot m_AlgaeRemoverPivot;
   private final AlgaeRemoverRollers m_AlgeaRemoverRollers;
   private final Coral m_coral;
+  private final Elevator m_elevator;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer(
@@ -43,7 +45,8 @@ public class RobotContainer {
       Autos autos,
       AlgaeRemoverPivot AlgaeRemoverPivot,
       AlgaeRemoverRollers AlgaeRemoverRollers,
-      Coral coral) {
+      Coral coral,
+      Elevator elevator) {
     m_SwerveSubsystem = swerveSubsystem;
     m_ledSubsytem = ledSubsystem;
     m_driverController = driverController;
@@ -51,6 +54,7 @@ public class RobotContainer {
     m_AlgaeRemoverPivot = AlgaeRemoverPivot;
     m_AlgeaRemoverRollers = AlgaeRemoverRollers;
     m_coral = coral;
+    m_elevator = elevator;
     // joystickOperated();
 
     // Configure the trigger bindings
@@ -88,7 +92,7 @@ public class RobotContainer {
     // Remove algae L2
     m_driverController.povDown().onTrue(new removeAlgae(m_AlgaeRemoverPivot, m_AlgeaRemoverRollers, 2));
     // intake coral
-    m_driverController.rightBumper().onTrue(new IntakeCoral(m_coral));
+    m_driverController.rightBumper().onTrue(new IntakeCoral(m_coral, m_elevator));
 
 
     // Xbox Controller Bindings for LED Patterns
