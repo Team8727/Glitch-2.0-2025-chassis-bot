@@ -5,17 +5,20 @@
 package frc.robot.commands.Coral;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.Coral.Coral;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class DeployCoral extends Command {
   private final Coral m_coral;
+  private final Elevator m_elevator;
   private double m_elevatorGoalPos;
 
   /** Creates a new coralDeployer. */
-  public DeployCoral(Coral coral, double scoreLevel) {
+  public DeployCoral(Coral coral, double scoreLevel, Elevator elevator) {
     // Use addRequirements() here to declare subsystem dependencies
     m_coral = coral;
+    m_elevator = elevator;
     m_elevatorGoalPos = scoreLevel;
   }
 
@@ -27,16 +30,16 @@ public class DeployCoral extends Command {
   @Override
   public void execute() {
     if (m_elevatorGoalPos == 0) {
-      // TODO: move elevator to position
+      m_elevator.setElevatorHeight(m_elevatorGoalPos);
       m_coral.coralOuttake(0);
     } else if (m_elevatorGoalPos == 1) {
-      // TODO: move elevator to position
+      m_elevator.setElevatorHeight(m_elevatorGoalPos);
       m_coral.coralOuttake(0);
     } else if (m_elevatorGoalPos == 2) {
-      // TODO: move elevator to position
+      m_elevator.setElevatorHeight(m_elevatorGoalPos);
       m_coral.coralOuttake(0);
     } else if (m_elevatorGoalPos == 3) {
-      // TODO: move elevator to position
+      m_elevator.setElevatorHeight(m_elevatorGoalPos);
       m_coral.coralOuttake(0);
     }
   }

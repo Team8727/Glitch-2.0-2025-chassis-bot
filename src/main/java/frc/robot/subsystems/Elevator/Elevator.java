@@ -25,7 +25,7 @@ public class Elevator extends SubsystemBase {
   private final SparkMax elevatorMotorL;
   private final SparkMaxConfig motorRConfig;
   private final SparkClosedLoopController elevatorPID;
-  private double currentHeight;
+  // private double currentHeight;
 
   /** Creates a new Elevator. */
   public Elevator() {
@@ -60,16 +60,18 @@ public class Elevator extends SubsystemBase {
 
     elevatorPID = elevatorMotorR.getClosedLoopController();
 
-    currentHeight = 0;
+    // currentHeight = 0;
   }
 
   private void stopElevator() {
     elevatorPID.setReference(0, ControlType.kDutyCycle);
   }
 
-  private void setElevatorHeight(double height) { // use enums for height
+  public void setElevatorHeight(kElevator.ElevatorPosition height) {
+    // get double from enum
+    height = height.rotations;
     elevatorPID.setReference(height, ControlType.kPosition);
-    currentHeight = height;
+    // currentHeight = height;
   }
 
   @Override

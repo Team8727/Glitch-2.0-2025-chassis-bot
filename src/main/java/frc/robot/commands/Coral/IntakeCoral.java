@@ -5,14 +5,18 @@
 package frc.robot.commands.Coral;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.kElevator;
+import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.Coral.Coral;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class IntakeCoral extends Command {
   private final Coral m_coral;
+  private final Elevator m_elevator;
   /** Creates a new IntakeCoral. */
-  public IntakeCoral(Coral coral) {
+  public IntakeCoral(Coral coral, Elevator elevator) {
     m_coral = coral;
+    m_elevator = elevator;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -23,8 +27,8 @@ public class IntakeCoral extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    //TODO: set elevator pos
-    m_coral.coralIntake(0);
+    m_elevator.setElevatorHeight(kElevator.ElevatorPosition.HOME);
+    m_coral.coralIntake(0);//TODO: set speed
   }
 
   // Called once the command ends or is interrupted.
