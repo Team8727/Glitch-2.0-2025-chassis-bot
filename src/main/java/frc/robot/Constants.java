@@ -346,10 +346,10 @@ public final class Constants {
       L3(30), // TODO: SET WITH ACTUAL VALUES
       L4(50); // TODO: SET WITH ACTUAL VALUES
   
-      public final double distance;
+      public final double rotations;
   
-      private ElevatorPosition(double distance) {
-        this.distance = distance;
+      private ElevatorPosition(double rotations) {
+        this.rotations = rotations;
       }
     }
   }
