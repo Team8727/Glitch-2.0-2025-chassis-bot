@@ -306,6 +306,7 @@ public final class Constants {
       public static double gearRatio = 0; // TODO: set using document in Glitch Drive.
 
       public static double idleAlgaeIntakeVoltage = 0; // TODO: set as needed when testing
+
     }
 
     public static class kAlgaeIntakeRollers {
@@ -313,8 +314,9 @@ public final class Constants {
 
       public static int sensorChannel = 0; // TODO: not set yet because intake is not built yet
 
-      public static int intakeVoltage = 11; // TODO: not set yet because intake is not built yet
-      public static int outtakeVoltage = -5; // TODO: not set yet because intake is not built yet
+      public static int intakeSpeed = 11; // TODO: not set yet because intake is not built yet
+      public static int scoreVoltage = -11; // TODO: not final yet because intake is not built yet
+      public static int outtakeSpeed = -5; // TODO: not set yet because intake is not built yet
     }
   }
 
@@ -330,6 +332,31 @@ public final class Constants {
 
       public static int intakeSpeed = 11; // TODO: not set yet because intake is not built yet
       public static int outtakeSpeed = -5; // TODO: not set yet because intake is not built yet
+    }
+  }
+
+  public static class kElevator {
+    public static int elevatorMotorRCANID = 0; // TODO: not set yet because elevator is not built yet
+    public static int elevatorMotorLCANID = 0; // TODO: not set yet because elevator is not built yet
+
+    public enum ElevatorPosition {
+      HOME(0), // TODO: SET WITH ACTUAL VALUES
+      L1(10), // TODO: SET WITH ACTUAL VALUES
+      L2(20), // TODO: SET WITH ACTUAL VALUES
+      L3(30), // TODO: SET WITH ACTUAL VALUES
+      L4(50), // TODO: SET WITH ACTUAL VALUES
+      A2(25), // TODO: SET WITH ACTUAL VALUES
+      A3(35); // TODO: SET WITH ACTUAL VALUES
+    
+      private final double rotations;
+      
+      private ElevatorPosition(double rotations) {
+        this.rotations = rotations;
+      }
+
+      public double getRotations() {
+        return rotations;
+      }
     }
   }
 }

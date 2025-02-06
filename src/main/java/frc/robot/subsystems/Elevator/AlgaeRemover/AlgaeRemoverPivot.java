@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.AlgaeRemover;
+package frc.robot.subsystems.Elevator.AlgaeRemover;
 
 import static frc.robot.utilities.SparkConfigurator.getSparkMax;
 
@@ -12,24 +12,24 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.kRemover;
 import frc.robot.utilities.SparkConfigurator.LogData;
 import java.util.Set;
 
-public class AlgaeRemoverRollers extends SubsystemBase {
-  private final SparkMax removerRollerMotor;
+public class AlgaeRemoverPivot extends SubsystemBase {
+  private final SparkMax removerPivotMotor;
   private final SparkMaxConfig config;
-  private final SparkClosedLoopController removerRollerPID;
+  private final SparkClosedLoopController removerPivotPID;
 
-  /** Creates a new AlgaeRemoverRollers. */
-  public AlgaeRemoverRollers() {
-    removerRollerMotor =
+  /** Creates a new AlgaePivot. */
+  public AlgaeRemoverPivot() {
+    removerPivotMotor =
         getSparkMax(
-            kRemover.kRollers.removerRollerMotorCANID,
+            kRemover.kPivot.removerPivotMotorCANID,
             SparkLowLevel.MotorType.kBrushless,
             false,
             Set.of(),
@@ -42,33 +42,36 @@ public class AlgaeRemoverRollers extends SubsystemBase {
     config = new SparkMaxConfig();
     config
         .smartCurrentLimit(25) // TODO: figure out what this should be
-        .idleMode(IdleMode.kCoast)
+        .idleMode(IdleMode.kBrake)
         .closedLoop
-        .velocityFF(0) // TODO: tune
-        .pid(0, 0, 0)
-        .maxMotion
+        .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
+        .outputRange(-1, 1) // TODO: figure out what these should be
+        .pid(0, 0, 0) // TODO: figure out what these should be
+        .maxMotion // TODO: figure out what these should be
         .maxAcceleration(0)
-        .maxAcceleration(0)
+        .maxVelocity(0)
         .allowedClosedLoopError(0);
-
-    removerRollerMotor.configure(
+    removerPivotMotor.configure(
         config,
         ResetMode.kNoResetSafeParameters,
         PersistMode
             .kNoPersistParameters); // TODO: Might need to be resetsafe and presistsafe, but nothing
     // is set yet, so I said no
 
-    removerRollerPID = removerRollerMotor.getClosedLoopController();
+    removerPivotPID = removerPivotMotor.getClosedLoopController();
+    // 75:2 reduction
+    // 63:720 reduction
   }
 
-  private Command setRemoverRollerSpeed(double speed) {
-    return run(() -> removerRollerPID.setReference(speed, ControlType.kVelocity));
+  // set pivot position
+  public void setRemoverPos(double angle) {
+    double rotations = angle * 75.0 / 2.0 / 360;
+    removerPivotPID.setReference(rotations, ControlType.kPosition);
   }
 
-  public void spinnnnnnn() {
-    setRemoverRollerSpeed(1000).withTimeout(1).andThen(() -> setRemoverRollerSpeed(0));
-  }
-
+  // private double calculateVoltage(double goal) {
+  //   return voltage
+  // }
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
