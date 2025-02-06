@@ -11,11 +11,11 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.kVision.kPoses;
 import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.commands.removeAlgae;
-import frc.robot.subsystems.AlgaeRemover.AlgaeRemoverPivot;
-import frc.robot.subsystems.AlgaeRemover.AlgaeRemoverRollers;
 import frc.robot.subsystems.Autos;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.subsystems.Elevator.AlgaeRemover.AlgaeRemoverPivot;
+import frc.robot.subsystems.Elevator.AlgaeRemover.AlgaeRemoverRollers;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a

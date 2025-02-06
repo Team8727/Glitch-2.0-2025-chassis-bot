@@ -13,12 +13,12 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.Kconfigs;
 import frc.robot.Constants.kSwerve;
-import frc.robot.subsystems.AlgaeRemover.AlgaeRemoverPivot;
-import frc.robot.subsystems.AlgaeRemover.AlgaeRemoverRollers;
 import frc.robot.subsystems.Autos;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.PoseEstimatior;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.subsystems.Elevator.AlgaeRemover.AlgaeRemoverPivot;
+import frc.robot.subsystems.Elevator.AlgaeRemover.AlgaeRemoverRollers;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
