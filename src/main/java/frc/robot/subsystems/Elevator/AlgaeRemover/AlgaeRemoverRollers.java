@@ -54,14 +54,12 @@ public class AlgaeRemoverRollers extends SubsystemBase {
     removerRollerMotor.configure(
         config,
         ResetMode.kNoResetSafeParameters,
-        PersistMode
-            .kNoPersistParameters); // TODO: Might need to be resetsafe and presistsafe, but nothing
-    // is set yet, so I said no
+        PersistMode.kNoPersistParameters); // TODO: Might need to be resetsafe and presistsafe, but nothing is set yet, so I said no
 
     removerRollerPID = removerRollerMotor.getClosedLoopController();
   }
 
-  private Command setRemoverRollerSpeed(double speed) {
+  public Command setRemoverRollerSpeed(double speed) {
     return run(() -> removerRollerPID.setReference(speed, ControlType.kVelocity));
   }
 

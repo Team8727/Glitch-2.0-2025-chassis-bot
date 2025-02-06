@@ -5,40 +5,49 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.Constants.kAlgaeIntake.kAlgaeIntakePivot;
+import frc.robot.Constants.kAlgaeIntake.kAlgaeIntakeRollers;
 import frc.robot.subsystems.AlgaeIntake.AlgaeIntakePivot;
 import frc.robot.subsystems.AlgaeIntake.AlgaeIntakeRollers;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class GroundIntakeAlgaeCmd extends Command {
+public class IntakeAlgaeCmd extends Command {
   /** Creates a new GroundIntakeAlgae. */
+  private final AlgaeIntakePivot m_algaeIntakePivot;
 
-  AlgaeIntakePivot m_algaeIntakePivot;
-  AlgaeIntakeRollers m_algaeIntakeRollers;
+  private final AlgaeIntakeRollers m_algaeIntakeRollers;
 
-  public GroundIntakeAlgaeCmd(
-      AlgaeIntakePivot algaeIntakePivot, AlgaeIntakeRollers algaeIntakeRollers) {
+  public IntakeAlgaeCmd(
+      AlgaeIntakePivot algaeIntakePivot, AlgaeIntakeRollers algaeRemoverPivot) {
     // Use addRequirements() here to declare subsystem dependencies.
-
-    this.m_algaeIntakePivot = algaeIntakePivot;
-    this.m_algaeIntakeRollers = algaeIntakeRollers;
+    m_algaeIntakePivot = algaeIntakePivot;
+    m_algaeIntakeRollers = algaeRemoverPivot;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {}
 
+  public Command intake() {
+    return new RunCommand(() -> m_algaeIntakeRollers.setRollerSpeed(kAlgaeIntakeRollers.intakeSpeed))
+        .until(() -> m_algaeIntakeRollers.getAlgaeCheck())
+        .andThen(
+            new RunCommand(() -> m_algaeIntakeRollers.setRollerSpeed(kAlgaeIntakeRollers.intakeSpeed))
+                .withTimeout(0.5)) // TODO: this additional time may have to be modified or removed
+        .finallyDo(() -> m_algaeIntakeRollers.setRollerSpeed(0));
+  }
+
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
 
-    // Set the intake pivot to the ground position and intake
+    // Set the intake pivot to the ground position and
     m_algaeIntakePivot.setIntakePivotPosition(kAlgaeIntakePivot.intakePivotDownPosition);
-    m_algaeIntakeRollers.intake();
+    intake();
     m_algaeIntakePivot.setIntakePivotPosition(kAlgaeIntakePivot.intakePivotScorePosition);
-
     // Set the intake rollers to idle pull in voltage
-    m_algaeIntakeRollers.setRollerSpeed(kAlgaeIntakePivot.idleAlgaeIntakeVoltage);
+    m_algaeIntakeRollers.stopRollers();
   }
 
   // Called once the command ends or is interrupted.
