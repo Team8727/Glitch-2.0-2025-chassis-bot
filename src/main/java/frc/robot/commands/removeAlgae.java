@@ -10,38 +10,31 @@ import frc.robot.subsystems.AlgaeRemover.AlgaeRemoverRollers;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class removeAlgae extends Command {
-  AlgaeRemoverPivot m_pivot;
-  AlgaeRemoverRollers m_rollers;
-  double m_elevatorPos;
+  private final AlgaeRemoverPivot m_pivot;
+  private final AlgaeRemoverRollers m_rollers;
+  private final double m_setPos;
   /** Creates a new removeAlgae. */
-  public removeAlgae(AlgaeRemoverPivot AlgaeRemoverPivot, AlgaeRemoverRollers AlgaeRemoverRollers) {
+  public removeAlgae(AlgaeRemoverPivot AlgaeRemoverPivot, AlgaeRemoverRollers AlgaeRemoverRollers, double level) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_pivot = AlgaeRemoverPivot;
     m_rollers = AlgaeRemoverRollers;
-  }
-
-  private double getElevatorPos() {
-    // TODO: get elevator position
-    return 0;
+    m_setPos = level;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_elevatorPos = getElevatorPos();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_elevatorPos == 0) {
+    if (m_setPos == 2) {
+      //TODO: move elevator to position
       m_pivot.setRemoverPos(0);// TODO: set positions
-    } else if (m_elevatorPos == 1) {
-      m_pivot.setRemoverPos(10);// TODO: set positions	
-    } else if (m_elevatorPos == 2) {
-      m_pivot.setRemoverPos(20);// TODO: set positions
-    } else if (m_elevatorPos == 3) {
-      m_pivot.setRemoverPos(30);// TODO: set positions
+    } else if (m_setPos == 3) {
+      //TODO: move elevator to position
+      m_pivot.setRemoverPos(0);// TODO: set positions
     }
     m_rollers.spinnnnnnn();// TODO: set speed
   }
