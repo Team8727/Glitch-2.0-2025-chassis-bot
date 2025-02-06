@@ -313,8 +313,9 @@ public final class Constants {
 
       public static int sensorChannel = 0; // TODO: not set yet because intake is not built yet
 
-      public static int intakeVoltage = 11; // TODO: not set yet because intake is not built yet
-      public static int outtakeVoltage = -5; // TODO: not set yet because intake is not built yet
+      public static int intakeVoltage = 11; // TODO: not final yet because intake is not built yet
+      public static int scoreVoltage = -11; // TODO: not final yet because intake is not built yet
+      public static int outtakeVoltage = -5; // TODO: not final yet because intake is not built yet
     }
   }
 
