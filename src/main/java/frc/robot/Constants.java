@@ -349,6 +349,7 @@ public final class Constants {
       A3(35); // TODO: SET WITH ACTUAL VALUES
     
       private final double rotations;
+      
       private ElevatorPosition(double rotations) {
         this.rotations = rotations;
       }

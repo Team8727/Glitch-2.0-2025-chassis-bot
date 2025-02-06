@@ -5,6 +5,7 @@
 package frc.robot.commands.Coral;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.kElevator;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.Coral.Coral;
 
@@ -12,14 +13,14 @@ import frc.robot.subsystems.Elevator.Coral.Coral;
 public class DeployCoral extends Command {
   private final Coral m_coral;
   private final Elevator m_elevator;
-  private double m_elevatorGoalPos;
+  private double m_scoreLevel;
 
   /** Creates a new coralDeployer. */
   public DeployCoral(Coral coral, double scoreLevel, Elevator elevator) {
     // Use addRequirements() here to declare subsystem dependencies
     m_coral = coral;
     m_elevator = elevator;
-    m_elevatorGoalPos = scoreLevel;
+    m_scoreLevel = scoreLevel;
   }
 
   // Called when the command is initially scheduled.
@@ -29,17 +30,17 @@ public class DeployCoral extends Command {
   // Called every time the scheduler runs while the command is scheduled
   @Override
   public void execute() {
-    if (m_elevatorGoalPos == 0) {
-      m_elevator.setElevatorHeight(m_elevatorGoalPos);
+    if (m_scoreLevel == 0) {
+      m_elevator.setElevatorHeight(kElevator.ElevatorPosition.L1);
       m_coral.coralOuttake(0);
-    } else if (m_elevatorGoalPos == 1) {
-      m_elevator.setElevatorHeight(m_elevatorGoalPos);
+    } else if (m_scoreLevel == 1) {
+      m_elevator.setElevatorHeight(kElevator.ElevatorPosition.L2);
       m_coral.coralOuttake(0);
-    } else if (m_elevatorGoalPos == 2) {
-      m_elevator.setElevatorHeight(m_elevatorGoalPos);
+    } else if (m_scoreLevel == 2) {
+      m_elevator.setElevatorHeight(kElevator.ElevatorPosition.L3);
       m_coral.coralOuttake(0);
-    } else if (m_elevatorGoalPos == 3) {
-      m_elevator.setElevatorHeight(m_elevatorGoalPos);
+    } else if (m_scoreLevel == 3) {
+      m_elevator.setElevatorHeight(kElevator.ElevatorPosition.L4);
       m_coral.coralOuttake(0);
     }
   }

@@ -69,8 +69,8 @@ public class Elevator extends SubsystemBase {
 
   public void setElevatorHeight(kElevator.ElevatorPosition height) {
     // get double from enum
-    height = height.rotations;
-    elevatorPID.setReference(height, ControlType.kPosition);
+    double targetHeight = height.getRotations();
+    elevatorPID.setReference(targetHeight, ControlType.kPosition);
     // currentHeight = height;
   }
 
