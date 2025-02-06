@@ -14,6 +14,7 @@ public class DeployCoral extends Command {
   private Coral m_coral;
   private double m_elevatorGoalPos;
   private double flywheelSpeed;
+
   /** Creates a new coralDeployer. */
   public DeployCoral(Coral coral, double scoreLevel) {
     // Use addRequirements() here to declare subsystem dependencies
@@ -22,17 +23,14 @@ public class DeployCoral extends Command {
   }
 
   private Command coralOuttake(double speed) {
-    return 
-      new RunCommand(
-        () -> m_coral.setOuttakeSpeed(kCoralIntake.kRollers.outtakeSpeed))
-          .until(() -> !m_coral.frontCoralSensor.get())
+    return new RunCommand(() -> m_coral.setOuttakeSpeed(kCoralIntake.kRollers.outtakeSpeed))
+        .until(() -> !m_coral.frontCoralSensor.get())
         .andThen(() -> m_coral.setOuttakeSpeed(0));
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled
   @Override
@@ -40,19 +38,19 @@ public class DeployCoral extends Command {
     flywheelSpeed = 0;
     if (m_elevatorGoalPos == 0) {
       flywheelSpeed = 0; // TODO: this should be set later
-      //TODO: move elevator to position
+      // TODO: move elevator to position
       coralOuttake(flywheelSpeed);
     } else if (m_elevatorGoalPos == 1) {
       flywheelSpeed = 0; // TODO: this should be set later
-      //TODO: move elevator to position
+      // TODO: move elevator to position
       coralOuttake(flywheelSpeed);
     } else if (m_elevatorGoalPos == 2) {
       flywheelSpeed = 0; // TODO: this should be set later
-      //TODO: move elevator to position
+      // TODO: move elevator to position
       coralOuttake(flywheelSpeed);
     } else if (m_elevatorGoalPos == 3) {
       flywheelSpeed = 0; // TODO: this should be set later
-      //TODO: move elevator to position
+      // TODO: move elevator to position
       coralOuttake(flywheelSpeed);
     }
   }

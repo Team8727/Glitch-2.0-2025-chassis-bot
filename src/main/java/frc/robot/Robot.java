@@ -13,12 +13,12 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.Kconfigs;
 import frc.robot.Constants.kSwerve;
-import frc.robot.subsystems.LEDSubsystem;
-import frc.robot.subsystems.PoseEstimatior;
-import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.AlgaeRemover.AlgaeRemoverPivot;
 import frc.robot.subsystems.AlgaeRemover.AlgaeRemoverRollers;
 import frc.robot.subsystems.Autos;
+import frc.robot.subsystems.LEDSubsystem;
+import frc.robot.subsystems.PoseEstimatior;
+import frc.robot.subsystems.SwerveSubsystem;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -36,21 +36,19 @@ public class Robot extends TimedRobot {
   private final AlgaeRemoverRollers m_AlgeaRemoverRollers = new AlgaeRemoverRollers();
   private final AlgaeRemoverPivot m_AlgaeRemoverPivot = new AlgaeRemoverPivot();
 
-
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
   public Robot() {
-    
+
     AutoBuilder.configure(
         m_PoseEstimatior::get2dPose,
         m_PoseEstimatior::resetPoseToPose2d,
         m_SwerveSubsystem::getChassisSpeeds,
         (chassisSpeeds, driveff) -> {
           System.out.println("aligning");
-          m_SwerveSubsystem.setModuleStates(
-            kSwerve.kinematics.toSwerveModuleStates(chassisSpeeds));
+          m_SwerveSubsystem.setModuleStates(kSwerve.kinematics.toSwerveModuleStates(chassisSpeeds));
           // new DriveCmd(m_SwerveSubsystem, () -> chassisSpeeds, () -> true).execute();
         },
         (PathFollowingController) kSwerve.Auton.pathFollowController,
@@ -72,9 +70,9 @@ public class Robot extends TimedRobot {
 
     m_robotContainer =
         new RobotContainer(
-            m_SwerveSubsystem, 
-            m_ledSubsytem, 
-            m_driverController, 
+            m_SwerveSubsystem,
+            m_ledSubsytem,
+            m_driverController,
             m_Autos,
             m_AlgaeRemoverPivot,
             m_AlgeaRemoverRollers);

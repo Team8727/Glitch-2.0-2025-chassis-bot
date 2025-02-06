@@ -13,8 +13,10 @@ public class removeAlgae extends Command {
   private final AlgaeRemoverPivot m_pivot;
   private final AlgaeRemoverRollers m_rollers;
   private final double m_setPos;
+
   /** Creates a new removeAlgae. */
-  public removeAlgae(AlgaeRemoverPivot AlgaeRemoverPivot, AlgaeRemoverRollers AlgaeRemoverRollers, double level) {
+  public removeAlgae(
+      AlgaeRemoverPivot AlgaeRemoverPivot, AlgaeRemoverRollers AlgaeRemoverRollers, double level) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_pivot = AlgaeRemoverPivot;
     m_rollers = AlgaeRemoverRollers;
@@ -23,20 +25,19 @@ public class removeAlgae extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     if (m_setPos == 2) {
-      //TODO: move elevator to position
-      m_pivot.setRemoverPos(0);// TODO: set positions
+      // TODO: move elevator to position
+      m_pivot.setRemoverPos(0); // TODO: set positions
     } else if (m_setPos == 3) {
-      //TODO: move elevator to position
-      m_pivot.setRemoverPos(0);// TODO: set positions
+      // TODO: move elevator to position
+      m_pivot.setRemoverPos(0); // TODO: set positions
     }
-    m_rollers.spinnnnnnn();// TODO: set speed
+    m_rollers.spinnnnnnn(); // TODO: set speed
   }
 
   // Called once the command ends or is interrupted.

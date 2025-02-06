@@ -44,18 +44,14 @@ public final class Constants {
   public static class Kconfigs {
     public static RobotConfig robotConfig =
         new RobotConfig(
-            65, //TODO: find real value
+            65, // TODO: find real value
             10, // TODO: find real value
             new ModuleConfig(
                 .0381,
                 4.45,
-                1.4,// TODO: find real value
+                1.4, // TODO: find real value
                 new DCMotor(
-                    12, 
-                    3.65, 
-                    218, 
-                    3.54, 
-                    6704, // TODO: probobly wrong
+                    12, 3.65, 218, 3.54, 6704, // TODO: probobly wrong
                     1),
                 5.08,
                 60,
@@ -146,8 +142,7 @@ public final class Constants {
 
       public static final PPHolonomicDriveController pathFollowController =
           new PPHolonomicDriveController(
-              new PIDConstants(Auton.transP, 0, 0), 
-              new PIDConstants(angP, 0, angD));
+              new PIDConstants(Auton.transP, 0, 0), new PIDConstants(angP, 0, angD));
 
       public static final PathConstraints constraints =
           new PathConstraints(
@@ -255,8 +250,7 @@ public final class Constants {
         AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
     public static final Transform3d camera1Position =
         new Transform3d(
-            new Translation3d(0.2921, 0.0381, 0.24765), 
-            new Rotation3d(0, Math.toRadians(25), 0));
+            new Translation3d(0.2921, 0.0381, 0.24765), new Rotation3d(0, Math.toRadians(25), 0));
     public static final Transform3d camera2Position =
         new Transform3d(
             new Translation3d(-0.2921, 0.0381, 0.18),
@@ -274,53 +268,68 @@ public final class Constants {
         MatBuilder.fill(Nat.N3(), Nat.N1(), 0.02, 0.02, 0.01);
     public static final Matrix<N3, N1> visionStdDevs =
         MatBuilder.fill(Nat.N3(), Nat.N1(), 0.03, 0.03, 0.25);
-    public static final double visionScalingFactor = 2.3; // scaling factor applied to the visionStdDevs per meter bigger means trust less at a
+    public static final double visionScalingFactor =
+        2.3; // scaling factor applied to the visionStdDevs per meter bigger means trust less at a
     // distance
   }
+
   public static class kRemover {
     public static class kPivot {
-      public static int removerPivotMotorCANID = 0; //TODO: not set yet because remover is not built yet
+      public static int removerPivotMotorCANID =
+          0; // TODO: not set yet because remover is not built yet
     }
+
     public static class kRollers {
-      public static int removerRollerMotorCANID = 0; //TODO: not set yet because remover is not built yet
+      public static int removerRollerMotorCANID =
+          0; // TODO: not set yet because remover is not built yet
     }
   }
+
   public static class kAlgaeIntake {
     public static class kAlgaeIntakePivot {
-      public static int intakePivotMotorCANID = 0; //TODO: not set yet because intake is not built yet
+      public static int intakePivotMotorCANID =
+          0; // TODO: not set yet because intake is not built yet
 
-      public static double intakePivotDownPosition = 0; //TODO: position not set yet because intake is not built yet
-      public static double intakePivotScorePosition = 0; //TODO: position not set yet because intake is not built yet
-      public static double intakePivotHomePosition = 0; //TODO: position not set yet because intake is not built yet
+      public static double intakePivotDownPosition =
+          0; // TODO: position not set yet because intake is not built yet
+      public static double intakePivotScorePosition =
+          0; // TODO: position not set yet because intake is not built yet
+      public static double intakePivotHomePosition =
+          0; // TODO: position not set yet because intake is not built yet
 
-      public static int intakePivotEncoderChannelA = 0; //TODO: not set yet because intake is not built yet
-      public static int intakePivotEncoderChannelB = 0; //TODO: not set yet because intake is not built yet
-      public static double encoderPulsesPerRevolution = 2048; //Maybe?
+      public static int intakePivotEncoderChannelA =
+          0; // TODO: not set yet because intake is not built yet
+      public static int intakePivotEncoderChannelB =
+          0; // TODO: not set yet because intake is not built yet
+      public static double encoderPulsesPerRevolution = 2048; // Maybe?
 
-      public static double gearRatio = 0; //TODO: set using document in Glitch Drive.
+      public static double gearRatio = 0; // TODO: set using document in Glitch Drive.
 
-      public static double idleAlgaeIntakeVoltage = 0; //TODO: set as needed when testing
+      public static double idleAlgaeIntakeVoltage = 0; // TODO: set as needed when testing
     }
 
     public static class kAlgaeIntakeRollers {
-      public static int rollerMotorCANID = 0; //TODO: not set yet because intake is not built yet
+      public static int rollerMotorCANID = 0; // TODO: not set yet because intake is not built yet
 
-      public static int sensorChannel = 0; //TODO: not set yet because intake is not built yet
+      public static int sensorChannel = 0; // TODO: not set yet because intake is not built yet
 
-      public static int intakeVoltage = 11; //TODO: not set yet because intake is not built yet
-      public static int outtakeVoltage = -5; //TODO: not set yet because intake is not built yet
+      public static int intakeVoltage = 11; // TODO: not set yet because intake is not built yet
+      public static int outtakeVoltage = -5; // TODO: not set yet because intake is not built yet
     }
   }
+
   public static class kCoralIntake {
     public static class kRollers {
-      public static int intakeRollerMotorCANID = 0; //TODO: not set yet because intake is not built yet
-      public static int outtakeRollerMotorCANID = 0; //TODO: not set yet because intake is not built yet
+      public static int intakeRollerMotorCANID =
+          0; // TODO: not set yet because intake is not built yet
+      public static int outtakeRollerMotorCANID =
+          0; // TODO: not set yet because intake is not built yet
 
-      public static int frontSensorChannel = 0; //TODO: not set yet because intake is not built yet
-      public static int backSensorChannel = 0; //TODO: not set yet because intake is not built yet
+      public static int frontSensorChannel = 0; // TODO: not set yet because intake is not built yet
+      public static int backSensorChannel = 0; // TODO: not set yet because intake is not built yet
 
-      public static int intakeSpeed = 11; //TODO: not set yet because intake is not built yet
-      public static int outtakeSpeed = -5; //TODO: not set yet because intake is not built yet
+      public static int intakeSpeed = 11; // TODO: not set yet because intake is not built yet
+      public static int outtakeSpeed = -5; // TODO: not set yet because intake is not built yet
     }
   }
 }

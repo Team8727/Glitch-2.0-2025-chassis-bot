@@ -20,8 +20,9 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
   private AddressableLED lightStrip;
   private AddressableLEDBuffer stripBuffer;
   private LEDPattern currentPattern;
-  
-  // For some reason the Color.k____ values are not working, so I re-defined them here. Red works fine though.
+
+  // For some reason the Color.k____ values are not working, so I re-defined them here. Red works
+  // fine though.
   // I think the blue and green values got flipped somehow.
   private Color m_green = new Color(0, 0, 255);
   private Color m_blue = new Color(0, 255, 0);
@@ -32,33 +33,31 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
   public LEDPattern red = LEDPattern.solid(Color.kRed).blink(Second.of(0.5));
 
   // Rainbow pattern with a scrolling mask
-  private LEDPattern rainbowBase = LEDPattern.rainbow(256, 128)
-    .scrollAtRelativeSpeed(Percent.per(Second).of(25));
-  private LEDPattern rainbowMask = LEDPattern.steps(
-      Map.of(
-        0.0, Color.kWhite,
-        0.25, Color.kBlack,
-        0.75, Color.kWhite))
-    .scrollAtRelativeSpeed(Percent.per(Second).of(25));
+  private LEDPattern rainbowBase =
+      LEDPattern.rainbow(256, 128).scrollAtRelativeSpeed(Percent.per(Second).of(25));
+  private LEDPattern rainbowMask =
+      LEDPattern.steps(
+              Map.of(
+                  0.0, Color.kWhite,
+                  0.25, Color.kBlack,
+                  0.75, Color.kWhite))
+          .scrollAtRelativeSpeed(Percent.per(Second).of(25));
   public LEDPattern rainbow = rainbowBase.reversed().mask(rainbowMask);
 
   // Blue gradient pattern with a scrolling mask
-  public LEDPattern blue = LEDPattern.gradient(
-    LEDPattern.GradientType.kContinuous, m_blue, m_green)
-    .scrollAtRelativeSpeed(Percent.per(Second).of(25));
+  public LEDPattern blue =
+      LEDPattern.gradient(LEDPattern.GradientType.kContinuous, m_blue, m_green)
+          .scrollAtRelativeSpeed(Percent.per(Second).of(25));
 
   // Green to purple gradient pattern
-  public LEDPattern ace = LEDPattern.gradient(
-    GradientType.kContinuous, m_green, m_purple)
-    .scrollAtRelativeSpeed(Percent.per(Second).of(25));
+  public LEDPattern ace =
+      LEDPattern.gradient(GradientType.kContinuous, m_green, m_purple)
+          .scrollAtRelativeSpeed(Percent.per(Second).of(25));
 
   public LEDPattern colorCheck = LEDPattern.solid(m_purple);
 
   // Green pattern that breathes
   public LEDPattern green = LEDPattern.solid(m_green).breathe(Second.of(2));
-
-
-
 
   /** Creates a new LEDSubsystem. */
   public LEDSubsystem() {

@@ -4,19 +4,18 @@
 
 package frc.robot;
 
-import frc.robot.Constants.kVision.kPoses;
-import frc.robot.commands.SwerveJoystickCmd;
-import frc.robot.commands.removeAlgae;
-import frc.robot.subsystems.Autos;
-import frc.robot.subsystems.SwerveSubsystem;
-import frc.robot.subsystems.AlgaeRemover.AlgaeRemoverPivot;
-import frc.robot.subsystems.AlgaeRemover.AlgaeRemoverRollers;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.kVision.kPoses;
+import frc.robot.commands.SwerveJoystickCmd;
+import frc.robot.commands.removeAlgae;
+import frc.robot.subsystems.AlgaeRemover.AlgaeRemoverPivot;
+import frc.robot.subsystems.AlgaeRemover.AlgaeRemoverRollers;
+import frc.robot.subsystems.Autos;
 import frc.robot.subsystems.LEDSubsystem;
-
+import frc.robot.subsystems.SwerveSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -55,13 +54,14 @@ public class RobotContainer {
 
   public void initiateJoystickOperated() {
     m_SwerveSubsystem.setDefaultCommand(
-      new SwerveJoystickCmd(
-        m_SwerveSubsystem,
-        () -> -m_driverController.getLeftY(),
-        () -> -m_driverController.getLeftX(),
-        () -> m_driverController.getRightX(),
-        () -> true));
+        new SwerveJoystickCmd(
+            m_SwerveSubsystem,
+            () -> -m_driverController.getLeftY(),
+            () -> -m_driverController.getLeftX(),
+            () -> m_driverController.getRightX(),
+            () -> true));
   }
+
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
    * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
@@ -79,33 +79,51 @@ public class RobotContainer {
     // Align to pose
     m_driverController.b().onTrue(m_Autos.align(kPoses.blueFrontLeft));
     // Remove algae L3
-    m_driverController.povUp().onTrue(new removeAlgae(m_AlgaeRemoverPivot, m_AlgeaRemoverRollers, 3));
+    m_driverController
+        .povUp()
+        .onTrue(new removeAlgae(m_AlgaeRemoverPivot, m_AlgeaRemoverRollers, 3));
     // Remove algae L2
-    m_driverController.povDown().onTrue(new removeAlgae(m_AlgaeRemoverPivot, m_AlgeaRemoverRollers, 2));
-
+    m_driverController
+        .povDown()
+        .onTrue(new removeAlgae(m_AlgaeRemoverPivot, m_AlgeaRemoverRollers, 2));
 
     // Xbox Controller Bindings for LED Patterns
-    // m_driverController.y().onTrue(new InstantCommand(() -> m_ledSubsytem.setPattern(m_ledSubsytem.rainbow), m_ledSubsytem));
-    // m_driverController.b().onTrue(new InstantCommand(() -> m_ledSubsytem.setPattern(m_ledSubsytem.blue), m_ledSubsytem));
-    m_driverController.leftBumper().onTrue(new InstantCommand(() -> m_ledSubsytem.setPattern(m_ledSubsytem.red), m_ledSubsytem));
-    m_driverController.rightBumper().onTrue(new InstantCommand(() -> m_ledSubsytem.setPattern(m_ledSubsytem.green), m_ledSubsytem));
-    m_driverController.a().onTrue(new InstantCommand(() -> m_ledSubsytem.setPattern(m_ledSubsytem.ace), m_ledSubsytem));
-    m_driverController.y().onTrue(new InstantCommand(() -> m_ledSubsytem.setPattern(m_ledSubsytem.colorCheck), m_ledSubsytem));
-    
-      // .until(() -> 
-      //     m_PoseEstimatior.get2dPose()
-      //       .getTranslation()
-      //     .getDistance(
-      //       kPoses.blueFrontLeft.getTranslation())
-      //     < 0.1 
-      //   && 
-      //     m_PoseEstimatior.get2dPose()
-      //       .getRotation()
-      //     .minus(
-      //       kPoses.blueFrontLeft.getRotation())
-      //         .getDegrees()
-      //     < 0.1)
-      // .andThen(() -> joystickOperated())
+    // m_driverController.y().onTrue(new InstantCommand(() ->
+    // m_ledSubsytem.setPattern(m_ledSubsytem.rainbow), m_ledSubsytem));
+    // m_driverController.b().onTrue(new InstantCommand(() ->
+    // m_ledSubsytem.setPattern(m_ledSubsytem.blue), m_ledSubsytem));
+    m_driverController
+        .leftBumper()
+        .onTrue(
+            new InstantCommand(() -> m_ledSubsytem.setPattern(m_ledSubsytem.red), m_ledSubsytem));
+    m_driverController
+        .rightBumper()
+        .onTrue(
+            new InstantCommand(() -> m_ledSubsytem.setPattern(m_ledSubsytem.green), m_ledSubsytem));
+    m_driverController
+        .a()
+        .onTrue(
+            new InstantCommand(() -> m_ledSubsytem.setPattern(m_ledSubsytem.ace), m_ledSubsytem));
+    m_driverController
+        .y()
+        .onTrue(
+            new InstantCommand(
+                () -> m_ledSubsytem.setPattern(m_ledSubsytem.colorCheck), m_ledSubsytem));
+
+    // .until(() ->
+    //     m_PoseEstimatior.get2dPose()
+    //       .getTranslation()
+    //     .getDistance(
+    //       kPoses.blueFrontLeft.getTranslation())
+    //     < 0.1
+    //   &&
+    //     m_PoseEstimatior.get2dPose()
+    //       .getRotation()
+    //     .minus(
+    //       kPoses.blueFrontLeft.getRotation())
+    //         .getDegrees()
+    //     < 0.1)
+    // .andThen(() -> joystickOperated())
   }
 
   /**

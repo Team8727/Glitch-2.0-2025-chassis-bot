@@ -6,7 +6,6 @@ package frc.robot.subsystems;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -14,9 +13,7 @@ import frc.robot.Constants.kSwerve;
 
 public class Autos extends SubsystemBase {
   /** Creates a new Autos. */
-
-  public Autos() {
-  }
+  public Autos() {}
 
   public Command align(Pose2d goal) {
     return AutoBuilder.pathfindToPose(

@@ -6,17 +6,19 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.subsystems.AlgaeIntake.AlgaeIntakeRollers;
-import frc.robot.subsystems.AlgaeIntake.AlgaeIntakePivot;
 import frc.robot.Constants.kAlgaeIntake.kAlgaeIntakePivot;
+import frc.robot.subsystems.AlgaeIntake.AlgaeIntakePivot;
+import frc.robot.subsystems.AlgaeIntake.AlgaeIntakeRollers;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class GroundIntakeAlgaeCmd extends Command {
   /** Creates a new GroundIntakeAlgae. */
   AlgaeIntakePivot m_algaeIntakePivot;
+
   AlgaeIntakeRollers m_algaeIntakeRollers;
 
-  public GroundIntakeAlgaeCmd(AlgaeIntakePivot algaeIntakePivot, AlgaeIntakeRollers algaeRemoverPivot) {
+  public GroundIntakeAlgaeCmd(
+      AlgaeIntakePivot algaeIntakePivot, AlgaeIntakeRollers algaeRemoverPivot) {
     // Use addRequirements() here to declare subsystem dependencies.
 
     this.m_algaeIntakePivot = algaeIntakePivot;
@@ -31,16 +33,14 @@ public class GroundIntakeAlgaeCmd extends Command {
   @Override
   public void execute() {
 
-    // Set the intake pivot to the ground position and 
+    // Set the intake pivot to the ground position and
     Commands.sequence(
-      m_algaeIntakePivot.setIntakePivotPosition(kAlgaeIntakePivot.intakePivotDownPosition),
-      m_algaeIntakeRollers.intake(),
-      m_algaeIntakePivot.setIntakePivotPosition(kAlgaeIntakePivot.intakePivotScorePosition)
-    );
+        m_algaeIntakePivot.setIntakePivotPosition(kAlgaeIntakePivot.intakePivotDownPosition),
+        m_algaeIntakeRollers.intake(),
+        m_algaeIntakePivot.setIntakePivotPosition(kAlgaeIntakePivot.intakePivotScorePosition));
 
     // Set the intake rollers to idle pull in voltage
     m_algaeIntakeRollers.setRollerSpeed(kAlgaeIntakePivot.idleAlgaeIntakeVoltage);
-
   }
 
   // Called once the command ends or is interrupted.

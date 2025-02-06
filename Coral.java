@@ -4,23 +4,21 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-
 import static frc.robot.Constants.kCoralIntake;
 import static frc.robot.utilities.SparkConfigurator.getSparkMax;
 
-import java.util.Set;
-
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utilities.SparkConfigurator.LogData;
+import java.util.Set;
 
 public class Coral extends SubsystemBase {
   public SparkMax coralIntake;
@@ -29,35 +27,36 @@ public class Coral extends SubsystemBase {
   public SparkMaxConfig outtakeConfig;
   public DigitalInput frontCoralSensor;
   public DigitalInput backCoralSensor;
+
   /** Creates a new Coral. */
   public Coral() {
-    coralIntake = getSparkMax(
-      kCoralIntake.kRollers.intakeRollerMotorCANID, 
-      SparkMax.MotorType.kBrushless, 
-      false,
-      Set.of(),
-      Set.of(LogData.CURRENT, LogData.VOLTAGE));
+    coralIntake =
+        getSparkMax(
+            kCoralIntake.kRollers.intakeRollerMotorCANID,
+            SparkMax.MotorType.kBrushless,
+            false,
+            Set.of(),
+            Set.of(LogData.CURRENT, LogData.VOLTAGE));
 
     intakeConfig = new SparkMaxConfig();
     intakeConfig.idleMode(IdleMode.kBrake);
 
-    coralIntake.configure(intakeConfig, 
-    ResetMode.kNoResetSafeParameters, 
-    PersistMode.kNoPersistParameters);
+    coralIntake.configure(
+        intakeConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
-    coralOuttake = getSparkMax(
-      kCoralIntake.kRollers.outtakeRollerMotorCANID, 
-      SparkMax.MotorType.kBrushless, 
-      false,
-      Set.of(),
-      Set.of(LogData.CURRENT, LogData.VOLTAGE));
-    
+    coralOuttake =
+        getSparkMax(
+            kCoralIntake.kRollers.outtakeRollerMotorCANID,
+            SparkMax.MotorType.kBrushless,
+            false,
+            Set.of(),
+            Set.of(LogData.CURRENT, LogData.VOLTAGE));
+
     outtakeConfig = new SparkMaxConfig();
     outtakeConfig.idleMode(IdleMode.kBrake);
 
-    coralOuttake.configure(outtakeConfig,
-    ResetMode.kNoResetSafeParameters,
-    PersistMode.kNoPersistParameters);
+    coralOuttake.configure(
+        outtakeConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
   }
 
   private void setIntakeSpeed(double speed) {
@@ -90,9 +89,8 @@ public class Coral extends SubsystemBase {
 
   public Command coralOuttake() {
     return new ParallelCommandGroup(
-      new RunCommand(() -> coralIntake(), this),
-      new RunCommand(() -> setOuttakeVoltage(-kCoralIntake.kRollers.outtakeVoltage), this)
-    );
+        new RunCommand(() -> coralIntake(), this),
+        new RunCommand(() -> setOuttakeVoltage(-kCoralIntake.kRollers.outtakeVoltage), this));
   }
 
   @Override

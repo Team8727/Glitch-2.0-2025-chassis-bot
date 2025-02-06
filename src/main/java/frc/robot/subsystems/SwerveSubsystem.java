@@ -12,10 +12,9 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
-import frc.robot.utilities.MAXSwerve;
 import frc.robot.Constants.kSwerve;
 import frc.robot.Constants.kSwerve.kModule;
+import frc.robot.utilities.MAXSwerve;
 import frc.robot.utilities.NetworkTableLogger;
 
 public class SwerveSubsystem extends SubsystemBase {
@@ -123,7 +122,8 @@ public class SwerveSubsystem extends SubsystemBase {
         kSwerve.Auton.controller.calculate(
             pose,
             sample.getPose(),
-            Math.sqrt(Math.pow(sample.vx, 2) * Math.pow(sample.vy, 2)) * kSwerve.Auton.maxOnTheFlyVel,
+            Math.sqrt(Math.pow(sample.vx, 2) * Math.pow(sample.vy, 2))
+                * kSwerve.Auton.maxOnTheFlyVel,
             sample.getPose().getRotation());
 
     // Apply the generated speeds
