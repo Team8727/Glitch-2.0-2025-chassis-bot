@@ -35,17 +35,18 @@ public class ScoreAlgaeProcessorCmd extends Command {
     // Set the intake to score position, score the algae by running rollers, and then set the intake to home position.
     m_algaeIntakePivot.setIntakePivotPosition(kAlgaeIntakePivot.intakePivotScorePosition);
     m_algaeIntakeRollers.score();
-    m_algaeIntakePivot.setIntakePivotPosition(kAlgaeIntakePivot.intakePivotHomePosition);
 
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_algaeIntakePivot.setIntakePivotPosition(kAlgaeIntakePivot.intakePivotHomePosition);
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return !m_algaeIntakeRollers.getAlgaeCheck();
   }
 }

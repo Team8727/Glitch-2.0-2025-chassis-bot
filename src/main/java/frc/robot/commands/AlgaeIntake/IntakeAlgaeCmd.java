@@ -5,9 +5,7 @@
 package frc.robot.commands.AlgaeIntake;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.Constants.kAlgaeIntake.kAlgaeIntakePivot;
-import frc.robot.Constants.kAlgaeIntake.kAlgaeIntakeRollers;
 import frc.robot.subsystems.AlgaeIntake.AlgaeIntakePivot;
 import frc.robot.subsystems.AlgaeIntake.AlgaeIntakeRollers;
 
@@ -29,34 +27,30 @@ public class IntakeAlgaeCmd extends Command {
   @Override
   public void initialize() {}
 
-  public Command intake() {
-    return new RunCommand(() -> m_algaeIntakeRollers.setRollerSpeed(kAlgaeIntakeRollers.intakeSpeed))
-        .until(() -> m_algaeIntakeRollers.getAlgaeCheck())
-        .andThen(
-            new RunCommand(() -> m_algaeIntakeRollers.setRollerSpeed(kAlgaeIntakeRollers.intakeSpeed))
-                .withTimeout(0.5)) // TODO: this additional time may have to be modified or removed
-        .finallyDo(() -> m_algaeIntakeRollers.setRollerSpeed(0));
-  }
-
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
 
     // Set the intake pivot to the ground position and
     m_algaeIntakePivot.setIntakePivotPosition(kAlgaeIntakePivot.intakePivotDownPosition);
-    intake();
-    m_algaeIntakePivot.setIntakePivotPosition(kAlgaeIntakePivot.intakePivotScorePosition);
-    // Set the intake rollers to idle pull in voltage
-    m_algaeIntakeRollers.stopRollers();
+    m_algaeIntakeRollers.intake();
+
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+
+    // Go back to home position
+    m_algaeIntakePivot.setIntakePivotPosition(kAlgaeIntakePivot.intakePivotHomePosition);
+
+    // Set the intake rollers to idle pull in voltage
+    m_algaeIntakeRollers.setRollerSpeed(kAlgaeIntakePivot.idleAlgaeIntakeVoltage);
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return m_algaeIntakeRollers.getAlgaeCheck();
   }
 }
