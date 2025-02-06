@@ -16,7 +16,7 @@ public class DeployCoral extends Command {
   private double flywheelSpeed;
   /** Creates a new coralDeployer. */
   public DeployCoral(Coral coral, double scoreLevel) {
-    // Use addRequirements() here to declare subsystem dependencies.
+    // Use addRequirements() here to declare subsystem dependencies
     m_coral = coral;
     m_elevatorGoalPos = scoreLevel;
   }
