@@ -5,18 +5,18 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.kAlgaeIntake.kAlgaeIntakePivot;
 import frc.robot.subsystems.AlgaeIntake.AlgaeIntakePivot;
 import frc.robot.subsystems.AlgaeIntake.AlgaeIntakeRollers;
+import frc.robot.Constants.kAlgaeIntake.kAlgaeIntakePivot;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class GroundIntakeAlgaeCmd extends Command {
-  /** Creates a new GroundIntakeAlgae. */
+public class ScoreAlgaeProcessorCmd extends Command {
+  /** Creates a new ScoreAlgaeProcessorCmd. */
 
   AlgaeIntakePivot m_algaeIntakePivot;
   AlgaeIntakeRollers m_algaeIntakeRollers;
 
-  public GroundIntakeAlgaeCmd(
+  public ScoreAlgaeProcessorCmd(
       AlgaeIntakePivot algaeIntakePivot, AlgaeIntakeRollers algaeIntakeRollers) {
     // Use addRequirements() here to declare subsystem dependencies.
 
@@ -32,13 +32,11 @@ public class GroundIntakeAlgaeCmd extends Command {
   @Override
   public void execute() {
 
-    // Set the intake pivot to the ground position and intake
-    m_algaeIntakePivot.setIntakePivotPosition(kAlgaeIntakePivot.intakePivotDownPosition);
-    m_algaeIntakeRollers.intake();
+    // Set the intake to score position, score the algae by running rollers, and then set the intake to home position.
     m_algaeIntakePivot.setIntakePivotPosition(kAlgaeIntakePivot.intakePivotScorePosition);
+    m_algaeIntakeRollers.score();
+    m_algaeIntakePivot.setIntakePivotPosition(kAlgaeIntakePivot.intakePivotHomePosition);
 
-    // Set the intake rollers to idle pull in voltage
-    m_algaeIntakeRollers.setRollerSpeed(kAlgaeIntakePivot.idleAlgaeIntakeVoltage);
   }
 
   // Called once the command ends or is interrupted.

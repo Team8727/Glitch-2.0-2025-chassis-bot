@@ -76,6 +76,12 @@ public class AlgaeIntakeRollers extends SubsystemBase {
         .finallyDo(() -> setRollerVoltage(0));
   }
 
+  public Command score() {
+    return run(() -> setRollerVoltage(-kAlgaeIntakeRollers.scoreVoltage))
+        .until(() -> !getAlgaeCheck())
+        .finallyDo(() -> setRollerVoltage(0));
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
