@@ -78,7 +78,6 @@ public class RobotContainer {
     m_driverController.x().toggleOnTrue(m_SwerveSubsystem.XPosition());
     // Align to pose
     m_driverController.b().onTrue(m_Autos.align(kPoses.blueFrontLeft));
-
     // Remove algae L3
     m_driverController.povUp().onTrue(new removeAlgae(m_AlgaeRemoverPivot, m_AlgeaRemoverRollers, 3));
     // Remove algae L2
