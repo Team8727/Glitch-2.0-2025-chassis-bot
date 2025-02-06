@@ -19,6 +19,7 @@ import frc.robot.subsystems.PoseEstimatior;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Elevator.AlgaeRemover.AlgaeRemoverPivot;
 import frc.robot.subsystems.Elevator.AlgaeRemover.AlgaeRemoverRollers;
+import frc.robot.subsystems.Elevator.Coral.Coral;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -35,6 +36,7 @@ public class Robot extends TimedRobot {
   private final Autos m_Autos = new Autos();
   private final AlgaeRemoverRollers m_AlgeaRemoverRollers = new AlgaeRemoverRollers();
   private final AlgaeRemoverPivot m_AlgaeRemoverPivot = new AlgaeRemoverPivot();
+  private final Coral m_coral = new Coral();
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -75,7 +77,8 @@ public class Robot extends TimedRobot {
             m_driverController,
             m_Autos,
             m_AlgaeRemoverPivot,
-            m_AlgeaRemoverRollers);
+            m_AlgeaRemoverRollers,
+            m_coral);
 
     PathfindingCommand.warmupCommand().schedule();
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our

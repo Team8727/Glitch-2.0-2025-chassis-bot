@@ -10,12 +10,14 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.kVision.kPoses;
 import frc.robot.commands.removeAlgae;
+import frc.robot.commands.Coral.IntakeCoral;
 import frc.robot.commands.DriveCommands.SwerveJoystickCmd;
 import frc.robot.subsystems.Autos;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Elevator.AlgaeRemover.AlgaeRemoverPivot;
 import frc.robot.subsystems.Elevator.AlgaeRemover.AlgaeRemoverRollers;
+import frc.robot.subsystems.Elevator.Coral.Coral;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -31,6 +33,7 @@ public class RobotContainer {
   private final Autos m_Autos;
   private final AlgaeRemoverPivot m_AlgaeRemoverPivot;
   private final AlgaeRemoverRollers m_AlgeaRemoverRollers;
+  private final Coral m_coral;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer(
@@ -39,13 +42,15 @@ public class RobotContainer {
       CommandXboxController driverController,
       Autos autos,
       AlgaeRemoverPivot AlgaeRemoverPivot,
-      AlgaeRemoverRollers AlgaeRemoverRollers) {
+      AlgaeRemoverRollers AlgaeRemoverRollers,
+      Coral coral) {
     m_SwerveSubsystem = swerveSubsystem;
     m_ledSubsytem = ledSubsystem;
     m_driverController = driverController;
     m_Autos = autos;
     m_AlgaeRemoverPivot = AlgaeRemoverPivot;
     m_AlgeaRemoverRollers = AlgaeRemoverRollers;
+    m_coral = coral;
     // joystickOperated();
 
     // Configure the trigger bindings
@@ -73,39 +78,30 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Zero heading
-    m_driverController.start().onTrue(new InstantCommand(m_SwerveSubsystem::zeroHeading));
+    m_driverController.start().onTrue(new InstantCommand(() -> m_SwerveSubsystem.zeroHeading()));
     // X configuration
     m_driverController.x().toggleOnTrue(m_SwerveSubsystem.XPosition());
     // Align to pose
     m_driverController.b().onTrue(m_Autos.align(kPoses.blueFrontLeft));
     // Remove algae L3
-    m_driverController
-        .povUp()
-        .onTrue(new removeAlgae(m_AlgaeRemoverPivot, m_AlgeaRemoverRollers, 3));
+    m_driverController.povUp().onTrue(new removeAlgae(m_AlgaeRemoverPivot, m_AlgeaRemoverRollers, 3));
     // Remove algae L2
-    m_driverController
-        .povDown()
-        .onTrue(new removeAlgae(m_AlgaeRemoverPivot, m_AlgeaRemoverRollers, 2));
+    m_driverController.povDown().onTrue(new removeAlgae(m_AlgaeRemoverPivot, m_AlgeaRemoverRollers, 2));
+    // intake coral
+    m_driverController.rightBumper().onTrue(new IntakeCoral(m_coral));
+
 
     // Xbox Controller Bindings for LED Patterns
-    // m_driverController.y().onTrue(new InstantCommand(() ->
-    // m_ledSubsytem.setPattern(m_ledSubsytem.rainbow), m_ledSubsytem));
-    // m_driverController.b().onTrue(new InstantCommand(() ->
-    // m_ledSubsytem.setPattern(m_ledSubsytem.blue), m_ledSubsytem));
-    m_driverController
-        .leftBumper()
+    // m_driverController.y().onTrue(new InstantCommand(() -> m_ledSubsytem.setPattern(m_ledSubsytem.rainbow), m_ledSubsytem));
+    // m_driverController.b().onTrue(new InstantCommand(() -> m_ledSubsytem.setPattern(m_ledSubsytem.blue), m_ledSubsytem));
+    m_driverController.leftBumper()
         .onTrue(
             new InstantCommand(() -> m_ledSubsytem.setPattern(m_ledSubsytem.red), m_ledSubsytem));
-    m_driverController
-        .rightBumper()
-        .onTrue(
-            new InstantCommand(() -> m_ledSubsytem.setPattern(m_ledSubsytem.green), m_ledSubsytem));
-    m_driverController
-        .a()
+    // m_driverController.rightBumper().onTrue(new InstantCommand(() -> m_ledSubsytem.setPattern(m_ledSubsytem.green), m_ledSubsytem));
+    m_driverController.a()
         .onTrue(
             new InstantCommand(() -> m_ledSubsytem.setPattern(m_ledSubsytem.ace), m_ledSubsytem));
-    m_driverController
-        .y()
+    m_driverController.y()
         .onTrue(
             new InstantCommand(
                 () -> m_ledSubsytem.setPattern(m_ledSubsytem.colorCheck), m_ledSubsytem));
