@@ -344,7 +344,9 @@ public final class Constants {
       L1(10), // TODO: SET WITH ACTUAL VALUES
       L2(20), // TODO: SET WITH ACTUAL VALUES
       L3(30), // TODO: SET WITH ACTUAL VALUES
-      L4(50); // TODO: SET WITH ACTUAL VALUES
+      L4(50), // TODO: SET WITH ACTUAL VALUES
+      A2(25), // TODO: SET WITH ACTUAL VALUES
+      A3(35); // TODO: SET WITH ACTUAL VALUES
     
       private final double rotations;
       private ElevatorPosition(double rotations) {
