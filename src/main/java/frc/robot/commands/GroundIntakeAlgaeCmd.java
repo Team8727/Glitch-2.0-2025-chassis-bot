@@ -34,10 +34,9 @@ public class GroundIntakeAlgaeCmd extends Command {
   public void execute() {
 
     // Set the intake pivot to the ground position and
-    Commands.sequence(
-        m_algaeIntakePivot.setIntakePivotPosition(kAlgaeIntakePivot.intakePivotDownPosition),
-        m_algaeIntakeRollers.intake(),
-        m_algaeIntakePivot.setIntakePivotPosition(kAlgaeIntakePivot.intakePivotScorePosition));
+    m_algaeIntakePivot.setIntakePivotPosition(kAlgaeIntakePivot.intakePivotDownPosition);
+    m_algaeIntakeRollers.intake();
+    m_algaeIntakePivot.setIntakePivotPosition(kAlgaeIntakePivot.intakePivotScorePosition);
 
     // Set the intake rollers to idle pull in voltage
     m_algaeIntakeRollers.setRollerSpeed(kAlgaeIntakePivot.idleAlgaeIntakeVoltage);
