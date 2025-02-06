@@ -31,10 +31,10 @@ public class Elevator extends SubsystemBase {
     L2(20), // TODO: SET WITH ACTUAL VALUES
     L3(30), // TODO: SET WITH ACTUAL VALUES
     L4(50); // TODO: SET WITH ACTUAL VALUES
-    public final double distance;
+    public final double rotations;
 
     private ElevatorPosition(double distance) {
-      this.distance = distance;
+      rotations = distance;
     }
   }
 
