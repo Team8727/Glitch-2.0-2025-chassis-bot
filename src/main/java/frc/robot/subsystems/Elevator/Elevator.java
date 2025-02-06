@@ -6,6 +6,7 @@ package frc.robot.subsystems.Elevator;
 
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import static frc.robot.utilities.SparkConfigurator.getFollowerMax;
@@ -13,7 +14,6 @@ import static frc.robot.utilities.SparkConfigurator.getSparkMax;
 
 import java.util.Set;
 
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.kElevator;
 import frc.robot.utilities.SparkConfigurator.LogData;
@@ -24,6 +24,19 @@ public class Elevator extends SubsystemBase {
   private final SparkMax elevatorMotorL;
   private final SparkMaxConfig motorRConfig;
   private final SparkClosedLoopController elevatorPID;
+  private double currentHeight;
+  private enum ElevatorPosition {
+    HOME(0), // TODO: SET WITH ACTUAL VALUES
+    L1(10), // TODO: SET WITH ACTUAL VALUES
+    L2(20), // TODO: SET WITH ACTUAL VALUES
+    L3(30), // TODO: SET WITH ACTUAL VALUES
+    L4(50); // TODO: SET WITH ACTUAL VALUES
+    public final double distance;
+
+    private ElevatorPosition(double distance) {
+      this.distance = distance;
+    }
+  }
 
   /** Creates a new Elevator. */
   public Elevator() {
@@ -57,11 +70,18 @@ public class Elevator extends SubsystemBase {
       true);
 
     elevatorPID = elevatorMotorR.getClosedLoopController();
+
+    currentHeight = 0;
   }
 
   private void stopElevator() {
     elevatorMotorR.set(0);
     elevatorMotorL.set(0);
+  }
+
+  private void setElevatorHeight(double height) {
+    elevatorPID.setReference(height, ControlType.kPosition);
+    currentHeight = height;
   }
 
   @Override
