@@ -64,8 +64,7 @@ public class Elevator extends SubsystemBase {
   }
 
   private void stopElevator() {
-    elevatorMotorR.set(0);
-    elevatorMotorL.set(0);
+    elevatorPID.setReference(0, ControlType.kDutyCycle);
   }
 
   private void setElevatorHeight(double height) { // use enums for height
