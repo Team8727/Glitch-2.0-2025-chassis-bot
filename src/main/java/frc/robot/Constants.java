@@ -338,5 +338,19 @@ public final class Constants {
   public static class kElevator {
     public static int elevatorMotorRCANID = 0; // TODO: not set yet because elevator is not built yet
     public static int elevatorMotorLCANID = 0; // TODO: not set yet because elevator is not built yet
+
+    private enum ElevatorPosition {
+      HOME(0), // TODO: SET WITH ACTUAL VALUES
+      L1(10), // TODO: SET WITH ACTUAL VALUES
+      L2(20), // TODO: SET WITH ACTUAL VALUES
+      L3(30), // TODO: SET WITH ACTUAL VALUES
+      L4(50); // TODO: SET WITH ACTUAL VALUES
+  
+      public final double distance;
+  
+      private ElevatorPosition(double distance) {
+        this.distance = distance;
+      }
+    }
   }
 }

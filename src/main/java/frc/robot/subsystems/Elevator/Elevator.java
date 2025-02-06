@@ -20,23 +20,12 @@ import frc.robot.utilities.SparkConfigurator.LogData;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 public class Elevator extends SubsystemBase {
+
   private final SparkMax elevatorMotorR;
   private final SparkMax elevatorMotorL;
   private final SparkMaxConfig motorRConfig;
   private final SparkClosedLoopController elevatorPID;
   private double currentHeight;
-  private enum ElevatorPosition {
-    HOME(0), // TODO: SET WITH ACTUAL VALUES
-    L1(10), // TODO: SET WITH ACTUAL VALUES
-    L2(20), // TODO: SET WITH ACTUAL VALUES
-    L3(30), // TODO: SET WITH ACTUAL VALUES
-    L4(50); // TODO: SET WITH ACTUAL VALUES
-    public final double distance;
-
-    private ElevatorPosition(double distance) {
-      this.distance = distance;
-    }
-  }
 
   /** Creates a new Elevator. */
   public Elevator() {
