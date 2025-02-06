@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.Elevator;
 
+import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
@@ -22,7 +23,8 @@ public class Elevator extends SubsystemBase {
   private final SparkMax elevatorMotorR;
   private final SparkMax elevatorMotorL;
   private final SparkMaxConfig motorRConfig;
-  private final SparkMaxConfig motorLConfig;
+  private final SparkClosedLoopController elevatorPID;
+
   /** Creates a new Elevator. */
   public Elevator() {
     elevatorMotorR = getSparkMax(
@@ -35,34 +37,31 @@ public class Elevator extends SubsystemBase {
         LogData.VELOCITY,
         LogData.VOLTAGE,
         LogData.CURRENT));
+
+    motorRConfig = new SparkMaxConfig();
+    motorRConfig
+      .smartCurrentLimit(40) // TODO: SET ALL OF THIS STUFF
+      .idleMode(IdleMode.kBrake)
+      .closedLoop
+      .velocityFF(0)
+      .pid(0, 0, 0)
+      .maxMotion
+      .maxAcceleration(0)
+      .maxAcceleration(0)
+      .allowedClosedLoopError(0);
+
     elevatorMotorL = getFollowerMax(
       elevatorMotorR, 
       kElevator.elevatorMotorLCANID, 
       SparkMax.MotorType.kBrushless, 
       true);
 
-    motorRConfig = new SparkMaxConfig();
-    motorRConfig
-      .smartCurrentLimit(40)
-      .idleMode(IdleMode.kBrake)
-      .closedLoop
-      .velocityFF(0)
-      .pid(0, 0, 0)
-      .maxMotion
-      .maxAcceleration(0)
-      .maxAcceleration(0)
-      .allowedClosedLoopError(0);
-    motorLConfig = new SparkMaxConfig();
-    motorLConfig
-      .smartCurrentLimit(40)
-      .idleMode(IdleMode.kBrake)
-      .closedLoop
-      .velocityFF(0)
-      .pid(0, 0, 0)
-      .maxMotion
-      .maxAcceleration(0)
-      .maxAcceleration(0)
-      .allowedClosedLoopError(0);
+    elevatorPID = elevatorMotorR.getClosedLoopController();
+  }
+
+  private void elevatorStop() {
+    elevatorMotorR.set(0);
+    elevatorMotorL.set(0);
   }
 
   @Override
