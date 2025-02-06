@@ -16,27 +16,32 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.kAlgaeIntake.kPivot;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj.Encoder;
+
+import frc.robot.Constants.kAlgaeIntake.kAlgaeIntakePivot;
 import frc.robot.utilities.SparkConfigurator.LogData;
+
 import java.util.Set;
 
-public class PhantomIntakePivot extends SubsystemBase {
+public class AlgaeIntakePivot extends SubsystemBase {
 
   private final SparkMax intakePivotMotor;
   private final SparkMaxConfig config;
 
-
   private final ArmFeedforward pivotFeedforward;
   private final SparkClosedLoopController pivotPID;
 
+  private final Encoder pivotEncoder;
+
   /** Creates a new PhantomIntake. */
-  public PhantomIntakePivot() {
+  public AlgaeIntakePivot() {
 
     // =-=-=-=- pivotMotor Initialization -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
     intakePivotMotor =
         getSparkMax(
-            kPivot.intakePivotMotorCANID,
+            kAlgaeIntakePivot.intakePivotMotorCANID,
             SparkLowLevel.MotorType.kBrushless,
             false,
             Set.of(),
@@ -45,6 +50,10 @@ public class PhantomIntakePivot extends SubsystemBase {
                 LogData.VELOCITY,
                 LogData.VOLTAGE,
                 LogData.CURRENT)); // TODO: logging everything for now
+
+    // -=-=-=-=- Feedforward (Arm) for the IntakePivot -=-=-=-=-=-=-=-=-=-=-=-=
+
+    pivotFeedforward = new ArmFeedforward(0, 0, 0, 0); // TODO: Calculate these using sysID
 
     // =-=-=-=- pivotMotor PID config and maxMotion Constraints config -=-=-=-=
 
@@ -55,7 +64,7 @@ public class PhantomIntakePivot extends SubsystemBase {
     config
         .closedLoop
         .outputRange(-1,1) // TODO: this is set to full range of motor speed, might want to scale down to test.
-        .pid(0, 0, 0);
+        .pidf(0, 0, 0, pivotFeedforward.getKv());
     config
         .closedLoop
           .maxMotion
@@ -71,18 +80,18 @@ public class PhantomIntakePivot extends SubsystemBase {
 
     pivotPID = intakePivotMotor.getClosedLoopController();
 
-    // -=-=-=-=- Feedforward (Arm) for the IntakePivot -=-=-=-=-=-=-=-=-=-=-=-=
+    // -=-=-=-=- Encoder -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-    pivotFeedforward = new ArmFeedforward(0, 0, 0, 0); // TODO: Calculate these using sysID
+    pivotEncoder = new Encoder(kAlgaeIntakePivot.intakePivotEncoderChannelA, kAlgaeIntakePivot.intakePivotEncoderChannelB); // TODO: figure out the ports for the encoder
 
-    // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-
+    pivotEncoder.setDistancePerPulse(2 * Math.PI / (kAlgaeIntakePivot.encoderPulsesPerRevolution * kAlgaeIntakePivot.gearRatio)); //TODO: set these two values if not set
+    pivotEncoder.reset();
   }
 
   public void setMotorFFPID(
-      double positionRadians, double velocityRadPerSec, double accelRadPerSecSquared) {
+      double positionRadians, double velocityRadPerSec) {
     pivotPID.setReference(
-        pivotFeedforward.calculate(positionRadians, velocityRadPerSec, accelRadPerSecSquared),
+        pivotFeedforward.calculate(positionRadians, velocityRadPerSec),
         SparkBase.ControlType.kVoltage);
 
     // pivotMotor.setReference() //To set built-in PID (maybe put the feedforward calculation in
@@ -98,8 +107,19 @@ public class PhantomIntakePivot extends SubsystemBase {
 
   }
 
-  public void setIntakePosition(double positionRadians) {
-    pivotPID.setReference(positionRadians, SparkBase.ControlType.kPosition);
+  public Command setIntakePivotPosition(double positionRadians) {
+    return run(() -> pivotPID.setReference(positionRadians, SparkBase.ControlType.kPosition))
+      .until(() -> pivotEncoder.getDistance() == positionRadians); //I think this is right because distance per pulse wa set to be in radians
+  }
+
+  public Command setIntakePivotPositionMaxMotion(double positionRadians) {
+    return run(() -> pivotPID.setReference(positionRadians, SparkBase.ControlType.kMAXMotionPositionControl))
+      .until(() -> pivotEncoder.getDistance() == positionRadians); //Might not need this here.
+  }
+
+  //For SysId
+  public void setIntakeRawVoltage(double voltage) {
+    intakePivotMotor.setVoltage(voltage);
   }
 
   @Override

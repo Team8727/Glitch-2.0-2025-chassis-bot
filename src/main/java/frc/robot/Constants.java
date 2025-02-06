@@ -286,11 +286,23 @@ public final class Constants {
     }
   }
   public static class kAlgaeIntake {
-    public static class kPivot {
+    public static class kAlgaeIntakePivot {
       public static int intakePivotMotorCANID = 0; //TODO: not set yet because intake is not built yet
+
+      public static double intakePivotDownPosition = 0; //TODO: position not set yet because intake is not built yet
+      public static double intakePivotScorePosition = 0; //TODO: position not set yet because intake is not built yet
+      public static double intakePivotHomePosition = 0; //TODO: position not set yet because intake is not built yet
+
+      public static int intakePivotEncoderChannelA = 0; //TODO: not set yet because intake is not built yet
+      public static int intakePivotEncoderChannelB = 0; //TODO: not set yet because intake is not built yet
+      public static double encoderPulsesPerRevolution = 2048; //Maybe?
+
+      public static double gearRatio = 0; //TODO: set using document in Glitch Drive.
+
+      public static double idleAlgaeIntakeVoltage = 0; //TODO: set as needed when testing
     }
 
-    public static class kRollers {
+    public static class kAlgaeIntakeRollers {
       public static int rollerMotorCANID = 0; //TODO: not set yet because intake is not built yet
 
       public static int sensorChannel = 0; //TODO: not set yet because intake is not built yet
