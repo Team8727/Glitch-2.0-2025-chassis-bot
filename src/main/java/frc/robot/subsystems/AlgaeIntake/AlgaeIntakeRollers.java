@@ -6,10 +6,12 @@ package frc.robot.subsystems.AlgaeIntake;
 
 import static frc.robot.utilities.SparkConfigurator.getSparkMax;
 
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -20,9 +22,10 @@ import frc.robot.utilities.SparkConfigurator.LogData;
 import java.util.Set;
 
 public class AlgaeIntakeRollers extends SubsystemBase {
-  public SparkMax intakeRollerMotor;
-  public SparkMaxConfig intakeRollerConfig;
-  public DigitalInput algaeCheck;
+  public final SparkMax intakeRollerMotor;
+  public final SparkMaxConfig config;
+  public final DigitalInput algaeCheck;
+  public final SparkClosedLoopController rollerPID;
 
   /** Creates a new AlgaeIntakeRollers. */
   public AlgaeIntakeRollers() {
@@ -32,48 +35,55 @@ public class AlgaeIntakeRollers extends SubsystemBase {
             SparkLowLevel.MotorType.kBrushless,
             false,
             Set.of(),
-            Set.of(LogData.CURRENT, LogData.VOLTAGE));
+            Set.of(
+                LogData.POSITION,
+                LogData.VELOCITY,
+                LogData.VOLTAGE,
+                LogData.CURRENT)); // TODO: logging everything for now
 
-    intakeRollerConfig = new SparkMaxConfig();
-    intakeRollerConfig.idleMode(IdleMode.kBrake);
+    config = new SparkMaxConfig();
+    config
+      .smartCurrentLimit(25) // TODO: figure out what this should be
+      .idleMode(IdleMode.kBrake)
+      .closedLoop
+      .velocityFF(0) // TODO: tune
+      .pid(0, 0, 0)
+      .maxMotion
+      .maxAcceleration(0)
+      .maxAcceleration(0)
+      .allowedClosedLoopError(0);
 
     intakeRollerMotor.configure(
-        intakeRollerConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+        config, 
+        ResetMode.kNoResetSafeParameters, 
+        PersistMode.kNoPersistParameters);
 
     algaeCheck = new DigitalInput(kAlgaeIntakeRollers.sensorChannel);
+
+    rollerPID = intakeRollerMotor.getClosedLoopController();
   }
 
   public void setRollerSpeed(double speed) {
-    intakeRollerMotor.set(
-        speed); // probably should use the intakePivotReduction here but I don't know how to do that
-    // properly
+    rollerPID.setReference(speed, ControlType.kVelocity); 
   }
 
   public void setRollerVoltage(double voltage) {
-    intakeRollerMotor.setVoltage(voltage);
+    rollerPID.setReference(voltage, ControlType.kVoltage);
   }
 
   public void stopRollers() {
-    intakeRollerMotor.set(0);
+    setRollerSpeed(0);
   }
 
   public boolean getAlgaeCheck() {
     return algaeCheck.get();
   }
 
-  public Command intake() {
-    return run(() -> setRollerVoltage(-kAlgaeIntakeRollers.intakeVoltage))
-        .until(() -> getAlgaeCheck())
-        .andThen(
-            run(() -> setRollerVoltage(-kAlgaeIntakeRollers.intakeVoltage))
-                .withTimeout(0.5)) // TODO: this additional time may have to be modified or removed
-        .finallyDo(() -> setRollerVoltage(0));
-  }
-
   public Command outtake() {
-    return run(() -> setRollerVoltage(-kAlgaeIntakeRollers.outtakeVoltage))
+    return run(() -> setRollerSpeed(-kAlgaeIntakeRollers.outtakeSpeed))
         .until(() -> !getAlgaeCheck())
-        .finallyDo(() -> setRollerVoltage(0));
+          .withTimeout(.5)
+        .finallyDo(() -> setRollerSpeed(0));
   }
 
   public Command score() {
@@ -81,7 +91,7 @@ public class AlgaeIntakeRollers extends SubsystemBase {
         .until(() -> !getAlgaeCheck())
         .finallyDo(() -> setRollerVoltage(0));
   }
-
+  
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
