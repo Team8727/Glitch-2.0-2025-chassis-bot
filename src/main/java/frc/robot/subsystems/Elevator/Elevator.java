@@ -26,6 +26,18 @@ public class Elevator extends SubsystemBase {
   private final SparkMaxConfig motorRConfig;
   private final SparkClosedLoopController elevatorPID;
   private double currentHeight;
+  private enum ElevatorPosition {
+    HOME(0), // TODO: SET WITH ACTUAL VALUES
+    L1(10), // TODO: SET WITH ACTUAL VALUES
+    L2(20), // TODO: SET WITH ACTUAL VALUES
+    L3(30), // TODO: SET WITH ACTUAL VALUES
+    L4(50); // TODO: SET WITH ACTUAL VALUES
+    public final double rotations;
+
+    private ElevatorPosition(double distance) {
+      rotations = distance;
+    }
+  }
 
   /** Creates a new Elevator. */
   public Elevator() {
