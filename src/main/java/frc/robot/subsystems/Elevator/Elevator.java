@@ -59,7 +59,7 @@ public class Elevator extends SubsystemBase {
     elevatorPID = elevatorMotorR.getClosedLoopController();
   }
 
-  private void elevatorStop() {
+  private void stopElevator() {
     elevatorMotorR.set(0);
     elevatorMotorL.set(0);
   }
