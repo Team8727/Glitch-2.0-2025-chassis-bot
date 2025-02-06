@@ -332,4 +332,9 @@ public final class Constants {
       public static int outtakeSpeed = -5; // TODO: not set yet because intake is not built yet
     }
   }
+
+  public static class kElevator {
+    public static int elevatorMotorRCANID = 0; // TODO: not set yet because elevator is not built yet
+    public static int elevatorMotorLCANID = 0; // TODO: not set yet because elevator is not built yet
+  }
 }
