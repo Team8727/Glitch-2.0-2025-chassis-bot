@@ -51,6 +51,8 @@ public class IntakeAlgaeCmd extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+
+    // Finish when algae is detected
     return m_algaeIntakeRollers.getAlgaeCheck();
   }
 }

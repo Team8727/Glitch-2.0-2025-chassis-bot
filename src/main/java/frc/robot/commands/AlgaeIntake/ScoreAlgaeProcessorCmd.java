@@ -41,6 +41,8 @@ public class ScoreAlgaeProcessorCmd extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+
+    // Go to home position (in robot) after scoring
     m_algaeIntakePivot.setIntakePivotPosition(kAlgaeIntakePivot.intakePivotHomePosition);
   }
 

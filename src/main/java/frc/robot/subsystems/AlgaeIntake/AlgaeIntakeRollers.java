@@ -86,6 +86,15 @@ public class AlgaeIntakeRollers extends SubsystemBase {
         .finallyDo(() -> setRollerSpeed(0));
   }
 
+  public Command intake() {
+    return run(() -> setRollerSpeed(kAlgaeIntakeRollers.intakeSpeed))
+        .until(() -> getAlgaeCheck())
+        .andThen(
+            run(() -> setRollerSpeed(kAlgaeIntakeRollers.intakeSpeed))
+                .withTimeout(0.5)) // TODO: this additional time may have to be modified or removed
+        .finallyDo(() -> setRollerSpeed(0));
+  }
+
   public Command score() {
     return run(() -> setRollerVoltage(-kAlgaeIntakeRollers.scoreVoltage))
         .until(() -> !getAlgaeCheck())
