@@ -30,16 +30,16 @@ public class DeployCoral extends Command {
   // Called every time the scheduler runs while the command is scheduled
   @Override
   public void execute() {
-    if (m_scoreLevel == 0) {
+    if (m_scoreLevel == 1) {
       m_elevator.setElevatorHeight(kElevator.ElevatorPosition.L1);
       m_coral.coralOuttake(0);
-    } else if (m_scoreLevel == 1) {
+    } else if (m_scoreLevel == 2) {
       m_elevator.setElevatorHeight(kElevator.ElevatorPosition.L2);
       m_coral.coralOuttake(0);
-    } else if (m_scoreLevel == 2) {
+    } else if (m_scoreLevel == 3) {
       m_elevator.setElevatorHeight(kElevator.ElevatorPosition.L3);
       m_coral.coralOuttake(0);
-    } else if (m_scoreLevel == 3) {
+    } else if (m_scoreLevel == 4) {
       m_elevator.setElevatorHeight(kElevator.ElevatorPosition.L4);
       m_coral.coralOuttake(0);
     }
