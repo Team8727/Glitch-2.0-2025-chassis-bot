@@ -21,6 +21,7 @@ import frc.robot.Constants.kAlgaeIntake.kAlgaeIntakePivot;
 import frc.robot.utilities.NetworkTableLogger;
 import frc.robot.utilities.SparkConfigurator.LogData;
 import java.util.Set;
+import java.util.logging.Logger;
 
 public class AlgaeIntakePivot extends SubsystemBase {
 
@@ -97,17 +98,22 @@ public class AlgaeIntakePivot extends SubsystemBase {
     pivotEncoder.reset();
   }
 
+// -=-=-=--=-=-=-= Logging =-=-=-=-=-=-=-=-=-=-
+  boolean m_shouldLog = false;
+  NetworkTableLogger periodicLog = new NetworkTableLogger(this.getSubsystem().toString());
   /**
    * Whether to log values (like encoder data)
    */
-  public void logValues(boolean shouldLog) {
-    if (shouldLog) {
-      NetworkTableLogger logger = new NetworkTableLogger(this.getSubsystem().toString());
-      logger.logDouble("Motor Current", intakePivotMotor.getOutputCurrent());
-      logger.logDouble("Motor Encoder Value (Relative Encoder):", intakePivotMotor.getEncoder().getPosition());
-      logger.logDouble("External Encoder Value:", pivotEncoder.getDistance());
-    }
+  public void shouldLogValues(boolean shouldLog) {
+    m_shouldLog = shouldLog;
   }
+
+  public void startLogging() { // Only for calling in the periodic of this subsystem
+    periodicLog.logDouble("Motor Current", intakePivotMotor.getOutputCurrent());
+    periodicLog.logDouble("Motor Encoder Value (Relative Encoder):", intakePivotMotor.getEncoder().getPosition());
+    periodicLog.logDouble("External Encoder Value:", pivotEncoder.getDistance());
+  }
+// -=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   public void setMotorFFPID(double positionRadians, double velocityRadPerSec) {
     pivotPID.setReference(
@@ -149,5 +155,8 @@ public class AlgaeIntakePivot extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    if (m_shouldLog) {
+      startLogging();
+    }
   }
 }

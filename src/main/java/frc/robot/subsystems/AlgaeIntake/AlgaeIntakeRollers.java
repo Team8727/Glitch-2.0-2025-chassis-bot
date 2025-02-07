@@ -80,15 +80,21 @@ public class AlgaeIntakeRollers extends SubsystemBase {
     return algaeCheck.get();
   }
 
+// -=-=-=--=-=-=-= Logging =-=-=-=-=-=-=-=-=-=-
+  boolean m_shouldLog = false;
+  NetworkTableLogger periodicLog = new NetworkTableLogger(this.getSubsystem().toString());
   /**
    * Whether to log values (like encoder data)
    */
-  public void logValues(boolean shouldLog) {
-    if (shouldLog) {
-      NetworkTableLogger logger = new NetworkTableLogger(this.getSubsystem().toString());
-      // Add log values using logger as necessary
-    }
+  public void shouldLogValues(boolean shouldLog) {
+    m_shouldLog = shouldLog;
   }
+
+  public void startLogging() { // Only for calling in the periodic of this subsystem
+    periodicLog.logDouble("Motor Current", intakeRollerMotor.getOutputCurrent());
+    // Add other relevant values
+  }
+// -=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   public Command outtake() {
     return run(() -> setRollerSpeed(-kAlgaeIntakeRollers.outtakeSpeed))
@@ -115,5 +121,8 @@ public class AlgaeIntakeRollers extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    if (m_shouldLog) {
+      startLogging();
+    }
   }
 }
