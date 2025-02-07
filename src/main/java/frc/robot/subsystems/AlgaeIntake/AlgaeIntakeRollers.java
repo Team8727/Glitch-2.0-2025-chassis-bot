@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.kAlgaeIntake.kAlgaeIntakeRollers;
+import frc.robot.utilities.NetworkTableLogger;
 import frc.robot.utilities.SparkConfigurator.LogData;
 import java.util.Set;
 
@@ -77,6 +78,16 @@ public class AlgaeIntakeRollers extends SubsystemBase {
 
   public boolean getAlgaeCheck() {
     return algaeCheck.get();
+  }
+
+  /**
+   * Whether to log values (like encoder data)
+   */
+  public void logValues(boolean shouldLog) {
+    if (shouldLog) {
+      NetworkTableLogger logger = new NetworkTableLogger(this.getSubsystem().toString());
+      // Add log values using logger as necessary
+    }
   }
 
   public Command outtake() {

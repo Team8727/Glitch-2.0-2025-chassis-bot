@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.kAlgaeIntake.kAlgaeIntakePivot;
+import frc.robot.utilities.NetworkTableLogger;
 import frc.robot.utilities.SparkConfigurator.LogData;
 import java.util.Set;
 
@@ -96,6 +97,18 @@ public class AlgaeIntakePivot extends SubsystemBase {
     pivotEncoder.reset();
   }
 
+  /**
+   * Whether to log values (like encoder data)
+   */
+  public void logValues(boolean shouldLog) {
+    if (shouldLog) {
+      NetworkTableLogger logger = new NetworkTableLogger(this.getSubsystem().toString());
+      logger.logDouble("Motor Current", intakePivotMotor.getOutputCurrent());
+      logger.logDouble("Motor Encoder Value (Relative Encoder):", intakePivotMotor.getEncoder().getPosition());
+      logger.logDouble("External Encoder Value:", pivotEncoder.getDistance());
+    }
+  }
+
   public void setMotorFFPID(double positionRadians, double velocityRadPerSec) {
     pivotPID.setReference(
         pivotFeedforward.calculate(positionRadians, velocityRadPerSec),
@@ -111,7 +124,6 @@ public class AlgaeIntakePivot extends SubsystemBase {
     // control
     // pivotFeedforward.calculateWithVelocities(currentAngle, currentVelocity, nextVelocity); //
     // Other method of velocity control
-
   }
 
   public Command setIntakePivotPosition(double positionRadians) {

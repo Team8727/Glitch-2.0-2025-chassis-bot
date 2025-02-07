@@ -41,11 +41,11 @@ public class IntakeAlgaeCmd extends Command {
   @Override
   public void end(boolean interrupted) {
 
-    // Go back to home position
-    m_algaeIntakePivot.setIntakePivotPosition(kAlgaeIntakePivot.intakePivotHomePosition);
-
     // Set the intake rollers to idle pull in voltage
     m_algaeIntakeRollers.setRollerSpeed(kAlgaeIntakePivot.idleAlgaeIntakeVoltage);
+
+    // Go back to home position
+    m_algaeIntakePivot.setIntakePivotPosition(kAlgaeIntakePivot.intakePivotHomePosition);
   }
 
   // Returns true when the command should end.
@@ -53,6 +53,6 @@ public class IntakeAlgaeCmd extends Command {
   public boolean isFinished() {
 
     // Finish when algae is detected
-    return m_algaeIntakeRollers.getAlgaeCheck();
+    return m_algaeIntakeRollers.intake().isFinished();
   }
 }
