@@ -48,7 +48,7 @@ public class Elevator extends SubsystemBase {
       .velocityFF(0) // Find Using SysId
       .pid(0, 0, 0)
       .maxMotion
-      .maxAcceleration(0)
+      .maxVelocity(0)
       .maxAcceleration(0)
       .allowedClosedLoopError(0);
 
@@ -70,7 +70,7 @@ public class Elevator extends SubsystemBase {
   public void setElevatorHeight(kElevator.ElevatorPosition height) {
     // get double from enum
     double targetHeight = height.getRotations();
-    elevatorPID.setReference(targetHeight, ControlType.kPosition);
+    elevatorPID.setReference(targetHeight, ControlType.kMAXMotionPositionControl);
     // currentHeight = height;
   }
 
