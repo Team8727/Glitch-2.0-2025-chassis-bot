@@ -27,7 +27,6 @@ public class Elevator extends SubsystemBase {
   private final SparkMaxConfig motorRConfig;
   private final SparkClosedLoopController elevatorPID;
   private final DigitalInput limitSwitch;
-  private final double elevatorOffset;
   public double targetHeight;
 
   /** Creates a new Elevator. */
@@ -64,8 +63,6 @@ public class Elevator extends SubsystemBase {
     elevatorPID = elevatorMotorR.getClosedLoopController();
 
     limitSwitch = new DigitalInput(kElevator.limitSwitchDIO);
-
-    elevatorOffset = 0;
   }
 
   public void stopElevator() {
