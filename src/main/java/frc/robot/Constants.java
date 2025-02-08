@@ -8,6 +8,7 @@ import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.controllers.PathFollowingController;
 import com.pathplanner.lib.path.PathConstraints;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -140,7 +141,7 @@ public final class Constants {
                   0, // TODO: tune this also figure out what it is
                   new Constraints(maxVel, maxAccel)));
 
-      public static final PPHolonomicDriveController pathFollowController =
+      public static final PathFollowingController pathFollowController =
           new PPHolonomicDriveController(
               new PIDConstants(Auton.transP, 0, 0), new PIDConstants(angP, 0, angD));
 
@@ -276,19 +277,19 @@ public final class Constants {
   public static class kRemover {
     public static class kPivot {
       public static int removerPivotMotorCANID =
-          0; // TODO: not set yet because remover is not built yet
+          27; // TODO: not set yet because remover is not built yet
     }
 
     public static class kRollers {
       public static int removerRollerMotorCANID =
-          0; // TODO: not set yet because remover is not built yet
+          26; // TODO: not set yet because remover is not built yet
     }
   }
 
   public static class kAlgaeIntake {
     public static class kAlgaeIntakePivot {
       public static int intakePivotMotorCANID =
-          0; // TODO: not set yet because intake is not built yet
+          25; // TODO: not set yet because intake is not built yet
 
       public static double intakePivotDownPosition =
           0; // TODO: position not set yet because intake is not built yet
@@ -310,7 +311,7 @@ public final class Constants {
     }
 
     public static class kAlgaeIntakeRollers {
-      public static int rollerMotorCANID = 0; // TODO: not set yet because intake is not built yet
+      public static int rollerMotorCANID = 24; // TODO: not set yet because intake is not built yet
 
       public static int sensorChannel = 0; // TODO: not set yet because intake is not built yet
 
@@ -323,9 +324,9 @@ public final class Constants {
   public static class kCoralIntake {
     public static class kRollers {
       public static int intakeRollerMotorCANID =
-          0; // TODO: not set yet because intake is not built yet
+          20; // TODO: not set yet because intake is not built yet
       public static int outtakeRollerMotorCANID =
-          0; // TODO: not set yet because intake is not built yet
+          21; // TODO: not set yet because intake is not built yet
 
       public static int frontSensorChannel = 0; // TODO: not set yet because intake is not built yet
       public static int backSensorChannel = 0; // TODO: not set yet because intake is not built yet
@@ -336,8 +337,8 @@ public final class Constants {
   }
 
   public static class kElevator {
-    public static int elevatorMotorRCANID = 0; // TODO: not set yet because elevator is not built yet
-    public static int elevatorMotorLCANID = 0; // TODO: not set yet because elevator is not built yet
+    public static int elevatorMotorRCANID = 22; // TODO: not set yet because elevator is not built yet
+    public static int elevatorMotorLCANID = 23; // TODO: not set yet because elevator is not built yet
 
     public static int limitSwitchDIO = 0; // TODO: not set yet because elevator is not built yet
     public static double gearRatio = 5;

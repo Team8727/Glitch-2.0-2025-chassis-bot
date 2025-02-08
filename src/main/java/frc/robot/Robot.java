@@ -6,10 +6,10 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathfindingCommand;
-import com.pathplanner.lib.controllers.PathFollowingController;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.Kconfigs;
 import frc.robot.Constants.kSwerve;
@@ -56,10 +56,10 @@ public class Robot extends TimedRobot {
         m_SwerveSubsystem::getChassisSpeeds,
         (chassisSpeeds, driveff) -> {
           System.out.println("aligning");
-          m_SwerveSubsystem.setModuleStates(kSwerve.kinematics.toSwerveModuleStates(chassisSpeeds));
+          new RunCommand(() -> m_SwerveSubsystem.setModuleStates(kSwerve.kinematics.toSwerveModuleStates(chassisSpeeds)));
           // new DriveCmd(m_SwerveSubsystem, () -> chassisSpeeds, () -> true).execute();
         },
-        (PathFollowingController) kSwerve.Auton.pathFollowController,
+        kSwerve.Auton.pathFollowController,
         Kconfigs.robotConfig,
         () -> {
           // Boolean supplier that controls when the path will be mirrored for the red alliance
