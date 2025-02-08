@@ -301,7 +301,7 @@ public final class Constants {
       public static int intakePivotEncoderChannelA =
           0; // TODO: not set yet because intake is not built yet
       public static int intakePivotEncoderChannelB =
-          0; // TODO: not set yet because intake is not built yet
+          1; // TODO: not set yet because intake is not built yet
       public static double encoderPulsesPerRevolution = 2048; // Maybe?
 
       public static double gearRatio = 4; // TODO: This is probably what it is, but either set using document in Glitch Drive, or ask CAD.
@@ -313,7 +313,7 @@ public final class Constants {
     public static class kAlgaeIntakeRollers {
       public static int rollerMotorCANID = 24; // TODO: not set yet because intake is not built yet
 
-      public static int sensorChannel = 0; // TODO: not set yet because intake is not built yet
+      public static int sensorChannel = 5; // TODO: not set yet because intake is not built yet
 
       public static int intakeSpeed = 11; // TODO: not set yet because intake is not built yet
       public static int scoreVoltage = -11; // TODO: not final yet because intake is not built yet
@@ -328,8 +328,8 @@ public final class Constants {
       public static int outtakeRollerMotorCANID =
           21; // TODO: not set yet because intake is not built yet
 
-      public static int frontSensorChannel = 0; // TODO: not set yet because intake is not built yet
-      public static int backSensorChannel = 0; // TODO: not set yet because intake is not built yet
+      public static int frontSensorChannel = 7; // TODO: not set yet because intake is not built yet
+      public static int backSensorChannel = 2; // TODO: not set yet because intake is not built yet
 
       public static int intakeSpeed = 11; // TODO: not set yet because intake is not built yet
       public static int outtakeSpeed = -5; // TODO: not set yet because intake is not built yet
@@ -340,7 +340,7 @@ public final class Constants {
     public static int elevatorMotorRCANID = 22; // TODO: not set yet because elevator is not built yet
     public static int elevatorMotorLCANID = 23; // TODO: not set yet because elevator is not built yet
 
-    public static int limitSwitchDIO = 0; // TODO: not set yet because elevator is not built yet
+    public static int limitSwitchDIO = 3; // TODO: not set yet because elevator is not built yet
     public static double gearRatio = 5;
 
     public enum ElevatorPosition {
