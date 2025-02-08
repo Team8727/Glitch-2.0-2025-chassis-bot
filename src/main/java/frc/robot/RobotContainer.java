@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.kVision.kPoses;
 import frc.robot.commands.removeAlgae;
 import frc.robot.commands.AlgaeIntake.IntakeAlgaeCmd;
 import frc.robot.commands.AlgaeIntake.ScoreAlgaeProcessorCmd;
@@ -109,6 +110,9 @@ public class RobotContainer {
     m_driverController.b().onTrue(new DeployCoral(m_coral, 3, m_elevator));
     // Deploy coral L4
     m_driverController.a().onTrue(new DeployCoral(m_coral, 4, m_elevator));
+
+    // Align to pose
+    m_driverController.povLeft().onTrue(m_Autos.align(kPoses.blueFrontLeft));
 
     // Intake algae
     m_driverController.rightBumper().onTrue(
