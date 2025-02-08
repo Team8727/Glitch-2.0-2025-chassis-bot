@@ -14,6 +14,7 @@ import static frc.robot.utilities.SparkConfigurator.getSparkMax;
 
 import java.util.Set;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.kElevator;
 import frc.robot.utilities.SparkConfigurator.LogData;
@@ -25,7 +26,8 @@ public class Elevator extends SubsystemBase {
   private final SparkMax elevatorMotorL;
   private final SparkMaxConfig motorRConfig;
   private final SparkClosedLoopController elevatorPID;
-  public double targetHeight;
+  private final DigitalInput limitSwitch;
+  private final double elevatorOffset;
 
   /** Creates a new Elevator. */
   public Elevator() {
@@ -60,19 +62,32 @@ public class Elevator extends SubsystemBase {
 
     elevatorPID = elevatorMotorR.getClosedLoopController();
 
-    // currentHeight = 0;
+    limitSwitch = new DigitalInput(kElevator.limitSwitchDIO);
+
+    elevatorOffset = 0;
   }
 
-  private void stopElevator() {
+  public void stopElevator() {
     elevatorPID.setReference(0, ControlType.kDutyCycle);
   }
 
   public void setElevatorHeight(kElevator.ElevatorPosition height) {
     // get double from enum
-    targetHeight = height.getRotations();
-    elevatorPID.setReference(targetHeight, ControlType.kPosition);
+    double targetHeight = height.getRotations();
+    run(() -> elevatorPID.setReference(targetHeight, ControlType.kPosition))
+    .andThen(() -> {
+      if (targetHeight == 0){
+        run(() -> elevatorPID.setReference(-30*5, ControlType.kVelocity))
+        .until(() -> limitSwitch.get())// TODO: tune probobly
+        .andThen(() -> resetElevatorEncoders());
+      }
+    });
   }
 
+  public void resetElevatorEncoders() {
+    elevatorMotorR.getEncoder().setPosition(0);
+    elevatorMotorL.getEncoder().setPosition(0);
+  }
   // public void setElevatorHeightFF(kElevator.ElevatorPosition height) {
   //   // get double from enum
   //   double targetHeight = height.getRotations();

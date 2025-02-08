@@ -339,6 +339,7 @@ public final class Constants {
     public static int elevatorMotorRCANID = 0; // TODO: not set yet because elevator is not built yet
     public static int elevatorMotorLCANID = 0; // TODO: not set yet because elevator is not built yet
 
+    public static int limitSwitchDIO = 0; // TODO: not set yet because elevator is not built yet
     public static double gearRatio = 5;
 
     public enum ElevatorPosition {
