@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Percent;
 import static edu.wpi.first.units.Units.Second;
+import static frc.robot.Robot.isRedAlliance;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
@@ -85,6 +86,9 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
 
     // Set a default pattern (White Solid) to ensure LEDs are not blank initially
     currentPattern = LEDPattern.solid(Color.kBlack);
+    if (isRedAlliance() == true) {
+      currentPattern = LEDPattern.solid(Color.kRed);
+    }
     currentPattern.applyTo(stripBuffer);
     lightStrip.setData(stripBuffer);
     lightStrip.start();
