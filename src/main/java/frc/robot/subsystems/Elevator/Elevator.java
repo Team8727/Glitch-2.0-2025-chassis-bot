@@ -50,7 +50,7 @@ public class Elevator extends SubsystemBase {
       .velocityFF(0) // Find Using SysId
       .pid(0, 0, 0)
       .maxMotion
-      .maxAcceleration(0)
+      .maxVelocity(0)
       .maxAcceleration(0)
       .allowedClosedLoopError(0);
 

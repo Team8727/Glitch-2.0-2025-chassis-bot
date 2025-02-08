@@ -134,10 +134,15 @@ public class AlgaeIntakePivot extends SubsystemBase {
     pivotEncoder.reset();
   }
 
-  public void setMotorFFPID(double positionRadians, double velocityRadPerSec) {
+  public void setIntakePivotPosition(double positionRadians) {
+    pivotPID.setReference(positionRadians, SparkBase.ControlType.kMAXMotionPositionControl);
+  }
+
+  public void setMotorFFandPID(double positionRadians, double velocityRadPerSec) {
     pivotPID.setReference(
         pivotFeedforward.calculate(positionRadians, velocityRadPerSec),
         SparkBase.ControlType.kVoltage);
+  }
 
     // pivotMotor.setReference() //To set built-in PID (maybe put the feedforward calculation in
     // here as parameter?)
@@ -149,23 +154,10 @@ public class AlgaeIntakePivot extends SubsystemBase {
     // control
     // pivotFeedforward.calculateWithVelocities(currentAngle, currentVelocity, nextVelocity); //
     // Other method of velocity control
-  }
 
 // -=-=-=-=-=-=- Commands -=-=-=-=-=-=-=-=-=-=-|Subsystem|
 
-  public Command setIntakePivotPosition(double positionRadians) {
-    return run(() -> pivotPID.setReference(positionRadians, SparkBase.ControlType.kPosition))
-      .until(
-          () ->
-              pivotEncoder.getDistance() == positionRadians); 
-              // I think this is right because distance per pulse was set to be in radians
-  }
 
-  public Command setIntakePivotPositionMaxMotion(double positionRadians) {
-    return run(() ->
-            pivotPID.setReference(positionRadians, SparkBase.ControlType.kMAXMotionPositionControl))
-        .until(() -> pivotEncoder.getDistance() == positionRadians); // Might not need this here.
-  }
 
 // -=-=-=-=-=-=- Less Used Methods -=-=-=-=-=-=-|Subsystem|
 

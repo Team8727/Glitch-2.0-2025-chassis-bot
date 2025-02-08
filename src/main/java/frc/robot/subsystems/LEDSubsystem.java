@@ -16,18 +16,23 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.Map;
 
+import frc.robot.Constants.kElevator;
+import frc.robot.subsystems.Elevator.Elevator;
+
 public class LEDSubsystem extends SubsystemBase { // Fixed class name
 
   private AddressableLED lightStrip;
   private AddressableLEDBuffer stripBuffer;
   private LEDPattern currentPattern;
 
-  // For some reason the Color.k____ values are not working, so I re-defined them here. Red works
-  // fine though.
+  private Elevator m_elevator;
+
+  // For some reason the Color.k____ values are not working, so I re-defined them here. Red works fine though.
   // I think the blue and green values got flipped somehow.
   private Color m_green = new Color(0, 0, 255);
   private Color m_blue = new Color(0, 255, 0);
   private Color m_purple = new Color(255, 255, 0);
+  private Color m_orange = new Color(255, 0, 165);
   // Define LED Patterns
 
   // Blinking red pattern
@@ -60,8 +65,14 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
   // Green pattern that breathes
   public LEDPattern green = LEDPattern.solid(m_green).breathe(Second.of(2));
 
+  // Elevator progress bar pattern
+  private LEDPattern elevatorProgressMap = LEDPattern.progressMaskLayer(() -> m_elevator.targetHeight / kElevator.ElevatorPosition.L4.getRotations());
+  private LEDPattern elevatorProgressBase = LEDPattern.gradient(GradientType.kDiscontinuous, m_green, m_orange);
+  public LEDPattern elevatorProgress = elevatorProgressBase.mask(elevatorProgressMap);
+
   // Solid Colors
   public LEDPattern solidRed = LEDPattern.solid(Color.kRed);
+
   public LEDPattern solidGreen = LEDPattern.solid(m_green);
 
   /** Creates a new LEDSubsystem. */
