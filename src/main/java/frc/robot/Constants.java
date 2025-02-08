@@ -41,7 +41,7 @@ import edu.wpi.first.wpilibj.SPI.Port;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  public static class Kconfigs {
+  public static class kConfigs {
     public static RobotConfig robotConfig =
         new RobotConfig(
             65, // TODO: find real value

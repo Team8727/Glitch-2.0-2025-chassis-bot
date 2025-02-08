@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants.Kconfigs;
+import frc.robot.Constants.kConfigs;
 import frc.robot.Constants.kSwerve;
 import frc.robot.subsystems.Autos;
 import frc.robot.subsystems.LEDSubsystem;
@@ -60,7 +60,7 @@ public class Robot extends TimedRobot {
           // new DriveCmd(m_SwerveSubsystem, () -> chassisSpeeds, () -> true).execute();
         },
         (PathFollowingController) kSwerve.Auton.pathFollowController,
-        Kconfigs.robotConfig,
+        kConfigs.robotConfig,
         () -> {
           // Boolean supplier that controls when the path will be mirrored for the red alliance
           // This will flip the path being followed to the red side of the field.
