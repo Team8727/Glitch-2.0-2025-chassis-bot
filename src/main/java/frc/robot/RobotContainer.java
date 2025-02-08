@@ -34,38 +34,39 @@ import frc.robot.subsystems.Elevator.Coral.Coral;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem m_SwerveSubsystem;
-  private final LEDSubsystem m_ledSubsytem;
+  // private final LEDSubsystem m_ledSubsytem;
   private final CommandXboxController m_driverController;
   private final Autos m_Autos;
-  private final AlgaeRemoverPivot m_AlgaeRemoverPivot;
-  private final AlgaeRemoverRollers m_AlgeaRemoverRollers;
-  private final Coral m_coral;
-  private final Elevator m_elevator;
-  private final AlgaeIntakePivot m_AlgaeIntakePivot;
-  private final AlgaeIntakeRollers m_AlgaeIntakeRollers;
+  // private final AlgaeRemoverPivot m_AlgaeRemoverPivot;
+  // private final AlgaeRemoverRollers m_AlgeaRemoverRollers;
+  // private final Coral m_coral;
+  // private final Elevator m_elevator;
+  // private final AlgaeIntakePivot m_AlgaeIntakePivot;
+  // private final AlgaeIntakeRollers m_AlgaeIntakeRollers;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer(
       SwerveSubsystem swerveSubsystem,
-      LEDSubsystem ledSubsystem,
+      // LEDSubsystem ledSubsystem,
       CommandXboxController driverController,
-      Autos autos,
-      AlgaeRemoverPivot AlgaeRemoverPivot,
-      AlgaeRemoverRollers AlgaeRemoverRollers,
-      Coral coral,
-      Elevator elevator,
-      AlgaeIntakePivot AlgaeIntakePivot,
-      AlgaeIntakeRollers AlgaeIntakeRollers) {
+      Autos autos
+      // AlgaeRemoverPivot AlgaeRemoverPivot,
+      // AlgaeRemoverRollers AlgaeRemoverRollers,
+      // Coral coral,
+      // Elevator elevator,
+      // AlgaeIntakePivot AlgaeIntakePivot,
+      // AlgaeIntakeRollers AlgaeIntakeRollers
+      ) {
     m_SwerveSubsystem = swerveSubsystem;
-    m_ledSubsytem = ledSubsystem;
+    // m_ledSubsytem = ledSubsystem;
     m_driverController = driverController;
     m_Autos = autos;
-    m_AlgaeRemoverPivot = AlgaeRemoverPivot;
-    m_AlgeaRemoverRollers = AlgaeRemoverRollers;
-    m_coral = coral;
-    m_elevator = elevator;
-    m_AlgaeIntakePivot = AlgaeIntakePivot;
-    m_AlgaeIntakeRollers = AlgaeIntakeRollers;
+    // m_AlgaeRemoverPivot = AlgaeRemoverPivot;
+    // m_AlgeaRemoverRollers = AlgaeRemoverRollers;
+    // m_coral = coral;
+    // m_elevator = elevator;
+    // m_AlgaeIntakePivot = AlgaeIntakePivot;
+    // m_AlgaeIntakeRollers = AlgaeIntakeRollers;
     // joystickOperated();
 
     // Configure the trigger bindings
@@ -95,40 +96,40 @@ public class RobotContainer {
     // Zero heading
     m_driverController.start().onTrue(new InstantCommand(() -> m_SwerveSubsystem.zeroHeading()));
 
-    // Remove algae L3
-    m_driverController.povUp().onTrue(new removeAlgae(m_AlgaeRemoverPivot, m_AlgeaRemoverRollers, 3, m_elevator));
-    // Remove algae L2
-    m_driverController.povDown().onTrue(new removeAlgae(m_AlgaeRemoverPivot, m_AlgeaRemoverRollers, 2, m_elevator));
+    // // Remove algae L3
+    // m_driverController.povUp().onTrue(new removeAlgae(m_AlgaeRemoverPivot, m_AlgeaRemoverRollers, 3, m_elevator));
+    // // Remove algae L2
+    // m_driverController.povDown().onTrue(new removeAlgae(m_AlgaeRemoverPivot, m_AlgeaRemoverRollers, 2, m_elevator));
 
-    // intake coral
-    m_driverController.leftBumper().onTrue(new IntakeCoral(m_coral, m_elevator));
-    // Deploy coral L1
-    m_driverController.x().onTrue(new DeployCoral(m_coral, 1, m_elevator));
-    // Deploy coral L2
-    m_driverController.y().onTrue(new DeployCoral(m_coral, 2, m_elevator));
-    // Deploy coral L3
-    m_driverController.b().onTrue(new DeployCoral(m_coral, 3, m_elevator));
-    // Deploy coral L4
-    m_driverController.a().onTrue(new DeployCoral(m_coral, 4, m_elevator));
+    // // intake coral
+    // m_driverController.leftBumper().onTrue(new IntakeCoral(m_coral, m_elevator));
+    // // Deploy coral L1
+    // m_driverController.x().onTrue(new DeployCoral(m_coral, 1, m_elevator));
+    // // Deploy coral L2
+    // m_driverController.y().onTrue(new DeployCoral(m_coral, 2, m_elevator));
+    // // Deploy coral L3
+    // m_driverController.b().onTrue(new DeployCoral(m_coral, 3, m_elevator));
+    // // Deploy coral L4
+    // m_driverController.a().onTrue(new DeployCoral(m_coral, 4, m_elevator));
 
     // Align to pose
-    m_driverController.povLeft().onTrue(m_Autos.align(kPoses.blueFrontLeft));
+    m_driverController.povLeft().onTrue(m_Autos.align(kPoses.blueFrontLeft).andThen(() -> System.out.println("aligginginsdaod")));
 
-    // Intake algae
-    m_driverController.rightBumper().onTrue(
-      new IntakeAlgaeCmd(m_AlgaeIntakePivot, m_AlgaeIntakeRollers)
-      .andThen(() -> 
-        m_ledSubsytem.setPatternForDuration(
-          m_ledSubsytem.solidRed, 1.5)
-      ));
+    // // Intake algae
+    // m_driverController.rightBumper().onTrue(
+    //   new IntakeAlgaeCmd(m_AlgaeIntakePivot, m_AlgaeIntakeRollers)
+    //   .andThen(() -> 
+    //     m_ledSubsytem.setPatternForDuration(
+    //       m_ledSubsytem.solidRed, 1.5)
+    //   ));
 
-    // Place algae in processor
-    m_driverController.rightTrigger().onTrue(
-      new ScoreAlgaeProcessorCmd(m_AlgaeIntakePivot, m_AlgaeIntakeRollers)
-      .andThen(() -> 
-        m_ledSubsytem.setPatternForDuration(
-          m_ledSubsytem.solidGreen, 1.5)
-      ));
+    // // Place algae in processor
+    // m_driverController.rightTrigger().onTrue(
+    //   new ScoreAlgaeProcessorCmd(m_AlgaeIntakePivot, m_AlgaeIntakeRollers)
+    //   .andThen(() -> 
+    //     m_ledSubsytem.setPatternForDuration(
+    //       m_ledSubsytem.solidGreen, 1.5)
+    //   ));
 
     // X configuration
     // m_driverController.x().toggleOnTrue(m_SwerveSubsystem.XPosition());
@@ -137,17 +138,18 @@ public class RobotContainer {
     // Xbox Controller Bindings for LED Patterns
     // m_driverController.y().onTrue(new InstantCommand(() -> m_ledSubsytem.setPattern(m_ledSubsytem.rainbow), m_ledSubsytem));
     // m_driverController.b().onTrue(new InstantCommand(() -> m_ledSubsytem.setPattern(m_ledSubsytem.blue), m_ledSubsytem));
-    m_driverController.leftBumper()
-        .onTrue(
-            new InstantCommand(() -> m_ledSubsytem.setPattern(m_ledSubsytem.red), m_ledSubsytem));
-    // m_driverController.rightBumper().onTrue(new InstantCommand(() -> m_ledSubsytem.setPattern(m_ledSubsytem.green), m_ledSubsytem));
-    m_driverController.a()
-        .onTrue(
-            new InstantCommand(() -> m_ledSubsytem.setPattern(m_ledSubsytem.ace), m_ledSubsytem));
-    m_driverController.y()
-        .onTrue(
-            new InstantCommand(
-                () -> m_ledSubsytem.setPattern(m_ledSubsytem.colorCheck), m_ledSubsytem));
+
+    // m_driverController.leftBumper()
+    //     .onTrue(
+    //         new InstantCommand(() -> m_ledSubsytem.setPattern(m_ledSubsytem.red), m_ledSubsytem));
+    // // m_driverController.rightBumper().onTrue(new InstantCommand(() -> m_ledSubsytem.setPattern(m_ledSubsytem.green), m_ledSubsytem));
+    // m_driverController.a()
+    //     .onTrue(
+    //         new InstantCommand(() -> m_ledSubsytem.setPattern(m_ledSubsytem.ace), m_ledSubsytem));
+    // m_driverController.y()
+    //     .onTrue(
+    //         new InstantCommand(
+    //             () -> m_ledSubsytem.setPattern(m_ledSubsytem.colorCheck), m_ledSubsytem));
 
     // .until(() ->
     //     m_PoseEstimatior.get2dPose()

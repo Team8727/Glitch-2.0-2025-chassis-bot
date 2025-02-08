@@ -34,16 +34,16 @@ public class Robot extends TimedRobot {
 
   private final RobotContainer m_robotContainer;
   private final SwerveSubsystem m_SwerveSubsystem = new SwerveSubsystem();
-  private final LEDSubsystem m_ledSubsytem = new LEDSubsystem();
+  // private final LEDSubsystem m_ledSubsytem = new LEDSubsystem();
   private final CommandXboxController m_driverController = new CommandXboxController(0);
   private final PoseEstimatior m_PoseEstimatior = new PoseEstimatior(m_SwerveSubsystem);
   private final Autos m_Autos = new Autos();
-  private final AlgaeRemoverRollers m_AlgeaRemoverRollers = new AlgaeRemoverRollers();
-  private final AlgaeRemoverPivot m_AlgaeRemoverPivot = new AlgaeRemoverPivot();
-  private final Coral m_coral = new Coral();
-  private final Elevator m_elevator = new Elevator();
-  private final AlgaeIntakePivot m_AlgaeIntakePivot = new AlgaeIntakePivot();
-  private final AlgaeIntakeRollers m_AlgaeIntakeRollers = new AlgaeIntakeRollers();
+  // private final AlgaeRemoverRollers m_AlgeaRemoverRollers = new AlgaeRemoverRollers();
+  // private final AlgaeRemoverPivot m_AlgaeRemoverPivot = new AlgaeRemoverPivot();
+  // private final Coral m_coral = new Coral();
+  // private final Elevator m_elevator = new Elevator();
+  // private final AlgaeIntakePivot m_AlgaeIntakePivot = new AlgaeIntakePivot();
+  // private final AlgaeIntakeRollers m_AlgaeIntakeRollers = new AlgaeIntakeRollers();
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -80,15 +80,16 @@ public class Robot extends TimedRobot {
     m_robotContainer =
         new RobotContainer(
             m_SwerveSubsystem,
-            m_ledSubsytem,
+            // m_ledSubsytem,
             m_driverController,
-            m_Autos,
-            m_AlgaeRemoverPivot,
-            m_AlgeaRemoverRollers,
-            m_coral,
-            m_elevator,
-            m_AlgaeIntakePivot,
-            m_AlgaeIntakeRollers);
+            m_Autos
+            // m_AlgaeRemoverPivot,
+            // m_AlgeaRemoverRollers,
+            // m_coral,
+            // m_elevator,
+            // m_AlgaeIntakePivot,
+            // m_AlgaeIntakeRollers
+            );
 
     PathfindingCommand.warmupCommand().schedule();
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
@@ -121,7 +122,7 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    m_robotContainer.getAutonomousCommand();
+    // m_robotContainer.getAutonomousCommand();
   }
 
   /** This function is called periodically during autonomous. */
@@ -134,7 +135,8 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
-    m_robotContainer.getAutonomousCommand().cancel();
+    
+    // m_robotContainer.getAutonomousCommand().cancel();
 
     m_robotContainer.initiateJoystickOperated();
   }
