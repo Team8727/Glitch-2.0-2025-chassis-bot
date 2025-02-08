@@ -61,7 +61,7 @@ public class AlgaeIntakeRollers extends SubsystemBase {
       .closedLoop
         .outputRange(-1, 1) // TODO: currently set to full range
         .velocityFF(0) // TODO: tune
-        .pid(0, 0, 0)
+        .pidf(0, 0, 0, 0)
 
       // MaxMotion Control for more precise position control
         .maxMotion
