@@ -11,7 +11,8 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants.Kconfigs;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import frc.robot.Constants.kConfigs;
 import frc.robot.Constants.kSwerve;
 import frc.robot.subsystems.Autos;
 import frc.robot.subsystems.LEDSubsystem;
@@ -60,7 +61,7 @@ public class Robot extends TimedRobot {
           // new DriveCmd(m_SwerveSubsystem, () -> chassisSpeeds, () -> true).execute();
         },
         kSwerve.Auton.pathFollowController,
-        Kconfigs.robotConfig,
+        kConfigs.robotConfig,
         () -> {
           // Boolean supplier that controls when the path will be mirrored for the red alliance
           // This will flip the path being followed to the red side of the field.
@@ -160,7 +161,7 @@ public class Robot extends TimedRobot {
   @Override
   public void simulationPeriodic() {}
 
-  // private boolean isRedAlliance() {
-  //   return DriverStation.getAlliance().orElse(Alliance.Blue).equals(Alliance.Red);
-  // }
+  private static boolean isRedAlliance() {
+    return DriverStation.getAlliance().orElse(Alliance.Blue).equals(Alliance.Red);
+  }
 }
