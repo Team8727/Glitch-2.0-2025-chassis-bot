@@ -30,6 +30,9 @@ public class AlgaeIntakeRollers extends SubsystemBase {
 
   /** Creates a new AlgaeIntakeRollers. */
   public AlgaeIntakeRollers() {
+
+// -=-=-=-=-=- rollerMotor Initialization -=-=-=-=-=-|Contructor|
+
     intakeRollerMotor =
         getSparkMax(
             kAlgaeIntakeRollers.rollerMotorCANID,
@@ -42,28 +45,53 @@ public class AlgaeIntakeRollers extends SubsystemBase {
                 LogData.VOLTAGE,
                 LogData.CURRENT)); // TODO: logging everything for now
 
-    config = new SparkMaxConfig();
+// -=-=-=-=-=- pivotMotor config, PID config, and maxMotion constraints config -=-=-=-|Contructor|
+
+    // Setting the output range, PID, and maxMotion constraints for the motor
+    config = new SparkMaxConfig(); // TODO: figure out all values (figure out how to do maxvel and
+    // maxaccel) (pid is tuned through Rev Hardware Client for onboard PID
+    // on motor controller)
+
     config
+      // Motor Config
       .smartCurrentLimit(25) // TODO: figure out what this should be
       .idleMode(IdleMode.kBrake)
-      .closedLoop
-      .velocityFF(0) // TODO: tune
-      .pid(0, 0, 0)
-      .maxMotion
-      .maxAcceleration(0)
-      .maxAcceleration(0)
-      .allowedClosedLoopError(0);
 
+      // PID Control
+      .closedLoop
+        .outputRange(-1, 1) // TODO: currently set to full range
+        .velocityFF(0) // TODO: tune
+        .pid(0, 0, 0)
+
+      // MaxMotion Control for more precise position control
+        .maxMotion
+          .maxVelocity(0)
+          .maxAcceleration(0)
+          .allowedClosedLoopError(0);
+
+    // Configuring Motor With Config
     intakeRollerMotor.configure(
         config, 
         ResetMode.kNoResetSafeParameters, 
         PersistMode.kNoPersistParameters);
 
+// -=-=-=-=- Instantiate Intake Sensor -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-|Contructor|
+
     algaeCheck = new DigitalInput(kAlgaeIntakeRollers.sensorChannel);
+
+// -=-=-=-=- PID controller for the motor for convenience -=-=-=-|Contructor|
 
     rollerPID = intakeRollerMotor.getClosedLoopController();
   }
 
+// -=-=-=-=-=-=- Subsystem Methods -=-=-=-=-=-=-=-=-=-=-=-=-=-=-|Subsystem|
+
+  /**
+   * Sets the speed of the rollers, implementing built-in PID
+   * @param speed : the speed to provide to the motor's built-in PID controller
+   * @apiNote This also includes feedforward because we passed in a velocity FF 
+   * gain into the built-in controller, and it will automatically use the FF.
+   */
   public void setRollerSpeed(double speed) {
     rollerPID.setReference(speed, ControlType.kVelocity); 
   }
@@ -80,9 +108,11 @@ public class AlgaeIntakeRollers extends SubsystemBase {
     return algaeCheck.get();
   }
 
-// -=-=-=--=-=-=-= Logging =-=-=-=-=-=-=-=-=-=-
-  boolean m_shouldLog = false;
+// -=-=-=-=-=-=-=-= Logging =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-|Subsystem|
+  
+boolean m_shouldLog = false;
   NetworkTableLogger periodicLog = new NetworkTableLogger(this.getSubsystem().toString());
+
   /**
    * Whether to log values (like encoder data)
    */
@@ -90,11 +120,14 @@ public class AlgaeIntakeRollers extends SubsystemBase {
     m_shouldLog = shouldLog;
   }
 
+  /**
+   * Used in subsystem periodic to log and update values
+   */
   public void startLogging() { // Only for calling in the periodic of this subsystem
     periodicLog.logDouble("Motor Current", intakeRollerMotor.getOutputCurrent());
     // Add other relevant values
   }
-// -=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+// -=-=-=-=-=-=-=-=- Commands -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-|Subsystem|
 
   public Command outtake() {
     return run(() -> setRollerSpeed(-kAlgaeIntakeRollers.outtakeSpeed))
@@ -117,6 +150,8 @@ public class AlgaeIntakeRollers extends SubsystemBase {
         .until(() -> !getAlgaeCheck())
         .finallyDo(() -> setRollerVoltage(0));
   }
+
+// -=-=-=-=-=-=- Periodic Override -=-=-=-=-=-=-=-=-=-=-=-|Subsystem|
   
   @Override
   public void periodic() {

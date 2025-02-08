@@ -303,7 +303,7 @@ public final class Constants {
           0; // TODO: not set yet because intake is not built yet
       public static double encoderPulsesPerRevolution = 2048; // Maybe?
 
-      public static double gearRatio = 0; // TODO: set using document in Glitch Drive.
+      public static double gearRatio = 4; // TODO: This is probably what it is, but either set using document in Glitch Drive, or ask CAD.
 
       public static double idleAlgaeIntakeVoltage = 0; // TODO: set as needed when testing
 

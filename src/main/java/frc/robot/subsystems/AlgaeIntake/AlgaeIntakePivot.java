@@ -12,16 +12,19 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
+
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 import frc.robot.Constants.kAlgaeIntake.kAlgaeIntakePivot;
 import frc.robot.utilities.NetworkTableLogger;
 import frc.robot.utilities.SparkConfigurator.LogData;
+
 import java.util.Set;
-import java.util.logging.Logger;
 
 public class AlgaeIntakePivot extends SubsystemBase {
 
@@ -36,7 +39,7 @@ public class AlgaeIntakePivot extends SubsystemBase {
   /** Creates a new PhantomIntake. */
   public AlgaeIntakePivot() {
 
-    // =-=-=-=- pivotMotor Initialization -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+// =-=-=-=- pivotMotor Initialization -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-|Constructor|
 
     intakePivotMotor =
         getSparkMax(
@@ -50,27 +53,35 @@ public class AlgaeIntakePivot extends SubsystemBase {
                 LogData.VOLTAGE,
                 LogData.CURRENT)); // TODO: logging everything for now
 
-    // -=-=-=-=- Feedforward (Arm) for the IntakePivot -=-=-=-=-=-=-=-=-=-=-=-=
+// -=-=-=-=- Feedforward (Arm) for the IntakePivot (Not used currently) -=-=-=-=-=-=-|Constructor|
 
     pivotFeedforward = new ArmFeedforward(0, 0, 0, 0); // TODO: Calculate these using sysID
 
-    // =-=-=-=- pivotMotor PID config and maxMotion Constraints config -=-=-=-=
+// =-=-=-=- pivotMotor config, PID config, and maxMotion Constraints config -=-=-=-=-|Constructor|
 
     // Setting the output range, PID, and maxMotion constraints for the motor
     config = new SparkMaxConfig(); // TODO: figure out all values (figure out how to do maxvel and
     // maxaccel) (pid is tuned through Rev Hardware Client for onboard PID
     // on motor controller)
+
     config
-        .closedLoop
-        .outputRange(
-            -1,
-            1) // TODO: this is set to full range of motor speed, might want to scale down to test.
-        .pidf(0, 0, 0, pivotFeedforward.getKv());
-    config
-        .closedLoop
+      // Motor Config
+      .smartCurrentLimit(25) // TODO: figure out what this should be
+      .idleMode(IdleMode.kBrake)
+
+      // PID Control
+      .closedLoop
+        .outputRange(-1, 1) // TODO: this is set to full range of motor speed, might want to scale down to test.
+        .velocityFF(0)
+        .pid(0, 0, 0)
+
+      // MaxMotion Control for more precise position control
         .maxMotion
-        .maxVelocity(0) // TODO: this is set to zero right now!!
-        .maxAcceleration(0);
+          .maxVelocity(0) // TODO: this is set to zero right now!!
+          .maxAcceleration(0)
+          .allowedClosedLoopError(0); // TODO: set this
+
+    // Configuring Motor With Config
     intakePivotMotor.configure(
         config,
         ResetMode.kNoResetSafeParameters,
@@ -78,11 +89,11 @@ public class AlgaeIntakePivot extends SubsystemBase {
             .kNoPersistParameters); // TODO: Might need to be resetsafe and presistsafe, but nothing
     // is set yet, so I said no
 
-    // -=-=-=-=- PID controller for the motor -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+// -=-=-=-=- PID controller for the motor for convenience -=-=-=-=-=-=-=-=|Constructor|
 
     pivotPID = intakePivotMotor.getClosedLoopController();
 
-    // -=-=-=-=- Encoder -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+// -=-=-=-=- Encoder -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=|Constructor|
 
     pivotEncoder =
         new Encoder(
@@ -91,16 +102,16 @@ public class AlgaeIntakePivot extends SubsystemBase {
                 .intakePivotEncoderChannelB); // TODO: figure out the ports for the encoder
 
     pivotEncoder.setDistancePerPulse(
-        2
-            * Math.PI
-            / (kAlgaeIntakePivot.encoderPulsesPerRevolution
-                * kAlgaeIntakePivot.gearRatio)); // TODO: set these two values if not set
+        2 * Math.PI
+        / (kAlgaeIntakePivot.encoderPulsesPerRevolution * kAlgaeIntakePivot.gearRatio)); // TODO: set these two values if not set
     pivotEncoder.reset();
   }
 
-// -=-=-=--=-=-=-= Logging =-=-=-=-=-=-=-=-=-=-
+// -=-=-=--=-=-=-= Logging =-=-=-=-=-=-=-=-=-=-|Subsystem|
+
   boolean m_shouldLog = false;
   NetworkTableLogger periodicLog = new NetworkTableLogger(this.getSubsystem().toString());
+
   /**
    * Whether to log values (like encoder data)
    */
@@ -108,12 +119,20 @@ public class AlgaeIntakePivot extends SubsystemBase {
     m_shouldLog = shouldLog;
   }
 
+  /**
+   * Used in subsystem periodic to log and update values
+   */
   public void startLogging() { // Only for calling in the periodic of this subsystem
     periodicLog.logDouble("Motor Current", intakePivotMotor.getOutputCurrent());
     periodicLog.logDouble("Motor Encoder Value (Relative Encoder):", intakePivotMotor.getEncoder().getPosition());
     periodicLog.logDouble("External Encoder Value:", pivotEncoder.getDistance());
   }
-// -=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+// -=-=-=-=-=-=- Methods -=-=-=-=-=-=-=-=-=-=-|Subsystem|
+
+  public void resetEncoder() {
+    pivotEncoder.reset();
+  }
 
   public void setMotorFFPID(double positionRadians, double velocityRadPerSec) {
     pivotPID.setReference(
@@ -132,13 +151,14 @@ public class AlgaeIntakePivot extends SubsystemBase {
     // Other method of velocity control
   }
 
+// -=-=-=-=-=-=- Commands -=-=-=-=-=-=-=-=-=-=-|Subsystem|
+
   public Command setIntakePivotPosition(double positionRadians) {
     return run(() -> pivotPID.setReference(positionRadians, SparkBase.ControlType.kPosition))
-        .until(
-            () ->
-                pivotEncoder.getDistance()
-                    == positionRadians); // I think this is right because distance per pulse wa set
-    // to be in radians
+      .until(
+          () ->
+              pivotEncoder.getDistance() == positionRadians); 
+              // I think this is right because distance per pulse was set to be in radians
   }
 
   public Command setIntakePivotPositionMaxMotion(double positionRadians) {
@@ -147,10 +167,14 @@ public class AlgaeIntakePivot extends SubsystemBase {
         .until(() -> pivotEncoder.getDistance() == positionRadians); // Might not need this here.
   }
 
+// -=-=-=-=-=-=- Less Used Methods -=-=-=-=-=-=-|Subsystem|
+
   // For SysId
   public void setIntakeRawVoltage(double voltage) {
     intakePivotMotor.setVoltage(voltage);
   }
+
+// -=-=-=-=-=-=- Periodic Override -=-=-=-=-=-=-=-=-|Subsystem|
 
   @Override
   public void periodic() {

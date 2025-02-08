@@ -45,7 +45,7 @@ public class Elevator extends SubsystemBase {
       .smartCurrentLimit(40) // TODO: SET ALL OF THIS STUFF
       .idleMode(IdleMode.kBrake)
       .closedLoop
-      .velocityFF(0)
+      .velocityFF(0) // Find Using SysId
       .pid(0, 0, 0)
       .maxMotion
       .maxAcceleration(0)
@@ -73,6 +73,13 @@ public class Elevator extends SubsystemBase {
     elevatorPID.setReference(targetHeight, ControlType.kPosition);
     // currentHeight = height;
   }
+
+  // public void setElevatorHeightFF(kElevator.ElevatorPosition height) {
+  //   // get double from enum
+  //   double targetHeight = height.getRotations();
+  //   elevatorPID.setReference(targetHeight, ControlType.kPosition);
+  //   // currentHeight = height;
+  // }
 
   @Override
   public void periodic() {

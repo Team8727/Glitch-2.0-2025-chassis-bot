@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.LEDPattern.GradientType;
 import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.Map;
 
@@ -59,6 +60,10 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
   // Green pattern that breathes
   public LEDPattern green = LEDPattern.solid(m_green).breathe(Second.of(2));
 
+  // Solid Colors
+  public LEDPattern solidRed = LEDPattern.solid(Color.kRed);
+  public LEDPattern solidGreen = LEDPattern.solid(m_green);
+
   /** Creates a new LEDSubsystem. */
   public LEDSubsystem() {
     // LED setup and port configuration
@@ -77,6 +82,28 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
   public void setPattern(LEDPattern pattern) {
     currentPattern = pattern;
     System.out.println("Pattern set to: " + pattern);
+  }
+
+  /**
+   * Sets a pattern for a duration in seconds
+   * @param pattern the LEDPattern to apply
+   * @param seconds the duration in seconds to set the pattern to before turning the strip off
+   */
+  public void setPatternForDuration(LEDPattern pattern, double seconds) {
+    //Command Composition for duration pattern
+    new RunCommand(
+      () -> currentPattern = pattern)
+    .withTimeout(seconds)
+    .andThen(
+      () -> currentPattern = LEDPattern.solid(Color.kBlack));
+
+    //Notify of duration pattern
+    System.out.println("Pattern was set to: " + pattern + "for " + seconds + " seconds");
+  }
+
+  public void turnLEDsOff() {
+    currentPattern = LEDPattern.solid(Color.kBlack);
+    System.out.println("Pattern set to: " + LEDPattern.solid(Color.kBlack));
   }
 
   @Override

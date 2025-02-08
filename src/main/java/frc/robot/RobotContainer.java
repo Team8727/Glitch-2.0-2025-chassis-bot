@@ -6,6 +6,8 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.removeAlgae;
@@ -111,9 +113,20 @@ public class RobotContainer {
     m_driverController.a().onTrue(new DeployCoral(m_coral, 4, m_elevator));
 
     // Intake algae
-    m_driverController.rightBumper().onTrue(new IntakeAlgaeCmd(m_AlgaeIntakePivot, m_AlgaeIntakeRollers));
-    // Place algae
-    m_driverController.rightTrigger().onTrue(new ScoreAlgaeProcessorCmd(m_AlgaeIntakePivot, m_AlgaeIntakeRollers));
+    m_driverController.rightBumper().onTrue(
+      new IntakeAlgaeCmd(m_AlgaeIntakePivot, m_AlgaeIntakeRollers)
+      .andThen(() -> 
+        m_ledSubsytem.setPatternForDuration(
+          m_ledSubsytem.solidRed, 1.5)
+      ));
+
+    // Place algae in processor
+    m_driverController.rightTrigger().onTrue(
+      new ScoreAlgaeProcessorCmd(m_AlgaeIntakePivot, m_AlgaeIntakeRollers)
+      .andThen(() -> 
+        m_ledSubsytem.setPatternForDuration(
+          m_ledSubsytem.solidGreen, 1.5)
+      ));
 
     // X configuration
     // m_driverController.x().toggleOnTrue(m_SwerveSubsystem.XPosition());
