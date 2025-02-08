@@ -70,7 +70,7 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
   private LEDPattern elevatorProgressBase = LEDPattern.gradient(GradientType.kDiscontinuous, m_green, m_orange);
   public LEDPattern elevatorProgress = elevatorProgressBase.mask(elevatorProgressMap);
 
-  // Solid Colors
+  // Solid colors
   public LEDPattern solidRed = LEDPattern.solid(Color.kRed);
 
   public LEDPattern solidGreen = LEDPattern.solid(m_green);
@@ -109,7 +109,7 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
       () -> currentPattern = LEDPattern.solid(Color.kBlack));
 
     //Notify of duration pattern
-    System.out.println("Pattern was set to: " + pattern + "for " + seconds + " seconds");
+    System.out.println("Pattern was set to: " + pattern + " for " + seconds + " seconds");
   }
 
   public void turnLEDsOff() {
