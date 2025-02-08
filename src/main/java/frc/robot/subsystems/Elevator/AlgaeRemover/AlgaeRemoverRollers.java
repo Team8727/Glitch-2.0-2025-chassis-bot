@@ -45,7 +45,7 @@ public class AlgaeRemoverRollers extends SubsystemBase {
         .idleMode(IdleMode.kCoast)
         .closedLoop
         .velocityFF(0) // TODO: tune
-        .pid(0, 0, 0)
+        .pidf(0, 0, 0, 0)
         .maxMotion
         .maxAcceleration(0)
         .maxAcceleration(0)
