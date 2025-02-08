@@ -28,6 +28,7 @@ public class Elevator extends SubsystemBase {
   private final SparkClosedLoopController elevatorPID;
   private final DigitalInput limitSwitch;
   private final double elevatorOffset;
+  public double targetHeight;
 
   /** Creates a new Elevator. */
   public Elevator() {
@@ -73,7 +74,7 @@ public class Elevator extends SubsystemBase {
 
   public void setElevatorHeight(kElevator.ElevatorPosition height) {
     // get double from enum
-    double targetHeight = height.getRotations();
+    targetHeight = height.getRotations();
     run(() -> elevatorPID.setReference(targetHeight, ControlType.kPosition))
     .andThen(() -> {
       if (targetHeight == 0){
