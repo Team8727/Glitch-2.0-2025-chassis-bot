@@ -4,7 +4,10 @@
 
 package frc.robot.subsystems.AlgaeIntake;
 
+import static edu.wpi.first.units.Units.Volt;
 import static frc.robot.utilities.SparkConfigurator.getSparkMax;
+
+import java.util.Set;
 
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -17,13 +20,13 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 import frc.robot.Constants.kAlgaeIntake.kAlgaeIntakePivot;
 import frc.robot.utilities.NetworkTableLogger;
 import frc.robot.utilities.SparkConfigurator.LogData;
-
-import java.util.Set;
 
 public class AlgaeIntakePivot extends SubsystemBase {
 
@@ -51,6 +54,19 @@ public class AlgaeIntakePivot extends SubsystemBase {
                 LogData.VELOCITY,
                 LogData.VOLTAGE,
                 LogData.CURRENT)); // TODO: logging everything for now
+
+// -=-=-=-=- Encoder -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=|Constructor|
+
+    pivotEncoder =
+    new Encoder(
+        kAlgaeIntakePivot.intakePivotEncoderChannelA,
+        kAlgaeIntakePivot
+            .intakePivotEncoderChannelB); // TODO: figure out the ports for the encoder
+
+    pivotEncoder.setDistancePerPulse(
+    2 * Math.PI
+    / (kAlgaeIntakePivot.encoderPulsesPerRevolution * kAlgaeIntakePivot.gearRatio)); // TODO: set these two values if not set
+    pivotEncoder.reset();
 
 // -=-=-=-=- Feedforward (Arm) for the IntakePivot (Not used currently) -=-=-=-=-=-=-|Constructor|
 
@@ -91,19 +107,45 @@ public class AlgaeIntakePivot extends SubsystemBase {
 // -=-=-=-=- PID controller for the motor for convenience -=-=-=-=-=-=-=-=|Constructor|
 
     pivotPID = intakePivotMotor.getClosedLoopController();
+  }
 
-// -=-=-=-=- Encoder -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=|Constructor|
+// -=-=-=-=-=-=- System Identification (SysId) + Methods + Commands -=-=-=-=-=-=-=-=-=-=-|Subsystem|
 
-    pivotEncoder =
-        new Encoder(
-            kAlgaeIntakePivot.intakePivotEncoderChannelA,
-            kAlgaeIntakePivot
-                .intakePivotEncoderChannelB); // TODO: figure out the ports for the encoder
+  // Create the SysId routine
+  SysIdRoutine sysIdRoutine = new SysIdRoutine(
+    new SysIdRoutine.Config(),
+    new SysIdRoutine.Mechanism(
+      (voltage) -> this.runVolts(voltage.in(Volt)),
+      null, // No log consumer, since data is recorded by URCL
+      this
+    )
+  ); 
 
-    pivotEncoder.setDistancePerPulse(
-        2 * Math.PI
-        / (kAlgaeIntakePivot.encoderPulsesPerRevolution * kAlgaeIntakePivot.gearRatio)); // TODO: set these two values if not set
-    pivotEncoder.reset();
+  // For SysIdRoutine Creation (voltage consumer [acceptor])
+  public void runVolts(double voltage) {
+    intakePivotMotor.setVoltage(voltage);
+  }
+
+  // For running the motor using various SysIdRoutine commands for SysId to analyze for PID and FF values
+  public Command sysIdRoutine_quasistatic_fwd() {
+    return sysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward);
+  }
+
+  public Command sysIdRoutine_quasistatic_rev() {
+    return sysIdRoutine.quasistatic(SysIdRoutine.Direction.kReverse);
+  }
+
+  public Command sysIdRoutine_dynamic_fwd() {
+    return sysIdRoutine.dynamic(SysIdRoutine.Direction.kForward);
+  }
+
+  public Command sysIdRoutine_dynamic_rev() {
+    return sysIdRoutine.dynamic(SysIdRoutine.Direction.kReverse);
+  }
+
+  // Stopping the SysIdRoutine (for onFalse of the button trigger)
+  public Command stopSysIdRoutine() {
+    return run(() -> runVolts(0));
   }
 
 // -=-=-=--=-=-=-= Logging =-=-=-=-=-=-=-=-=-=-|Subsystem|
@@ -160,10 +202,7 @@ public class AlgaeIntakePivot extends SubsystemBase {
 
 // -=-=-=-=-=-=- Less Used Methods -=-=-=-=-=-=-|Subsystem|
 
-  // For SysId
-  public void setIntakeRawVoltage(double voltage) {
-    intakePivotMotor.setVoltage(voltage);
-  }
+
 
 // -=-=-=-=-=-=- Periodic Override -=-=-=-=-=-=-=-=-|Subsystem|
 

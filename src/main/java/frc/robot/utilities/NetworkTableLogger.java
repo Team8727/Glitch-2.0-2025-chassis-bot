@@ -3,6 +3,7 @@ package frc.robot.utilities;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
@@ -15,6 +16,7 @@ import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilderImpl;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,6 +47,9 @@ public class NetworkTableLogger {
   // Pose 3d logging objects
   StructPublisher<Pose3d> pose3dPublisher;
   StructArrayPublisher<Pose3d> pose3dArrayPublisher;
+
+  // ChassisSpeeds logging objects
+  StructPublisher<ChassisSpeeds> chassisSpeedsPublisher;
 
   // Swerve Module States logging objects
   StructArrayPublisher<SwerveModuleState> swerveModuleStatePublisher;
@@ -158,6 +163,19 @@ public class NetworkTableLogger {
       swerveModuleStatePublisher =
           table.getStructArrayTopic(key, SwerveModuleState.struct).publish();
     swerveModuleStatePublisher.set(swerveModuleStateList);
+  }
+
+  /**
+   * Log method for logging a ChassisSpeeds to the network table (can be seen using AdvantageScope, Glass,
+   * Elastic, etc.)
+   *
+   * @param key the key, a string, that will represent the value
+   * @param chassisSpeeds the value (ChassisSpeeds) that will be logged
+   */
+  public void logChassisSpeeds(String key, ChassisSpeeds chassisSpeeds) {
+    if (!table.containsKey(key))
+      chassisSpeedsPublisher = table.getStructTopic(key, ChassisSpeeds.struct).publish();
+    chassisSpeedsPublisher.set(chassisSpeeds);
   }
 
   /**

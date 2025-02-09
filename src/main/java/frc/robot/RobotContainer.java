@@ -4,11 +4,14 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.kVision.kPoses;
+import frc.robot.Constants.kSwerve;
 import frc.robot.commands.removeAlgae;
 import frc.robot.commands.AlgaeIntake.IntakeAlgaeCmd;
 import frc.robot.commands.AlgaeIntake.ScoreAlgaeProcessorCmd;
@@ -93,6 +96,15 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+
+    /* To Test ChassisSpeeds */
+    // m_driverController.a()
+    //   .toggleOnTrue(new RunCommand(
+    //     () -> 
+    //       m_SwerveSubsystem.setModuleStates(
+    //         kSwerve.kinematics.toSwerveModuleStates(
+    //           new ChassisSpeeds(1,1,1)))));
+
     // Zero heading
     m_driverController.start().onTrue(new InstantCommand(() -> m_SwerveSubsystem.zeroHeading()));
 
@@ -169,7 +181,8 @@ public class RobotContainer {
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
+   * Call this method from the {@link Robot#autonomousInit} method in order to run the autonomous command.
+   * 
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {

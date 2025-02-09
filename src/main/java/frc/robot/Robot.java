@@ -4,14 +4,21 @@
 
 package frc.robot;
 
+import java.util.Optional;
+
+import org.littletonrobotics.urcl.URCL;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathfindingCommand;
+
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+
 import frc.robot.Constants.kConfigs;
 import frc.robot.Constants.kSwerve;
 import frc.robot.subsystems.Autos;
@@ -24,6 +31,7 @@ import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.AlgaeRemover.AlgaeRemoverPivot;
 import frc.robot.subsystems.Elevator.AlgaeRemover.AlgaeRemoverRollers;
 import frc.robot.subsystems.Elevator.Coral.Coral;
+import frc.robot.utilities.NetworkTableLogger;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -38,6 +46,7 @@ public class Robot extends TimedRobot {
   private final CommandXboxController m_driverController = new CommandXboxController(0);
   private final PoseEstimatior m_PoseEstimatior = new PoseEstimatior(m_SwerveSubsystem);
   private final Autos m_Autos = new Autos();
+  private final NetworkTableLogger logger = new NetworkTableLogger("SHOW UPPPP");
   // private final AlgaeRemoverRollers m_AlgeaRemoverRollers = new AlgaeRemoverRollers();
   // private final AlgaeRemoverPivot m_AlgaeRemoverPivot = new AlgaeRemoverPivot();
   // private final Coral m_coral = new Coral();
@@ -57,7 +66,7 @@ public class Robot extends TimedRobot {
         m_SwerveSubsystem::getChassisSpeeds,
         (chassisSpeeds, driveff) -> {
           System.out.println("aligning");
-          new RunCommand(() -> m_SwerveSubsystem.setModuleStates(kSwerve.kinematics.toSwerveModuleStates(chassisSpeeds)));
+          Commands.run(() -> m_SwerveSubsystem.setModuleStates(kSwerve.kinematics.toSwerveModuleStates(chassisSpeeds)));
           // new DriveCmd(m_SwerveSubsystem, () -> chassisSpeeds, () -> true).execute();
         },
         kSwerve.Auton.pathFollowController,
@@ -66,8 +75,7 @@ public class Robot extends TimedRobot {
           // Boolean supplier that controls when the path will be mirrored for the red alliance
           // This will flip the path being followed to the red side of the field.
           // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-
-          var alliance = DriverStation.getAlliance();
+          Optional<Alliance> alliance = DriverStation.getAlliance();
 
           if (alliance.isPresent()) {
             return alliance.get() == DriverStation.Alliance.Red;
@@ -77,6 +85,8 @@ public class Robot extends TimedRobot {
         m_SwerveSubsystem,
         m_PoseEstimatior);
 
+    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
+    // autonomous chooser on the dashboard.
     m_robotContainer =
         new RobotContainer(
             m_SwerveSubsystem,
@@ -91,9 +101,18 @@ public class Robot extends TimedRobot {
             // m_AlgaeIntakeRollers
             );
 
+    // Set Up PathPlanner to "warm up" the pathplanning system
     PathfindingCommand.warmupCommand().schedule();
-    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
-    // autonomous chooser on the dashboard.
+
+    // Log data to a log file using WPILib's DataLogManager
+    DataLogManager.start();
+
+    // Start the URCL logger (logs REV SparkMaxes and SparkFlexes automatically on networktables)
+    URCL.start();
+
+    // Start logging subsystem values //TODO: Uncomment when m_AlgaeIntakePivot and m_AlgaeIntakeRollers are implemented and on the robot
+    // m_AlgaeIntakePivot.shouldLogValues(true);
+    // m_AlgaeIntakeRollers.shouldLogValues(true);
   }
 
   /**
@@ -139,7 +158,7 @@ public class Robot extends TimedRobot {
     // m_robotContainer.getAutonomousCommand().cancel();
 
     m_robotContainer.initiateJoystickOperated();
-  }
+}
 
   /** This function is called periodically during operator control. */
   @Override
@@ -149,6 +168,37 @@ public class Robot extends TimedRobot {
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
+
+  // -=-=-=-=-=-=-=- SysIdRoutines for the AlgaeIntakePivot -=-=-=-=-=-=-=-=-
+  
+  /* TODO: Run these SysIdRoutines for the AlgaeIntakePivot using the button triggers and then 
+     follow these instructions starting with "SysId Usage" step 3: 
+     https://docs.advantagescope.org/more-features/urcl 
+  */
+
+    // // Quasistatic SysIdRoutines
+    // m_driverController.povUp()
+    // .and(m_driverController.leftTrigger())
+    //   .onTrue(m_AlgaeIntakePivot.sysIdRoutine_quasistatic_fwd())
+    //   .onFalse(m_AlgaeIntakePivot.stopSysIdRoutine());
+
+    // m_driverController.povDown()
+    // .and(m_driverController.leftTrigger())
+    //   .onTrue(m_AlgaeIntakePivot.sysIdRoutine_quasistatic_rev())
+    //   .onFalse(m_AlgaeIntakePivot.stopSysIdRoutine());
+
+    // // Dynamic SysIdRoutines
+    // m_driverController.y()
+    // .and(m_driverController.leftTrigger())
+    //   .onTrue(m_AlgaeIntakePivot.sysIdRoutine_dynamic_fwd())
+    //   .onFalse(m_AlgaeIntakePivot.stopSysIdRoutine());
+
+    // m_driverController.a()
+    // .and(m_driverController.leftTrigger())
+    //   .onTrue(m_AlgaeIntakePivot.sysIdRoutine_dynamic_fwd())
+    //   .onFalse(m_AlgaeIntakePivot.stopSysIdRoutine());
+
+  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
   }
 
   /** This function is called periodically during test mode. */
