@@ -90,6 +90,8 @@ public class AlgaeIntakePivot extends SubsystemBase {
         .outputRange(-1, 1) // TODO: this is set to full range of motor speed, might want to scale down to test.
         .velocityFF(0)
         .pid(0, 0, 0)
+        .positionWrappingEnabled(false) /*Might need to disable, but this just means it won't try to go the reverse direction to reach a point instead of going forward 
+        //                                        (basically we don't want it slamming into the floor; IMPORTANT, if this is what it is) */
 
       // MaxMotion Control for more precise position control
         .maxMotion
@@ -108,6 +110,7 @@ public class AlgaeIntakePivot extends SubsystemBase {
 // -=-=-=-=- PID controller for the motor for convenience -=-=-=-=-=-=-=-=|Constructor|
 
     pivotPID = intakePivotMotor.getClosedLoopController();
+    
   }
 
 // -=-=-=-=-=-=- System Identification (SysId) + Methods + Commands -=-=-=-=-=-=-=-=-=-=-|Subsystem|

@@ -17,6 +17,15 @@ public class Autos extends SubsystemBase {
   /** Creates a new Autos. */
   public Autos() {}
 
+    /* Add paths to the hashmap using this format:
+     paths.put("<Name>", PathPlannerPath.fromPathFile("<path file name>"));
+     ex:
+     paths.put("Crazy auto", swerve.followPathWithEventsCommand(paths.get("crazy_auto")));
+  */
+  private void loadPaths() {
+    //paths.put("EXAMPLE", PathPlannerPath.fromChoreoTrajectory("EXAMPLE"));
+  }
+
   public Command align(Pose2d goal) {
     return AutoBuilder.pathfindToPose(
         goal,

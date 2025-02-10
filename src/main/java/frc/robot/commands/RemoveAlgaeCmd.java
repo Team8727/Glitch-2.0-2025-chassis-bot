@@ -11,14 +11,14 @@ import frc.robot.subsystems.Elevator.AlgaeRemover.AlgaeRemoverPivot;
 import frc.robot.subsystems.Elevator.AlgaeRemover.AlgaeRemoverRollers;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class removeAlgae extends Command {
+public class RemoveAlgaeCmd extends Command {
   private final AlgaeRemoverPivot m_pivot;
   private final AlgaeRemoverRollers m_rollers;
   private final double m_setPos;
   private final Elevator m_elevator;
 
   /** Creates a new removeAlgae. */
-  public removeAlgae(
+  public RemoveAlgaeCmd(
       AlgaeRemoverPivot AlgaeRemoverPivot, AlgaeRemoverRollers AlgaeRemoverRollers, double level, Elevator elevator) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_pivot = AlgaeRemoverPivot;

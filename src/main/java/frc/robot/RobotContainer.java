@@ -13,11 +13,11 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import frc.robot.Constants.kVision.kPoses;
 import frc.robot.Constants.kSwerve;
-import frc.robot.commands.removeAlgae;
+import frc.robot.commands.RemoveAlgaeCmd;
 import frc.robot.commands.AlgaeIntake.IntakeAlgaeCmd;
 import frc.robot.commands.AlgaeIntake.ScoreAlgaeProcessorCmd;
-import frc.robot.commands.Coral.DeployCoral;
-import frc.robot.commands.Coral.IntakeCoral;
+import frc.robot.commands.Coral.DeployCoralCmd;
+import frc.robot.commands.Coral.IntakeCoralCmd;
 import frc.robot.commands.DriveCommands.SwerveJoystickCmd;
 import frc.robot.subsystems.Autos;
 import frc.robot.subsystems.LEDSubsystem;

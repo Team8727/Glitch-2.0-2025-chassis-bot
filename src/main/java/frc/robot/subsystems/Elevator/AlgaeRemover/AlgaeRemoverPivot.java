@@ -44,13 +44,15 @@ public class AlgaeRemoverPivot extends SubsystemBase {
         .smartCurrentLimit(25) // TODO: figure out what this should be
         .idleMode(IdleMode.kBrake)
         .closedLoop
-        .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-        .outputRange(-1, 1) // TODO: figure out what these should be
-        .pid(0, 0, 0) // TODO: figure out what these should be
+          .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
+          .outputRange(-1, 1) // TODO: figure out what these should be
+          .pid(0, 0, 0) // TODO: figure out what these should be
+          .positionWrappingEnabled(false) /*Might need to disable, but this just means it won't try to go the reverse direction to reach a point instead of going forward 
+          //                                        (basically we don't want it slamming into the floor; IMPORTANT, if this is what it is) */
         .maxMotion // TODO: figure out what these should be
-        .maxAcceleration(0)
-        .maxVelocity(0)
-        .allowedClosedLoopError(0);
+          .maxAcceleration(0)
+          .maxVelocity(0)
+          .allowedClosedLoopError(0);
     removerPivotMotor.configure(
         config,
         ResetMode.kNoResetSafeParameters,

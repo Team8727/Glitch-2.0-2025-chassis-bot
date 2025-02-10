@@ -10,11 +10,11 @@ import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.Coral.Coral;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class IntakeCoral extends Command {
+public class IntakeCoralCmd extends Command {
   private final Coral m_coral;
   private final Elevator m_elevator;
   /** Creates a new IntakeCoral. */
-  public IntakeCoral(Coral coral, Elevator elevator) {
+  public IntakeCoralCmd(Coral coral, Elevator elevator) {
     m_coral = coral;
     m_elevator = elevator;
     // Use addRequirements() here to declare subsystem dependencies.
