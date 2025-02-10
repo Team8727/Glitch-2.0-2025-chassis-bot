@@ -43,6 +43,7 @@ import edu.wpi.first.wpilibj.SPI.Port;
  */
 public final class Constants {
   public static class kConfigs {
+
     public static RobotConfig robotConfig =
         new RobotConfig(
             65, // TODO: find real value
@@ -274,7 +275,7 @@ public final class Constants {
     // distance
   }
 
-  public static class kRemover {
+  public static class kAlgaeRemover {
     public static class kPivot {
       public static int removerPivotMotorCANID =
           27; // TODO: not set yet because remover is not built yet
@@ -321,19 +322,22 @@ public final class Constants {
     }
   }
 
-  public static class kCoralIntake {
-    public static class kRollers {
-      public static int intakeRollerMotorCANID =
-          20; // TODO: not set yet because intake is not built yet
-      public static int outtakeRollerMotorCANID =
-          21; // TODO: not set yet because intake is not built yet
+  public static class kCoral {
+    public static int intakeRollerMotorCANID =
+        20; // TODO: not set yet because intake is not built yet
+    public static int outtakeRollerMotorCANID =
+        21; // TODO: not set yet because intake is not built yet
 
-      public static int frontSensorChannel = 7; // TODO: not set yet because intake is not built yet
-      public static int backSensorChannel = 2; // TODO: not set yet because intake is not built yet
+    public static int frontSensorChannel = 7; // TODO: not set yet because intake is not built yet
+    public static int backSensorChannel = 2; // TODO: not set yet because intake is not built yet
 
-      public static int intakeSpeed = 11; // TODO: not set yet because intake is not built yet
-      public static int outtakeSpeed = -5; // TODO: not set yet because intake is not built yet
-    }
+    public static int intakeSpeed = 11; // TODO: not set yet because intake is not built yet
+    public static int outtakeSpeed = -5; // TODO: not set yet because intake is not built yet
+
+    public static double coraldeploySpeedL1 = 0.5; // TODO: not set yet because intake is not built yet
+    public static double coraldeploySpeedL2 = 0.5; // TODO: not set yet because intake is not built yet
+    public static double coraldeploySpeedL3 = 0.5; // TODO: not set yet because intake is not built yet
+    public static double coraldeploySpeedL4 = 0.5; // TODO: not set yet because intake is not built yet
   }
 
   public static class kElevator {
@@ -345,12 +349,12 @@ public final class Constants {
 
     public enum ElevatorPosition {
       HOME(0), // TODO: SET WITH ACTUAL VALUES
-      L1(10), // TODO: SET WITH ACTUAL VALUES
-      L2(20), // TODO: SET WITH ACTUAL VALUES
-      L3(30), // TODO: SET WITH ACTUAL VALUES
-      L4(50), // TODO: SET WITH ACTUAL VALUES
-      A2(25), // TODO: SET WITH ACTUAL VALUES
-      A3(35); // TODO: SET WITH ACTUAL VALUES
+      L1(0), // TODO: SET WITH ACTUAL VALUES
+      L2(7.23663),// TODO: SET WITH ACTUAL VALUES
+      L3(19.43877), // TODO: SET WITH ACTUAL VALUES
+      L4(38.69053), // TODO: SET WITH ACTUAL VALUES
+      A2(13.3377), // TODO: SET WITH ACTUAL VALUES
+      A3(29.06465); // TODO: SET WITH ACTUAL VALUES
     
       private final double rotations;
       

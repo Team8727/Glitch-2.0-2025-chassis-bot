@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.kCoralIntake;
+import frc.robot.Constants.kCoral;
 import frc.robot.utilities.SparkConfigurator.LogData;
 import java.util.Set;
 
@@ -33,7 +33,7 @@ public class Coral extends SubsystemBase {
   public Coral() {
     coralIntake =
         getSparkMax(
-            kCoralIntake.kRollers.intakeRollerMotorCANID,
+            kCoral.intakeRollerMotorCANID,
             SparkLowLevel.MotorType.kBrushless,
             false,
             Set.of(),
@@ -58,11 +58,11 @@ public class Coral extends SubsystemBase {
     coralIntake.configure(
         intakeConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
-    frontCoralSensor = new DigitalInput(kCoralIntake.kRollers.frontSensorChannel);
+    frontCoralSensor = new DigitalInput(kCoral.frontSensorChannel);
 
     coralOuttake =
         getSparkMax(
-            kCoralIntake.kRollers.outtakeRollerMotorCANID,
+            kCoral.outtakeRollerMotorCANID,
             SparkLowLevel.MotorType.kBrushless,
             false,
             Set.of(),
@@ -87,7 +87,7 @@ public class Coral extends SubsystemBase {
     coralOuttake.configure(
         outtakeConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
-    backCoralSensor = new DigitalInput(kCoralIntake.kRollers.backSensorChannel);
+    backCoralSensor = new DigitalInput(kCoral.backSensorChannel);
   }
 
   public void setIntakeSpeed(double speed) {
@@ -103,13 +103,13 @@ public class Coral extends SubsystemBase {
     setOuttakeSpeed(0);
   }
   public Command coralOuttake(double speed) {
-    return new RunCommand(() -> setOuttakeSpeed(kCoralIntake.kRollers.outtakeSpeed))
+    return new RunCommand(() -> setOuttakeSpeed(kCoral.outtakeSpeed))
         .until(() -> !frontCoralSensor.get())
-        .andThen(() -> setOuttakeSpeed(0));
+        .andThen(() -> stopDeployer());
   }
 
   public Command coralIntake(double speed) {
-    return new RunCommand(() -> setIntakeSpeed(kCoralIntake.kRollers.intakeSpeed))
+    return new RunCommand(() -> setIntakeSpeed(kCoral.intakeSpeed))
         .until(() -> backCoralSensor.get())
           .andThen(() -> setIntakeSpeed(speed))
           .andThen(() -> setOuttakeSpeed(speed))
