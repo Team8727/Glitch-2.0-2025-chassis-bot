@@ -1,9 +1,7 @@
 package frc.robot.subsystems;
 
-import choreo.trajectory.SwerveSample;
 import com.studica.frc.AHRS;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator3d;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -112,23 +110,6 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   public void stopModules() {}
-
-  public void followTrajectory(SwerveSample sample) {
-    // Get the current pose of the robot
-    Pose2d pose = SwervePoseEstimator.getEstimatedPosition().toPose2d();
-
-    // Generate the next speeds for the robot
-    ChassisSpeeds speeds =
-        kSwerve.Auton.controller.calculate(
-            pose,
-            sample.getPose(),
-            Math.sqrt(Math.pow(sample.vx, 2) * Math.pow(sample.vy, 2))
-                * kSwerve.Auton.maxOnTheFlyVel,
-            sample.getPose().getRotation());
-
-    // Apply the generated speeds
-    setModuleStates(kSwerve.kinematics.toSwerveModuleStates(speeds));
-  }
 
   public void setModuleStates(SwerveModuleState[] desiredState) {
     SwerveDriveKinematics.desaturateWheelSpeeds(desiredState, kModule.maxWheelSpeed);
