@@ -46,14 +46,18 @@ public final class Constants {
 
     public static RobotConfig robotConfig =
         new RobotConfig(
-            65, // TODO: find real value
+          62.6864655, // TODO: find real value
             10, // TODO: find real value
             new ModuleConfig(
                 .0381,
                 4.45,
                 1.4, // TODO: find real value
                 new DCMotor(
-                    12, 3.65, 218, 3.54, 6704, // TODO: probobly wrong
+                    12, 
+                    3.65, 
+                    218, 
+                    3.54, 
+                    6704, // TODO: probobly wrong
                     1),
                 5.08,
                 60,
@@ -277,9 +281,23 @@ public final class Constants {
 
   public static class kAlgaeRemover {
     public static class kPivot {
-      public static int removerPivotMotorCANID =
-          27; // TODO: not set yet because remover is not built yet
-    }
+      public static int removerPivotMotorCANID =27; // TODO: not set yet because remover is not built yet
+
+      public enum RemoverPositions {
+        Raised(15.6), // TODO: SET WITH ACTUAL VALUES
+        Stowed(-105); // TODO: SET WITH ACTUAL VALUES
+      
+        private final double degrees;
+        
+        private RemoverPositions(double degrees) {
+          this.degrees = degrees;
+        }
+  
+        public double getOutputRotations() {
+          return degrees * (75.0 / 2.0) / 360;
+        }
+      }
+}
 
     public static class kRollers {
       public static int removerRollerMotorCANID =
@@ -348,6 +366,7 @@ public final class Constants {
     public static double gearRatio = 5;
 
     public enum ElevatorPosition {
+      // graph: https://www.desmos.com/calculator/0ovkuadc86
       HOME(0), // TODO: SET WITH ACTUAL VALUES
       L1(0), // TODO: SET WITH ACTUAL VALUES
       L2(7.23663),// TODO: SET WITH ACTUAL VALUES
@@ -362,7 +381,7 @@ public final class Constants {
         this.rotations = rotations;
       }
 
-      public double getRotations() {
+      public double getOutputRotations() {
         return rotations;
       }
     }
