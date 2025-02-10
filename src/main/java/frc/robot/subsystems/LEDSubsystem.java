@@ -34,6 +34,7 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
   private Color m_blue = new Color(0, 255, 0);
   private Color m_purple = new Color(255, 255, 0);
   private Color m_orange = new Color(255, 0, 165);
+  private Color m_yellow = new Color(255, 0, 255);
   // Define LED Patterns
 
   // Blinking red pattern
@@ -44,7 +45,7 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
   private LEDPattern rainbowBase =
       LEDPattern.rainbow(256, 128)
       .scrollAtRelativeSpeed(
-        Percent.per(Second).of(25));
+        Percent.per(Second).of(15));
   private LEDPattern rainbowMask =
       LEDPattern.steps(
               Map.of(
@@ -52,20 +53,20 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
                   0.25, Color.kBlack,
                   0.75, Color.kWhite))
           .scrollAtRelativeSpeed(
-            Percent.per(Second).of(25));
+            Percent.per(Second).of(15));
   public LEDPattern rainbow = rainbowBase.reversed().mask(rainbowMask);
 
   // Blue gradient pattern with a scrolling mask
   public LEDPattern blue =
       LEDPattern.gradient(LEDPattern.GradientType.kContinuous, m_blue, m_green)
           .scrollAtRelativeSpeed(
-            Percent.per(Second).of(25));
+            Percent.per(Second).of(15));
 
   // Green to purple gradient pattern
   public LEDPattern ace =
       LEDPattern.gradient(GradientType.kContinuous, m_green, m_purple)
           .scrollAtRelativeSpeed(
-            Percent.per(Second).of(25));
+            Percent.per(Second).of(15));
 
   public LEDPattern colorCheck = LEDPattern.solid(m_purple);
 
@@ -74,8 +75,8 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
 
   // Elevator progress bar pattern
   private LEDPattern elevatorProgressMap = LEDPattern.progressMaskLayer(
-    () -> m_elevator.targetHeight / kElevator.ElevatorPosition.L4.getRotations());
-  private LEDPattern elevatorProgressBase = LEDPattern.gradient(GradientType.kDiscontinuous, m_green, m_orange);
+    () -> m_elevator.targetHeight / kElevator.ElevatorPosition.L4.getOutputRotations());
+  private LEDPattern elevatorProgressBase = LEDPattern.gradient(GradientType.kDiscontinuous, m_green, m_yellow, m_orange);
   public LEDPattern elevatorProgress = elevatorProgressBase.mask(elevatorProgressMap);
 
   // Solid Colors
@@ -98,18 +99,20 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
     if (isRedAlliance() == true) {
       currentPattern = LEDPattern.steps(
         Map.of(
-          0, Color.kRed, 
-          0.5, m_green))
+          0, m_green,
+          0.2, Color.kRed, 
+          0.8, m_green))
       .scrollAtRelativeSpeed(
-        Percent.per(Second).of(25));
+        Percent.per(Second).of(10));
     }
-    else {
+    else { // if blue alliance
       currentPattern = LEDPattern.steps(
         Map.of(
-          0, m_blue, 
-          0.5, m_green))
+          0, m_green, 
+          0.2, m_blue,
+          0.8, m_green))
       .scrollAtRelativeSpeed(
-        Percent.per(Second).of(25));
+        Percent.per(Second).of(10));
     }
     currentPattern.applyTo(stripBuffer);
     lightStrip.setData(stripBuffer);

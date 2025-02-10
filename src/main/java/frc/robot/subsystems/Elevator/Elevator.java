@@ -71,7 +71,7 @@ public class Elevator extends SubsystemBase {
 
   public void setElevatorHeight(kElevator.ElevatorPosition height) {
     // get double from enum
-    targetHeight = height.getRotations();
+    targetHeight = height.getOutputRotations();
     run(() -> elevatorPID.setReference(targetHeight, ControlType.kPosition))
     .andThen(() -> {
       if (targetHeight == 0){

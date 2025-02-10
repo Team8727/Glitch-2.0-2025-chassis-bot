@@ -16,7 +16,7 @@ import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.kRemover;
+import frc.robot.Constants.kAlgaeRemover;
 import frc.robot.utilities.SparkConfigurator.LogData;
 import java.util.Set;
 
@@ -29,7 +29,7 @@ public class AlgaeRemoverPivot extends SubsystemBase {
   public AlgaeRemoverPivot() {
     removerPivotMotor =
         getSparkMax(
-            kRemover.kPivot.removerPivotMotorCANID,
+            kAlgaeRemover.kPivot.removerPivotMotorCANID,
             SparkLowLevel.MotorType.kBrushless,
             false,
             Set.of(),
