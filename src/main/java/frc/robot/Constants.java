@@ -291,12 +291,18 @@ public final class Constants {
       public static int intakePivotMotorCANID =
           25; // TODO: not set yet because intake is not built yet
 
-      public static double intakePivotDownPosition =
-          0; // TODO: position not set yet because intake is not built yet
-      public static double intakePivotScorePosition =
-          0; // TODO: position not set yet because intake is not built yet
-      public static double intakePivotHomePosition =
-          0; // TODO: position not set yet because intake is not built yet
+      public enum IntakePosition {
+          HOME(0), 
+          SCORE(15), 
+          DOWN(89.362); // TODO: SET WITH ACTUAL VALUES
+
+          private final double degrees;
+          private IntakePosition(double degrees) { this.degrees = degrees; }
+
+          public double getIntakePositionDegrees() { 
+            return degrees; 
+          }
+      }
 
       public static int intakePivotEncoderChannelA =
           0; // TODO: not set yet because intake is not built yet

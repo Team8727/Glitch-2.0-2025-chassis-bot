@@ -32,7 +32,7 @@ public class IntakeAlgaeCmd extends Command {
   public void execute() {
 
     // Set the intake pivot to the ground position and
-    m_algaeIntakePivot.setIntakePivotPosition(kAlgaeIntakePivot.intakePivotDownPosition);
+    m_algaeIntakePivot.setIntakePivotPosition(kAlgaeIntakePivot.IntakePosition.DOWN);
     m_algaeIntakeRollers.intake();
 
   }
@@ -45,7 +45,7 @@ public class IntakeAlgaeCmd extends Command {
     m_algaeIntakeRollers.setRollerSpeed(kAlgaeIntakePivot.idleAlgaeIntakeVoltage);
 
     // Go back to home position
-    m_algaeIntakePivot.setIntakePivotPosition(kAlgaeIntakePivot.intakePivotHomePosition);
+    m_algaeIntakePivot.setIntakePivotPosition(kAlgaeIntakePivot.IntakePosition.HOME);
   }
 
   // Returns true when the command should end.

@@ -111,7 +111,7 @@ public class AlgaeIntakeRollers extends SubsystemBase {
 // -=-=-=-=-=-=-=-= Logging =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-|Subsystem|
   
 boolean m_shouldLog = false;
-  NetworkTableLogger periodicLog = new NetworkTableLogger(this.getSubsystem().toString());
+  NetworkTableLogger periodicLogger = new NetworkTableLogger(this.getSubsystem().toString());
 
   /**
    * Whether to log values (like encoder data)
@@ -124,7 +124,8 @@ boolean m_shouldLog = false;
    * Used in subsystem periodic to log and update values
    */
   public void startLogging() { // Only for calling in the periodic of this subsystem
-    periodicLog.logDouble("Motor Current", intakeRollerMotor.getOutputCurrent());
+    periodicLogger.logDouble("Motor Current", intakeRollerMotor.getOutputCurrent());
+    periodicLogger.logBoolean("Intake Sensor (boolean)", algaeCheck.get());
     // Add other relevant values
   }
 // -=-=-=-=-=-=-=-=- Commands -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-|Subsystem|

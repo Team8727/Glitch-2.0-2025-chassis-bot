@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 import frc.robot.Constants.kAlgaeIntake.kAlgaeIntakePivot;
+import frc.robot.Constants.kAlgaeIntake.kAlgaeIntakePivot.IntakePosition;
 import frc.robot.utilities.NetworkTableLogger;
 import frc.robot.utilities.SparkConfigurator.LogData;
 
@@ -151,7 +152,7 @@ public class AlgaeIntakePivot extends SubsystemBase {
 // -=-=-=--=-=-=-= Logging =-=-=-=-=-=-=-=-=-=-|Subsystem|
 
   boolean m_shouldLog = false;
-  NetworkTableLogger periodicLog = new NetworkTableLogger(this.getSubsystem().toString());
+  NetworkTableLogger periodicLogger = new NetworkTableLogger(this.getSubsystem().toString());
 
   /**
    * Whether to log values (like encoder data)
@@ -164,15 +165,19 @@ public class AlgaeIntakePivot extends SubsystemBase {
    * Used in subsystem periodic to log and update values
    */
   public void startLogging() { // Only for calling in the periodic of this subsystem
-    periodicLog.logDouble("Motor Current", intakePivotMotor.getOutputCurrent());
-    periodicLog.logDouble("Motor Encoder Value (Relative Encoder):", intakePivotMotor.getEncoder().getPosition());
-    periodicLog.logDouble("External Encoder Value:", pivotEncoder.getDistance());
+    periodicLogger.logDouble("Motor Current", intakePivotMotor.getOutputCurrent());
+    periodicLogger.logDouble("Motor Encoder Value (Relative Encoder):", intakePivotMotor.getEncoder().getPosition());
+    periodicLogger.logDouble("External Encoder Value:", pivotEncoder.getDistance());
   }
 
 // -=-=-=-=-=-=- Methods -=-=-=-=-=-=-=-=-=-=-|Subsystem|
 
   public void resetEncoder() {
     pivotEncoder.reset();
+  }
+
+  public void setIntakePivotPosition(IntakePosition intakePositionDegrees) {
+    pivotPID.setReference(intakePositionDegrees.getIntakePositionDegrees(), SparkBase.ControlType.kMAXMotionPositionControl);
   }
 
   public void setIntakePivotPosition(double positionRadians) {
