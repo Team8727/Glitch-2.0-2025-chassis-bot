@@ -128,13 +128,13 @@ public class PoseEstimatior extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // camera 1 pose estimation
-    List<PhotonPipelineResult> camera1res = camera1.getAllUnreadResults();
-    PhotonPipelineResult camera1LatestRes = camera1res.get(camera1res.size() - 1);
-    Optional<EstimatedRobotPose> camera1pose =
+    try {
+      // camera 1 pose estimation
+      List<PhotonPipelineResult> camera1res = camera1.getAllUnreadResults();
+      PhotonPipelineResult camera1LatestRes = camera1res.get(camera1res.size() - 1);
+      Optional<EstimatedRobotPose> camera1pose =
         getEstimatedGlobalPose(
             m_SwervePoseEstimator.getEstimatedPosition(), camera1LatestRes, PoseEstimator1);
-    try {
       m_SwervePoseEstimator.addVisionMeasurement(
           camera1pose.get().estimatedPose, camera1pose.get().timestampSeconds);
       // System.out.println("not error");
@@ -142,37 +142,37 @@ public class PoseEstimatior extends SubsystemBase {
       // System.out.println("error");
     }
 
-    // camera 2 pose estimation
-    List<PhotonPipelineResult> camera2res = camera2.getAllUnreadResults();
-    PhotonPipelineResult camera2LatestRes = camera2res.get(camera2res.size() - 1);
-    Optional<EstimatedRobotPose> camera2pose =
+    try {
+      // camera 2 pose estimation
+      List<PhotonPipelineResult> camera2res = camera2.getAllUnreadResults();
+      PhotonPipelineResult camera2LatestRes = camera2res.get(camera2res.size() - 1);
+      Optional<EstimatedRobotPose> camera2pose =
         getEstimatedGlobalPose(
             m_SwervePoseEstimator.getEstimatedPosition(), camera2LatestRes, PoseEstimator2);
-    try {
       m_SwervePoseEstimator.addVisionMeasurement(
           camera2pose.get().estimatedPose, camera2pose.get().timestampSeconds);
     } catch (Exception e) {
     }
 
-    // camera 3 pose estimation
-    List<PhotonPipelineResult> camera3res = camera3.getAllUnreadResults();
-    PhotonPipelineResult camera3LatestRes = camera3res.get(camera3res.size() - 1);
-    Optional<EstimatedRobotPose> camera3pose =
+    try {
+      // camera 3 pose estimation
+      List<PhotonPipelineResult> camera3res = camera3.getAllUnreadResults();
+      PhotonPipelineResult camera3LatestRes = camera3res.get(camera3res.size() - 1);
+      Optional<EstimatedRobotPose> camera3pose =
         getEstimatedGlobalPose(
             m_SwervePoseEstimator.getEstimatedPosition(), camera3LatestRes, PoseEstimator3);
-    try {
       m_SwervePoseEstimator.addVisionMeasurement(
           camera3pose.get().estimatedPose, camera3pose.get().timestampSeconds);
     } catch (Exception e) {
     }
 
-    // camera 4 pose estimation
-    List<PhotonPipelineResult> camera4res = camera4.getAllUnreadResults();
-    PhotonPipelineResult camera4LatestRes = camera4res.get(camera4res.size() - 1);  
-    Optional<EstimatedRobotPose> camera4pose =
+    try {
+      // camera 4 pose estimation
+      List<PhotonPipelineResult> camera4res = camera4.getAllUnreadResults();
+      PhotonPipelineResult camera4LatestRes = camera4res.get(camera4res.size() - 1);  
+      Optional<EstimatedRobotPose> camera4pose =
         getEstimatedGlobalPose(
             m_SwervePoseEstimator.getEstimatedPosition(), camera4LatestRes, PoseEstimator4);
-    try {
       m_SwervePoseEstimator.addVisionMeasurement(
           camera4pose.get().estimatedPose, camera4pose.get().timestampSeconds);
     } catch (Exception e) {
