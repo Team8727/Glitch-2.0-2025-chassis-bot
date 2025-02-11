@@ -68,7 +68,7 @@ public class Robot extends TimedRobot {
         (chassisSpeeds, driveff) -> {
           System.out.println("aligning");
           logger.logChassisSpeeds("path chassis speeds", chassisSpeeds);
-          Commands.run(() -> m_SwerveSubsystem.setModuleStates(kSwerve.kinematics.toSwerveModuleStates(new ChassisSpeeds(2,2,2))));
+          m_SwerveSubsystem.setModuleStates(kSwerve.kinematics.toSwerveModuleStates(chassisSpeeds));
           // new DriveCmd(m_SwerveSubsystem, () -> chassisSpeeds, () -> true).execute();
         },
         kSwerve.Auton.pathFollowController,
