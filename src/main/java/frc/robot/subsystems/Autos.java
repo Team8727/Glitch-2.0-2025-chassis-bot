@@ -17,7 +17,10 @@ public class Autos extends SubsystemBase {
   /** Creates a new Autos. */
   public Autos() {
 
-    // PathPlannerPath exampleChoreoTraj = PathPlannerPath.fromChoreoTrajectory("Example Choreo Traj");
+  // // Load a full Choreo trajectory as a PathPlannerPath
+  // PathPlannerPath exampleChoreoTraj = PathPlannerPath.fromChoreoTrajectory("Example Choreo Traj");
+  // // Load a split Choreo trajectory as a PathPlannerPath, using the split point with index 1
+  // PathPlannerPath exampleChoreoTrajSplit = PathPlannerPath.fromChoreoTrajectory("Example Choreo Traj", 1);
 
     /* Add paths to the hashmap using this format:
       paths.put("<Name>", PathPlannerPath.fromPathFile("<path file name>"));
