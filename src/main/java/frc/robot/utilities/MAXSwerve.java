@@ -169,10 +169,7 @@ public class MAXSwerve {
     // Optimize the state to prevent having to make a rotation of more than 90 degrees
     SwerveModuleState optimizedState = desiredState;
     if (optimizeHeading) {
-      optimizedState =
-          SwerveModuleState.optimize( // TODO:fix this sometime before comp
-              new SwerveModuleState(desiredState.speedMetersPerSecond, desiredState.angle),
-              getCorrectedSteer());
+      optimizedState.optimize(getCorrectedSteer());
     }
 
     // Scale
