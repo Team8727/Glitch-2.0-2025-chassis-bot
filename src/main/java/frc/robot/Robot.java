@@ -11,20 +11,25 @@ import org.littletonrobotics.urcl.URCL;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathfindingCommand;
 
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import frc.robot.Constants.kConfigs;
 import frc.robot.Constants.kSwerve;
 import frc.robot.subsystems.Autos;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.PoseEstimatior;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.subsystems.AlgaeIntake.AlgaeIntakePivot;
+import frc.robot.subsystems.AlgaeIntake.AlgaeIntakeRollers;
+import frc.robot.subsystems.Elevator.Elevator;
+import frc.robot.subsystems.Elevator.AlgaeRemover.AlgaeRemoverPivot;
+import frc.robot.subsystems.Elevator.AlgaeRemover.AlgaeRemoverRollers;
+import frc.robot.subsystems.Elevator.Coral.Coral;
 import frc.robot.utilities.NetworkTableLogger;
 
 /**
@@ -60,7 +65,6 @@ public class Robot extends TimedRobot {
         m_SwerveSubsystem::getChassisSpeeds,
         (chassisSpeeds, driveff) -> {
           System.out.println("aligning");
-          logger.logChassisSpeeds("path chassis speeds", chassisSpeeds);
           m_SwerveSubsystem.setModuleStates(kSwerve.kinematics.toSwerveModuleStates(chassisSpeeds));
           // new DriveCmd(m_SwerveSubsystem, () -> chassisSpeeds, () -> true).execute();
         },

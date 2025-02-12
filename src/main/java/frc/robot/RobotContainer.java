@@ -10,9 +10,22 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import frc.robot.Constants.kVision.kPoses;
+import frc.robot.Constants.kSwerve;
+import frc.robot.commands.RemoveAlgaeCmd;
+import frc.robot.commands.AlgaeIntake.IntakeAlgaeCmd;
+import frc.robot.commands.AlgaeIntake.ScoreAlgaeProcessorCmd;
+import frc.robot.commands.Coral.DeployCoralCmd;
+import frc.robot.commands.Coral.IntakeCoralCmd;
 import frc.robot.commands.DriveCommands.SwerveJoystickCmd;
 import frc.robot.subsystems.Autos;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.subsystems.AlgaeIntake.AlgaeIntakePivot;
+import frc.robot.subsystems.AlgaeIntake.AlgaeIntakeRollers;
+import frc.robot.subsystems.Elevator.Elevator;
+import frc.robot.subsystems.Elevator.AlgaeRemover.AlgaeRemoverPivot;
+import frc.robot.subsystems.Elevator.AlgaeRemover.AlgaeRemoverRollers;
+import frc.robot.subsystems.Elevator.Coral.Coral;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
