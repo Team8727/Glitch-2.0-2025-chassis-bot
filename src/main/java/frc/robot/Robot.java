@@ -16,10 +16,13 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import frc.robot.Constants.kConfigs;
 import frc.robot.Constants.kSwerve;
+import frc.robot.commands.DriveCommands.DriveCmd;
 import frc.robot.subsystems.Autos;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.PoseEstimatior;
@@ -46,6 +49,7 @@ public class Robot extends TimedRobot {
   private final PoseEstimatior m_PoseEstimatior = new PoseEstimatior(m_SwerveSubsystem);
   private final Autos m_Autos = new Autos();
   private final NetworkTableLogger logger = new NetworkTableLogger("SHOW UPPPP");
+  private final DriveCmd m_DriveCmd = new DriveCmd(m_SwerveSubsystem, true);
   // private final AlgaeRemoverRollers m_AlgeaRemoverRollers = new AlgaeRemoverRollers();
   // private final AlgaeRemoverPivot m_AlgaeRemoverPivot = new AlgaeRemoverPivot();
   // private final Coral m_coral = new Coral();
@@ -65,7 +69,8 @@ public class Robot extends TimedRobot {
         m_SwerveSubsystem::getChassisSpeeds,
         (chassisSpeeds, driveff) -> {
           System.out.println("aligning");
-          m_SwerveSubsystem.setModuleStates(kSwerve.kinematics.toSwerveModuleStates(chassisSpeeds));
+          logger.logChassisSpeeds("speeds", chassisSpeeds);
+          m_DriveCmd.setChassisSpeeds(chassisSpeeds);
           // new DriveCmd(m_SwerveSubsystem, () -> chassisSpeeds, () -> true).execute();
         },
         kSwerve.Auton.pathFollowController,
@@ -79,7 +84,7 @@ public class Robot extends TimedRobot {
           if (alliance.isPresent()) {
             return alliance.get() == DriverStation.Alliance.Red;
           }
-          return false;
+          return true;
         },
         m_SwerveSubsystem,
         m_PoseEstimatior);
