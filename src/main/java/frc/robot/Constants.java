@@ -128,13 +128,13 @@ public final class Constants {
 
       public static final double maxAccel = 0.4;
       public static final double maxVel = 0.4;
-      public static final double maxAngAccel = 0.07 * kSwerve.maxAngAccel; //0.4 * kSwerve.maxAngAccel;
-      public static final double maxAngVel = 0.07 * kSwerve.maxAngSpeed; //0.4 * kSwerve.maxAngSpeed;
+      public static final double maxAngAccel = 0.4 * kSwerve.maxAngAccel;
+      public static final double maxAngVel = 0.4 * kSwerve.maxAngSpeed;
 
       public static final double transP = 12;
 
-      public static final double maxOnTheFlyVel = 0.5; // 2;
-      public static final double maxOnTheFlyAcc = 0.5; // 2;
+      public static final double maxOnTheFlyVel = 2;
+      public static final double maxOnTheFlyAcc = 2;
 
       public static final HolonomicDriveController controller =
           new HolonomicDriveController(

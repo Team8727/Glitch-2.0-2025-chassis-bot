@@ -83,7 +83,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
   // maybe = get corrected steer
   public double getHeading() {
-    return Units.radiansToDegrees(SwervePoseEstimator.getEstimatedPosition().getRotation().getZ());
+    return Units.radiansToDegrees(SwervePoseEstimator.getEstimatedPosition().getRotation().getZ()); // THIS IS CRUCIAL
   }
 
   public Rotation2d getRotation2d() {
