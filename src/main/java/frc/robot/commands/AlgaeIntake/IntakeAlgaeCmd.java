@@ -18,9 +18,10 @@ public class IntakeAlgaeCmd extends Command {
 
   public IntakeAlgaeCmd(
       AlgaeIntakePivot algaeIntakePivot, AlgaeIntakeRollers algaeRemoverPivot) {
-    // Use addRequirements() here to declare subsystem dependencies.
     m_algaeIntakePivot = algaeIntakePivot;
     m_algaeIntakeRollers = algaeRemoverPivot;
+    addRequirements(algaeIntakePivot, algaeRemoverPivot); // Add the required subsystems here
+    // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.

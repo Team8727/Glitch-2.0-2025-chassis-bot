@@ -21,6 +21,7 @@ public class DeployCoralCmd extends Command {
     m_coral = coral;
     m_elevator = elevator;
     m_scoreLevel = scoreLevel;
+    addRequirements(coral, elevator);
   }
 
   // Called when the command is initially scheduled.
