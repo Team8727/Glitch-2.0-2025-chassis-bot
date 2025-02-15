@@ -18,10 +18,10 @@ public class ScoreAlgaeProcessorCmd extends Command {
 
   public ScoreAlgaeProcessorCmd(
       AlgaeIntakePivot algaeIntakePivot, AlgaeIntakeRollers algaeIntakeRollers) {
-    // Use addRequirements() here to declare subsystem dependencies.
-
     this.m_algaeIntakePivot = algaeIntakePivot;
     this.m_algaeIntakeRollers = algaeIntakeRollers;
+    addRequirements(algaeIntakePivot, algaeIntakeRollers); // Add the required subsystems here
+    // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.

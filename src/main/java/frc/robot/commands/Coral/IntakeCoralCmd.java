@@ -17,6 +17,7 @@ public class IntakeCoralCmd extends Command {
   public IntakeCoralCmd(Coral coral, Elevator elevator) {
     m_coral = coral;
     m_elevator = elevator;
+    addRequirements(coral, elevator);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 

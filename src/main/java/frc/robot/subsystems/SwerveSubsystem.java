@@ -8,6 +8,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.kSwerve;
@@ -82,7 +83,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
   // maybe = get corrected steer
   public double getHeading() {
-    return Math.toDegrees(SwervePoseEstimator.getEstimatedPosition().getRotation().getZ());
+    return Units.radiansToDegrees(SwervePoseEstimator.getEstimatedPosition().getRotation().getZ()); // THIS IS CRUCIAL
   }
 
   public Rotation2d getRotation2d() {
