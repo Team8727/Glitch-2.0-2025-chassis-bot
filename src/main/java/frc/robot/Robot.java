@@ -11,6 +11,7 @@ import org.littletonrobotics.urcl.URCL;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathfindingCommand;
 
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -50,7 +51,6 @@ public class Robot extends TimedRobot {
   private final PoseEstimatior m_PoseEstimatior = new PoseEstimatior(m_SwerveSubsystem);
   private final Autos m_Autos = new Autos();
   private final NetworkTableLogger logger = new NetworkTableLogger("SHOW UPPPP");
-  private final DriveCmd m_DriveCmd = new DriveCmd(m_SwerveSubsystem, true);
   // private final AlgaeRemoverRollers m_AlgeaRemoverRollers = new AlgaeRemoverRollers();
   // private final AlgaeRemoverPivot m_AlgaeRemoverPivot = new AlgaeRemoverPivot();
   // private final Coral m_coral = new Coral();
@@ -71,7 +71,7 @@ public class Robot extends TimedRobot {
         (chassisSpeeds, driveff) -> {
           System.out.println("aligning");
           logger.logChassisSpeeds("speeds", chassisSpeeds);
-          m_SwerveSubsystem.setModuleStates(kSwerve.kinematics.toSwerveModuleStates(chassisSpeeds));
+          m_SwerveSubsystem.setModuleStates(kSwerve.kinematics.toSwerveModuleStates(ChassisSpeeds.fromRobotRelativeSpeeds(chassisSpeeds, m_SwerveSubsystem.getRotation2d())));
           // new DriveCmd(m_SwerveSubsystem, () -> chassisSpeeds, () -> true).execute();
         },
         kSwerve.Auton.pathFollowController,
