@@ -76,14 +76,15 @@ public class Elevator extends SubsystemBase {
     targetRotations = height.getOutputRotations();
 
     run(() -> elevatorPID.setReference(targetRotations, ControlType.kPosition))
-    .andThen(() -> {
-      if (targetRotations == 0){
-        run(() -> elevatorPID.setReference(-30*5, ControlType.kVelocity))
-        .until(() -> limitSwitch.get())// TODO: tune probobly
-        .andThen(() -> resetElevatorEncoders());
+      .until(() -> limitSwitch.get())
+    .andThen(() -> resetElevatorEncoders());
+
+    if (targetHeight == kElevator.ElevatorPosition.HOME && !limitSwitch.get()) {
+      run(() -> elevatorPID.setReference(-30*5, ControlType.kVelocity))
+      .until(() -> limitSwitch.get())// TODO: tune probobly
+      .andThen(() -> resetElevatorEncoders());
       }
-    });
-  }
+  };
 
   public kElevator.ElevatorPosition getElevatorSetPosition() {
     return targetHeight;

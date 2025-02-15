@@ -78,7 +78,7 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
 
   // Elevator progress bar pattern
   private LEDPattern elevatorProgressMap = LEDPattern.progressMaskLayer(
-    () -> m_elevator.targetHeight / kElevator.ElevatorPosition.L4.getOutputRotations());
+    () -> m_elevator.getElevatorHeight() / kElevator.ElevatorPosition.L4.getOutputRotations());
   private LEDPattern elevatorProgressBase = LEDPattern.gradient(GradientType.kDiscontinuous, m_green, m_yellow, m_orange, Color.kRed);
   public LEDPattern elevatorProgress = elevatorProgressBase.mask(elevatorProgressMap);
 
