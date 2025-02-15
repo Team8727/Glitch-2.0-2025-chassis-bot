@@ -126,6 +126,11 @@ public class PoseEstimatior extends SubsystemBase {
     return PoseEstimator.update(cameraResult);
   }
 
+  private void addVisionMeasurement(PhotonCamera camera, PhotonPoseEstimator poseEstimator) {
+    
+
+  }
+
   @Override
   public void periodic() {
     try {
@@ -169,12 +174,23 @@ public class PoseEstimatior extends SubsystemBase {
     try {
       // camera 4 pose estimation
       List<PhotonPipelineResult> camera4res = camera4.getAllUnreadResults();
-      PhotonPipelineResult camera4LatestRes = camera4res.get(camera4res.size() - 1);  
-      Optional<EstimatedRobotPose> camera4pose =
-        getEstimatedGlobalPose(
-            m_SwervePoseEstimator.getEstimatedPosition(), camera4LatestRes, PoseEstimator4);
-      m_SwervePoseEstimator.addVisionMeasurement(
-          camera4pose.get().estimatedPose, camera4pose.get().timestampSeconds);
+      PhotonPipelineResult camera4LatestRes = camera4res.get(camera4res.size() - 1);
+
+      List<PhotonTrackedTarget> targets = camera4LatestRes.getTargets();
+      for (PhotonTrackedTarget target : targets) {
+        double ambiguity = target.getPoseAmbiguity();
+
+        if (ambiguity <= 0.2) {
+          Optional<EstimatedRobotPose> camera4pose =
+            getEstimatedGlobalPose(
+                m_SwervePoseEstimator.getEstimatedPosition(),
+                camera4LatestRes, 
+                PoseEstimator4);
+        
+          m_SwervePoseEstimator.addVisionMeasurement(
+              camera4pose.get().estimatedPose, camera4pose.get().timestampSeconds);
+        }
+      }
     } catch (Exception e) {
     }
 
