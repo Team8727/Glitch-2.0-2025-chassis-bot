@@ -81,7 +81,10 @@ public class Elevator extends SubsystemBase {
     if (targetHeight == kElevator.ElevatorPosition.HOME && !limitSwitch.get()) {
       run(() -> elevatorPID.setReference(-30*5, ControlType.kVelocity))
       .until(() -> limitSwitch.get())// TODO: tune probobly
-      .andThen(() -> resetElevatorEncoders());
+      .andThen(() -> {
+        elevatorPID.setReference(0, ControlType.kVelocity);
+        resetElevatorEncoders();
+      });
     }
   };
 
