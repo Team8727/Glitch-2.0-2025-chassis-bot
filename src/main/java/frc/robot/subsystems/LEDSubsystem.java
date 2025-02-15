@@ -10,6 +10,7 @@ import static frc.robot.Robot.isRedAlliance;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.AddressableLEDBufferView;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.LEDPattern.GradientType;
 import edu.wpi.first.wpilibj.util.Color;
@@ -24,6 +25,8 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
 
   private AddressableLED lightStrip;
   private AddressableLEDBuffer stripBuffer;
+  private AddressableLEDBufferView leftSide;
+  private AddressableLEDBufferView rightSide;
   private LEDPattern currentPattern;
 
   private Elevator m_elevator;
@@ -88,7 +91,9 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
   public LEDSubsystem() {
     // LED setup and port configuration
     lightStrip = new AddressableLED(0); // Correct PWM port
-    stripBuffer = new AddressableLEDBuffer(108); // Correct LED count
+    stripBuffer = new AddressableLEDBuffer(135); // Correct LED count
+    leftSide = new AddressableLEDBufferView(stripBuffer, 0, 67);
+    rightSide = new AddressableLEDBufferView(stripBuffer, 68, 135).reversed();
 
     lightStrip.setLength(stripBuffer.getLength());
 
@@ -150,7 +155,8 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
   public void periodic() {
     // This method will be called once per scheduler run
     if (currentPattern != null) {
-      currentPattern.applyTo(stripBuffer);
+      currentPattern.applyTo(leftSide);
+      currentPattern.applyTo(rightSide);
       lightStrip.setData(stripBuffer);
     }
   }
