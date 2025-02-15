@@ -27,7 +27,8 @@ public class Elevator extends SubsystemBase {
   private final SparkMaxConfig motorRConfig;
   private final SparkClosedLoopController elevatorPID;
   private final DigitalInput limitSwitch;
-  public double targetHeight;
+  private kElevator.ElevatorPosition targetHeight;
+  private double targetRotations;
 
   /** Creates a new Elevator. */
   public Elevator() {
@@ -71,15 +72,25 @@ public class Elevator extends SubsystemBase {
 
   public void setElevatorHeight(kElevator.ElevatorPosition height) {
     // get double from enum
-    targetHeight = height.getOutputRotations();
-    run(() -> elevatorPID.setReference(targetHeight, ControlType.kPosition))
+    targetHeight = height;
+    targetRotations = height.getOutputRotations();
+
+    run(() -> elevatorPID.setReference(targetRotations, ControlType.kPosition))
     .andThen(() -> {
-      if (targetHeight == 0){
+      if (targetRotations == 0){
         run(() -> elevatorPID.setReference(-30*5, ControlType.kVelocity))
         .until(() -> limitSwitch.get())// TODO: tune probobly
         .andThen(() -> resetElevatorEncoders());
       }
     });
+  }
+
+  public kElevator.ElevatorPosition getElevatorSetPosition() {
+    return targetHeight;
+  }
+
+  public double getElevatorHeight() {
+    return elevatorMotorR.getEncoder().getPosition();
   }
 
   public void resetElevatorEncoders() {
