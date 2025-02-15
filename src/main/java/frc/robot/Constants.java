@@ -47,7 +47,7 @@ public final class Constants {
     public static RobotConfig robotConfig =
         new RobotConfig(
           62.6864655, // TODO: find real value
-            10, // TODO: find real value
+            5.22, // TODO: find real value
             new ModuleConfig(
                 .0381,
                 4.45,
@@ -57,7 +57,7 @@ public final class Constants {
                     3.65, 
                     218, 
                     3.54, 
-                    6704, // TODO: probobly wrong
+                    1000, // TODO: probobly wrong
                     1),
                 5.08,
                 60,

@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import frc.robot.Constants.kConfigs;
 import frc.robot.Constants.kSwerve;
+import frc.robot.Constants.kSwerve.kModule.kSteer;
 import frc.robot.commands.DriveCommands.DriveCmd;
 import frc.robot.subsystems.Autos;
 import frc.robot.subsystems.LEDSubsystem;
@@ -70,22 +71,23 @@ public class Robot extends TimedRobot {
         (chassisSpeeds, driveff) -> {
           System.out.println("aligning");
           logger.logChassisSpeeds("speeds", chassisSpeeds);
-          m_DriveCmd.setChassisSpeeds(chassisSpeeds);
+          m_SwerveSubsystem.setModuleStates(kSwerve.kinematics.toSwerveModuleStates(chassisSpeeds));
           // new DriveCmd(m_SwerveSubsystem, () -> chassisSpeeds, () -> true).execute();
         },
         kSwerve.Auton.pathFollowController,
         kConfigs.robotConfig,
-        () -> {
-          // Boolean supplier that controls when the path will be mirrored for the red alliance
-          // This will flip the path being followed to the red side of the field.
-          // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-          Optional<Alliance> alliance = DriverStation.getAlliance();
+        () -> false,
+        // () -> {
+        //   // Boolean supplier that controls when the path will be mirrored for the red alliance
+        //   // This will flip the path being followed to the red side of the field.
+        //   // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+        //   Optional<Alliance> alliance = DriverStation.getAlliance();
 
-          if (alliance.isPresent()) {
-            return alliance.get() == DriverStation.Alliance.Red;
-          }
-          return true;
-        },
+        //   if (alliance.isPresent()) {
+        //     return alliance.get() == DriverStation.Alliance.Red;
+        //   }
+        //   return true;
+        // },
         m_SwerveSubsystem,
         m_PoseEstimatior);
 
