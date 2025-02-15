@@ -76,7 +76,7 @@ public class Elevator extends SubsystemBase {
     targetRotations = height.getOutputRotations();
 
     run(() -> elevatorPID.setReference(targetRotations, ControlType.kPosition))
-      .until(limitSwitch::get).andThen(() -> resetElevatorEncoders()).withTimeout(2);
+      .until(limitSwitch::get).andThen(() -> resetElevatorEncoders()).withTimeout(2);// TODO: limit tune probobly
     
     if (targetHeight == kElevator.ElevatorPosition.HOME && !limitSwitch.get()) {
       run(() -> elevatorPID.setReference(-30*5, ControlType.kVelocity))
