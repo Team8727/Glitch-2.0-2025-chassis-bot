@@ -37,32 +37,27 @@ public class AlgaeRemoverPivot extends SubsystemBase {
                 LogData.POSITION,
                 LogData.VELOCITY,
                 LogData.VOLTAGE,
-                LogData.CURRENT)); // TODO: logging everything for now
+                LogData.CURRENT));
 
     config = new SparkMaxConfig();
-    config
-        .smartCurrentLimit(25) // TODO: figure out what this should be
+    config // TODO: config everything
+        .smartCurrentLimit(25) 
         .idleMode(IdleMode.kBrake)
         .closedLoop
           .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-          .outputRange(-1, 1) // TODO: figure out what these should be
-          .pid(0, 0, 0) // TODO: figure out what these should be
-          .positionWrappingEnabled(false) /*Might need to disable, but this just means it won't try to go the reverse direction to reach a point instead of going forward 
-          //                                        (basically we don't want it slamming into the floor; IMPORTANT, if this is what it is) */
-        .maxMotion // TODO: figure out what these should be
+          .outputRange(-1, 1) 
+          .pid(0, 0, 0) 
+          .positionWrappingEnabled(false)
+        .maxMotion
           .maxAcceleration(0)
           .maxVelocity(0)
           .allowedClosedLoopError(0);
     removerPivotMotor.configure(
         config,
         ResetMode.kNoResetSafeParameters,
-        PersistMode
-            .kNoPersistParameters); // TODO: Might need to be resetsafe and presistsafe, but nothing
-    // is set yet, so I said no
+        PersistMode.kNoPersistParameters);
 
     removerPivotPID = removerPivotMotor.getClosedLoopController();
-    // 75:2 reduction
-    // 63:720 reduction
   }
 
   // set pivot position

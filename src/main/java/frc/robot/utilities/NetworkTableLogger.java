@@ -187,7 +187,7 @@ public class NetworkTableLogger {
    * @param key the key, a string, that will represent the value
    * @param field2d the value (Field2d) that will be logged
    */
-  @SuppressWarnings("PMD.CompareObjectsWithEquals") // TODO: Might need to get rid of <if
+  @SuppressWarnings("PMD.CompareObjectsWithEquals")
   // (!table.containsKey(key))> AND <for (Sendable data :
   // tablesToData.values())> depending on if it updates
   public void logField2d(String key, Field2d field2d) {

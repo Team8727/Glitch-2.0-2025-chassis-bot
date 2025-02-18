@@ -67,12 +67,6 @@ public class PoseEstimatior extends SubsystemBase {
           PoseStrategy.CLOSEST_TO_REFERENCE_POSE,
           kVision.camera4Position);
 
-  // // Choreo Translation and Rotation Controllers
-  // private final PIDController xController = new PIDController(10.0, 0.0, 0.0); //TODO: Tune?
-  // (These are fake values currently)
-  // private final PIDController yController = new PIDController(10.0, 0.0, 0.0);
-  // private final PIDController headingController = new PIDController(7.5, 0.0, 0.0);
-
   // get starting pos with cam1
   public Pose3d getPose3d() {
     // vars

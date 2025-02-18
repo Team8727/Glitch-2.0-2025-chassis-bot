@@ -41,14 +41,13 @@ public class Coral extends SubsystemBase {
                 LogData.POSITION,
                 LogData.VELOCITY,
                 LogData.VOLTAGE,
-                LogData.CURRENT)); // TODO: logging everything for now
-
+                LogData.CURRENT));
     intakeConfig = new SparkMaxConfig();
-    intakeConfig
-        .smartCurrentLimit(25) // TODO: figure out what this should be
+    intakeConfig // TODO: tune configs
+        .smartCurrentLimit(25)
         .idleMode(IdleMode.kBrake)
         .closedLoop
-        .velocityFF(0) // TODO: tune
+        .velocityFF(0)
         .pid(0, 0, 0)
         .maxMotion
         .maxAcceleration(0)
@@ -70,14 +69,14 @@ public class Coral extends SubsystemBase {
                 LogData.POSITION,
                 LogData.VELOCITY,
                 LogData.VOLTAGE,
-                LogData.CURRENT)); // TODO: logging everything for now
+                LogData.CURRENT));
 
     outtakeConfig = new SparkMaxConfig();
-    outtakeConfig
-        .smartCurrentLimit(25) // TODO: figure out what this should be
+    outtakeConfig// TODO: tune configs
+        .smartCurrentLimit(25) 
         .idleMode(IdleMode.kBrake)
         .closedLoop
-        .velocityFF(0) // TODO: tune
+        .velocityFF(0) 
         .pid(0, 0, 0)
         .maxMotion
         .maxAcceleration(0)

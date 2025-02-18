@@ -44,8 +44,8 @@ public class Elevator extends SubsystemBase {
         LogData.CURRENT));
 
     motorRConfig = new SparkMaxConfig();
-    motorRConfig
-      .smartCurrentLimit(40) // TODO: SET ALL OF THIS STUFF
+    motorRConfig // TODO: SET ALL OF THIS STUFF
+      .smartCurrentLimit(60) 
       .idleMode(IdleMode.kBrake)
       .closedLoop
       .velocityFF(0) // Find Using SysId
@@ -76,16 +76,27 @@ public class Elevator extends SubsystemBase {
     targetRotations = height.getOutputRotations();
 
     run(() -> elevatorPID.setReference(targetRotations, ControlType.kPosition))
-      .until(limitSwitch::get).andThen(() -> resetElevatorEncoders()).withTimeout(2);// TODO: limit tune probobly
+      .until(limitSwitch::get)
+      .andThen(() -> resetElevatorEncoders())
+      .withTimeout(1);// TODO: limit tune probobly
     
     if (targetHeight == kElevator.ElevatorPosition.HOME && !limitSwitch.get()) {
-      run(() -> elevatorPID.setReference(-30*5, ControlType.kVelocity))
-      .until(() -> limitSwitch.get())// TODO: tune probobly
+      run(() -> elevatorPID.setReference(-30*5, ControlType.kVelocity)) //TODO: this ends instantly so until does nothing
+      .until(() -> limitSwitch.get())
       .andThen(() -> {
         elevatorPID.setReference(0, ControlType.kVelocity);
         resetElevatorEncoders();
       });
     }
+    // TODO: current zeroing?
+    // if (targetHeight == kElevator.ElevatorPosition.HOME) {
+    //   run(() -> elevatorPID.setReference(-30 * 5, ControlType.kVelocity))
+    //   .until(() -> elevatorMotorL.getOutputCurrent() >= 60)
+    //   .andThen(() -> {
+    //     elevatorPID.setReference(0, ControlType.kVelocity);
+    //     resetElevatorEncoders();
+    //   });
+    // }
   };
 
   public kElevator.ElevatorPosition getElevatorSetPosition() {

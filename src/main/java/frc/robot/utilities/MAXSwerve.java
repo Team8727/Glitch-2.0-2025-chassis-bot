@@ -85,9 +85,7 @@ public class MAXSwerve {
     driveNEO.configure(
         driveConfig,
         ResetMode.kNoResetSafeParameters,
-        PersistMode
-            .kNoPersistParameters); // TODO: this might need to be reset and persist instead of
-    // noreset and nopersist for "burning flash" on the motor
+        PersistMode.kNoPersistParameters);
 
     SparkMaxConfig steerConfig = new SparkMaxConfig();
     steerConfig
@@ -114,9 +112,7 @@ public class MAXSwerve {
     steerNEO.configure(
         steerConfig,
         ResetMode.kNoResetSafeParameters,
-        PersistMode
-            .kNoPersistParameters); // TODO: this might need to be reset and persist instead of
-    // noreset and nopersist for "burning flash" on the motor
+        PersistMode.kNoPersistParameters);
 
     driveEncoder = driveNEO.getEncoder();
     steerEncoder = steerNEO.getAbsoluteEncoder();
