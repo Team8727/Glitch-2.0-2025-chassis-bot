@@ -38,6 +38,7 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
   private Color m_purple = new Color(255, 255, 0);
   private Color m_orange = new Color(255, 0, 165);
   private Color m_yellow = new Color(255, 0, 255);
+  private Color m_pink = new Color(255, 203, 192);
   // Define LED Patterns
 
   // Blinking red pattern
@@ -82,6 +83,24 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
   private LEDPattern elevatorProgressBase = LEDPattern.gradient(GradientType.kDiscontinuous, m_green, m_yellow, m_orange, Color.kRed);
   public LEDPattern elevatorProgress = elevatorProgressBase.mask(elevatorProgressMap);
 
+  // Coral pickup pattern
+  public LEDPattern coralPickup = LEDPattern.gradient(
+    GradientType.kDiscontinuous, 
+    m_green, 
+    m_pink, 
+    m_yellow, 
+    Color.kRed)
+      .blink(Second.of(0.5));
+
+  // Algae pickup pattern
+  public LEDPattern algaePickup = LEDPattern.gradient(
+    GradientType.kDiscontinuous,
+     m_green,
+     m_purple,
+     m_orange,
+     Color.kRed)
+      .blink(Second.of(0.5));
+  
   // Solid Colors
   public LEDPattern solidRed = LEDPattern.solid(Color.kRed);
 
@@ -93,7 +112,7 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
     lightStrip = new AddressableLED(0); // Correct PWM port
     stripBuffer = new AddressableLEDBuffer(135); // Correct LED count
     leftSide = new AddressableLEDBufferView(stripBuffer, 0, 67);
-    rightSide = new AddressableLEDBufferView(stripBuffer, 68, 135).reversed();
+    rightSide = new AddressableLEDBufferView(stripBuffer, 68, 134).reversed();
 
     lightStrip.setLength(stripBuffer.getLength());
 

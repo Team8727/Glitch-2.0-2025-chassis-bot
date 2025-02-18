@@ -8,10 +8,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.AlgaeIntake.AlgaeIntakePivot;
 import frc.robot.subsystems.AlgaeIntake.AlgaeIntakeRollers;
 import frc.robot.Constants.kAlgaeIntake.kAlgaeIntakePivot;
+import frc.robot.subsystems.LEDSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ScoreAlgaeProcessorCmd extends Command {
   /** Creates a new ScoreAlgaeProcessorCmd. */
+  private final LEDSubsystem m_ledSubsystem;
 
   AlgaeIntakePivot m_algaeIntakePivot;
   AlgaeIntakeRollers m_algaeIntakeRollers;
@@ -20,6 +22,7 @@ public class ScoreAlgaeProcessorCmd extends Command {
       AlgaeIntakePivot algaeIntakePivot, AlgaeIntakeRollers algaeIntakeRollers) {
     this.m_algaeIntakePivot = algaeIntakePivot;
     this.m_algaeIntakeRollers = algaeIntakeRollers;
+    m_ledSubsystem = new LEDSubsystem();
     addRequirements(algaeIntakePivot, algaeIntakeRollers); // Add the required subsystems here
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -35,7 +38,7 @@ public class ScoreAlgaeProcessorCmd extends Command {
     // Set the intake to score position, score the algae by running rollers, and then set the intake to home position.
     m_algaeIntakePivot.setIntakePivotPosition(kAlgaeIntakePivot.IntakePosition.SCORE);
     m_algaeIntakeRollers.score();
-
+    m_ledSubsystem.setPatternForDuration(m_ledSubsystem.algaePickup.reversed(), 2);
   }
 
   // Called once the command ends or is interrupted.

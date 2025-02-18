@@ -9,12 +9,14 @@ import frc.robot.Constants.kCoral;
 import frc.robot.Constants.kElevator;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.Coral.Coral;
+import frc.robot.subsystems.LEDSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class DeployCoralCmd extends Command {
   private final Coral m_coral;
   private final Elevator m_elevator;
   private double m_scoreLevel;
+  private final LEDSubsystem m_ledSubsytem;
 
   /** Creates a new coralDeployer. */
   public DeployCoralCmd(Coral coral, double scoreLevel, Elevator elevator) {
@@ -22,6 +24,7 @@ public class DeployCoralCmd extends Command {
     m_coral = coral;
     m_elevator = elevator;
     m_scoreLevel = scoreLevel;
+    m_ledSubsytem = new LEDSubsystem();
     addRequirements(coral, elevator);
   }
 
@@ -45,6 +48,8 @@ public class DeployCoralCmd extends Command {
       m_elevator.setElevatorHeight(kElevator.ElevatorPosition.L4);
       m_coral.coralOuttake(kCoral.coraldeploySpeedL4);
     }
+
+    m_ledSubsytem.setPatternForDuration(m_ledSubsytem.coralPickup.reversed(), 2);
   }
 
   // Called once the command ends or is interrupted.

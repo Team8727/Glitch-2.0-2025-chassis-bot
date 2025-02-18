@@ -8,15 +8,18 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.kElevator;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.Coral.Coral;
+import frc.robot.subsystems.LEDSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class IntakeCoralCmd extends Command {
   private final Coral m_coral;
   private final Elevator m_elevator;
+  private final LEDSubsystem m_ledSubsytem;
   /** Creates a new IntakeCoral. */
   public IntakeCoralCmd(Coral coral, Elevator elevator) {
     m_coral = coral;
     m_elevator = elevator;
+    m_ledSubsytem = new LEDSubsystem();
     addRequirements(coral, elevator);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -30,6 +33,7 @@ public class IntakeCoralCmd extends Command {
   public void execute() {
     m_elevator.setElevatorHeight(kElevator.ElevatorPosition.HOME);
     m_coral.coralIntake(0);//TODO: set speed
+    m_ledSubsytem.setPatternForDuration(m_ledSubsytem.coralPickup, 2);
   }
 
   // Called once the command ends or is interrupted.

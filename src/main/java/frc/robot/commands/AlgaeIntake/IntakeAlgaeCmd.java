@@ -8,18 +8,20 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.kAlgaeIntake.kAlgaeIntakePivot;
 import frc.robot.subsystems.AlgaeIntake.AlgaeIntakePivot;
 import frc.robot.subsystems.AlgaeIntake.AlgaeIntakeRollers;
+import frc.robot.subsystems.LEDSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class IntakeAlgaeCmd extends Command {
   /** Creates a new GroundIntakeAlgae. */
   private final AlgaeIntakePivot m_algaeIntakePivot;
-
   private final AlgaeIntakeRollers m_algaeIntakeRollers;
+  private final LEDSubsystem m_ledSubsystem;
 
   public IntakeAlgaeCmd(
       AlgaeIntakePivot algaeIntakePivot, AlgaeIntakeRollers algaeRemoverPivot) {
     m_algaeIntakePivot = algaeIntakePivot;
     m_algaeIntakeRollers = algaeRemoverPivot;
+    m_ledSubsystem = new LEDSubsystem();
     addRequirements(algaeIntakePivot, algaeRemoverPivot); // Add the required subsystems here
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -35,7 +37,7 @@ public class IntakeAlgaeCmd extends Command {
     // Set the intake pivot to the ground position and
     m_algaeIntakePivot.setIntakePivotPosition(kAlgaeIntakePivot.IntakePosition.DOWN);
     m_algaeIntakeRollers.intake();
-
+    m_ledSubsystem.setPatternForDuration(m_ledSubsystem.algaePickup, 2);
   }
 
   // Called once the command ends or is interrupted.
