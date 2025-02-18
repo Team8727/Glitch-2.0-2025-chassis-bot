@@ -36,41 +36,40 @@ import frc.robot.subsystems.Elevator.Coral.Coral;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem m_SwerveSubsystem;
-  // private final LEDSubsystem m_ledSubsytem;
   private final CommandXboxController m_driverController;
   private final Autos m_Autos;
-  // private final AlgaeRemoverPivot m_AlgaeRemoverPivot;
-  // private final AlgaeRemoverRollers m_AlgeaRemoverRollers;
-  // private final Coral m_coral;
-  // private final Elevator m_elevator;
-  // private final AlgaeIntakePivot m_AlgaeIntakePivot;
-  // private final AlgaeIntakeRollers m_AlgaeIntakeRollers;
+  private final AlgaeRemoverPivot m_AlgaeRemoverPivot;
+  private final AlgaeRemoverRollers m_AlgeaRemoverRollers;
+  private final Coral m_coral;
+  private final Elevator m_elevator;
+  private final AlgaeIntakePivot m_AlgaeIntakePivot;
+  private final AlgaeIntakeRollers m_AlgaeIntakeRollers;
+  private final LEDSubsystem m_ledSubsytem;
+
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer(
+      LEDSubsystem ledSubsystem,
+      AlgaeRemoverPivot AlgaeRemoverPivot,
+      AlgaeRemoverRollers AlgaeRemoverRollers,
+      Coral coral,
+      Elevator elevator,
+      AlgaeIntakePivot AlgaeIntakePivot,
+      AlgaeIntakeRollers AlgaeIntakeRollers,
       SwerveSubsystem swerveSubsystem,
-      // LEDSubsystem ledSubsystem,
       CommandXboxController driverController,
       Autos autos
-      // AlgaeRemoverPivot AlgaeRemoverPivot,
-      // AlgaeRemoverRollers AlgaeRemoverRollers,
-      // Coral coral,
-      // Elevator elevator,
-      // AlgaeIntakePivot AlgaeIntakePivot,
-      // AlgaeIntakeRollers AlgaeIntakeRollers
       ) {
     m_SwerveSubsystem = swerveSubsystem;
-    // m_ledSubsytem = ledSubsystem;
     m_driverController = driverController;
     m_Autos = autos;
-    // m_AlgaeRemoverPivot = AlgaeRemoverPivot;
-    // m_AlgeaRemoverRollers = AlgaeRemoverRollers;
-    // m_coral = coral;
-    // m_elevator = elevator;
-    // m_AlgaeIntakePivot = AlgaeIntakePivot;
-    // m_AlgaeIntakeRollers = AlgaeIntakeRollers;
-    // joystickOperated();
-
+    m_ledSubsytem = ledSubsystem;
+    m_AlgaeRemoverPivot = AlgaeRemoverPivot;
+    m_AlgeaRemoverRollers = AlgaeRemoverRollers;
+    m_coral = coral;
+    m_elevator = elevator;
+    m_AlgaeIntakePivot = AlgaeIntakePivot;
+    m_AlgaeIntakeRollers = AlgaeIntakeRollers;
     // Configure the trigger bindings
     configureBindings();
   }
