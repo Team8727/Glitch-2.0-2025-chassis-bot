@@ -46,17 +46,17 @@ public class Robot extends TimedRobot {
 
   private final RobotContainer m_robotContainer;
   private final SwerveSubsystem m_SwerveSubsystem = new SwerveSubsystem();
-  // private final LEDSubsystem m_ledSubsytem = new LEDSubsystem();
   private final CommandXboxController m_driverController = new CommandXboxController(0);
   private final PoseEstimatior m_PoseEstimatior = new PoseEstimatior(m_SwerveSubsystem);
   private final Autos m_Autos = new Autos();
   private final NetworkTableLogger logger = new NetworkTableLogger("SHOW UPPPP");
-  // private final AlgaeRemoverRollers m_AlgeaRemoverRollers = new AlgaeRemoverRollers();
-  // private final AlgaeRemoverPivot m_AlgaeRemoverPivot = new AlgaeRemoverPivot();
-  // private final Coral m_coral = new Coral();
-  // private final Elevator m_elevator = new Elevator();
-  // private final AlgaeIntakePivot m_AlgaeIntakePivot = new AlgaeIntakePivot();
-  // private final AlgaeIntakeRollers m_AlgaeIntakeRollers = new AlgaeIntakeRollers();
+  private final LEDSubsystem m_ledSubsytem = new LEDSubsystem();
+  private final AlgaeRemoverRollers m_AlgeaRemoverRollers = new AlgaeRemoverRollers();
+  private final AlgaeRemoverPivot m_AlgaeRemoverPivot = new AlgaeRemoverPivot();
+  private final Coral m_coral = new Coral();
+  private final Elevator m_elevator = new Elevator();
+  private final AlgaeIntakePivot m_AlgaeIntakePivot = new AlgaeIntakePivot();
+  private final AlgaeIntakeRollers m_AlgaeIntakeRollers = new AlgaeIntakeRollers();
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -95,16 +95,16 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer =
         new RobotContainer(
+            m_ledSubsytem,
+            m_AlgaeRemoverPivot,
+            m_AlgeaRemoverRollers,
+            m_coral,
+            m_elevator,
+            m_AlgaeIntakePivot,
+            m_AlgaeIntakeRollers,
             m_SwerveSubsystem,
-            // m_ledSubsytem,
             m_driverController,
             m_Autos
-            // m_AlgaeRemoverPivot,
-            // m_AlgeaRemoverRollers,
-            // m_coral,
-            // m_elevator,
-            // m_AlgaeIntakePivot,
-            // m_AlgaeIntakeRollers
             );
 
     // Set Up PathPlanner to "warm up" the pathplanning system
