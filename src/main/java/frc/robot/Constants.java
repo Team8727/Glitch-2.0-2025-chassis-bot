@@ -237,14 +237,14 @@ public final class Constants {
 
     // Motor CAN IDs
     public static class CANID {
-      public static int frontLeftDrive = 5; //
-      public static int frontLeftSteer = 2; //
-      public static int backLeftDrive = 9; //
-      public static int backLeftSteer = 8; //
-      public static int backRightDrive = 7; //
-      public static int backRightSteer = 6; //
-      public static int frontRightDrive = 3; //
-      public static int frontRightSteer = 4; //
+      public static int frontLeftDrive = 9; //
+      public static int frontLeftSteer = 8; //
+      public static int backLeftDrive = 3; //
+      public static int backLeftSteer = 2; //
+      public static int backRightDrive = 5; //
+      public static int backRightSteer = 4; //
+      public static int frontRightDrive = 7; //
+      public static int frontRightSteer = 6; //
     }
   }
 
@@ -285,7 +285,7 @@ public final class Constants {
 
   public static class kAlgaeRemover {
     public static class kPivot {
-      public static int removerPivotMotorCANID =27; // TODO: not set yet because remover is not built yet
+      public static int removerPivotMotorCANID =12; // TODO: not set yet because remover is not built yet
 
       public enum RemoverPositions {
         Raised(15.6), // TODO: SET WITH ACTUAL VALUES
@@ -305,14 +305,14 @@ public final class Constants {
 
     public static class kRollers {
       public static int removerRollerMotorCANID =
-          26; // TODO: not set yet because remover is not built yet
+          13; // TODO: not set yet because remover is not built yet
     }
   }
 
   public static class kAlgaeIntake {
     public static class kAlgaeIntakePivot {
       public static int intakePivotMotorCANID =
-          25; // TODO: not set yet because intake is not built yet
+          17; // TODO: not set yet because intake is not built yet
 
       public enum IntakePosition {
           HOME(0), 
@@ -340,7 +340,7 @@ public final class Constants {
     }
 
     public static class kAlgaeIntakeRollers {
-      public static int rollerMotorCANID = 24; // TODO: not set yet because intake is not built yet
+      public static int rollerMotorCANID = 16; // TODO: not set yet because intake is not built yet
 
       public static int sensorChannel = 5; // TODO: not set yet because intake is not built yet
 
@@ -352,9 +352,9 @@ public final class Constants {
 
   public static class kCoral {
     public static int intakeRollerMotorCANID =
-        20; // TODO: not set yet because intake is not built yet
+        15; // TODO: not set yet because intake is not built yet
     public static int outtakeRollerMotorCANID =
-        21; // TODO: not set yet because intake is not built yet
+        14; // TODO: not set yet because intake is not built yet
 
     public static int frontSensorChannel = 7; // TODO: not set yet because intake is not built yet
     public static int backSensorChannel = 2; // TODO: not set yet because intake is not built yet
@@ -369,8 +369,8 @@ public final class Constants {
   }
 
   public static class kElevator {
-    public static int elevatorMotorRCANID = 22; // TODO: not set yet because elevator is not built yet
-    public static int elevatorMotorLCANID = 23; // TODO: not set yet because elevator is not built yet
+    public static int elevatorMotorRCANID = 10; // TODO: not set yet because elevator is not built yet
+    public static int elevatorMotorLCANID = 11; // TODO: not set yet because elevator is not built yet
 
     public static int limitSwitchDIO = 3; // TODO: not set yet because elevator is not built yet
     public static double gearRatio = 5;
