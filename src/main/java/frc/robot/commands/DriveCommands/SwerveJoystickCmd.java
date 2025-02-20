@@ -59,9 +59,9 @@ public class SwerveJoystickCmd extends Command {
       double elevatorHeight = m_Elevator.getElevatorHeight();
       xSpeed = xSpeed * kSwerve.maxTransSpeed * (elevatorHeight / kElevator.ElevatorPosition.L4.getOutputRotations())
        + kSwerve.DriveSpeedScaling.minDriveSpeed; // Scaling to elevator height
-      ySpeed *= kSwerve.maxTransSpeed * (elevatorHeight / kElevator.ElevatorPosition.L4.getOutputRotations())
+      ySpeed = ySpeed * kSwerve.maxTransSpeed * (elevatorHeight / kElevator.ElevatorPosition.L4.getOutputRotations())
        + kSwerve.DriveSpeedScaling.minDriveSpeed; // Scaling to elevator height
-      turningSpeed *= kSwerve.maxAngSpeed * (elevatorHeight / kElevator.ElevatorPosition.L4.getOutputRotations())
+      turningSpeed = turningSpeed * kSwerve.maxAngSpeed * (elevatorHeight / kElevator.ElevatorPosition.L4.getOutputRotations())
        + kSwerve.DriveSpeedScaling.minDriveSpeed; // Scaling to elevator height
     
     } else {
