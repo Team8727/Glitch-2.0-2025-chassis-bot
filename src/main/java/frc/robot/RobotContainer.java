@@ -78,9 +78,11 @@ public class RobotContainer {
     m_SwerveSubsystem.setDefaultCommand(
         new SwerveJoystickCmd(
             m_SwerveSubsystem,
+            null, // TODO: Put Elevator
             () -> -m_driverController.getLeftY(),
             () -> -m_driverController.getLeftX(),
             () -> m_driverController.getRightX(),
+            () -> true,
             () -> true));
   }
 

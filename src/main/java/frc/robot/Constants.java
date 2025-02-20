@@ -86,11 +86,15 @@ public final class Constants {
     // public static double maxAngAccel = 10 * 2 * Math.PI;//10
 
     // test speeds
-    public static double maxTransSpeed = .5; // 5
-    public static double maxAngSpeed = .3 * Math.PI; // 3
+    public static final double maxTransSpeed = 0.5; // 5
+    public static final double maxAngSpeed = 0.3 * Math.PI; // 3
 
-    public static double maxTransAccel = .135 * 9.81; // 1.35
-    public static double maxAngAccel = 1 * 2 * Math.PI; // 10
+    public static final double maxTransAccel = .135 * 9.81; // 1.35
+    public static final  double maxAngAccel = 1 * 2 * Math.PI; // 10
+
+    public static class DriveSpeedScaling {
+      public static final double minDriveSpeed = 0.5; // TODO: Set this for scaling
+    }
 
     // Operator interface constants
     public static class Teleop {
