@@ -95,15 +95,15 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer =
         new RobotContainer(
-            m_ledSubsytem,
+            m_SwerveSubsystem,
+            m_AlgaeIntakePivot,
+            m_AlgaeIntakeRollers,
             m_AlgaeRemoverPivot,
             m_AlgeaRemoverRollers,
             m_coral,
             m_elevator,
-            m_AlgaeIntakePivot,
-            m_AlgaeIntakeRollers,
-            m_SwerveSubsystem,
             m_driverController,
+            m_ledSubsytem,
             m_Autos
             );
 
