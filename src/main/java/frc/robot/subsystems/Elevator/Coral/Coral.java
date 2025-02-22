@@ -9,6 +9,8 @@ import static frc.robot.utilities.SparkConfigurator.getSparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkLimitSwitch;
+import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -26,8 +28,8 @@ public class Coral extends SubsystemBase {
   private final SparkMaxConfig intakeConfig;
   private final SparkMax coralOuttake;
   private final SparkMaxConfig outtakeConfig;
-  public final DigitalInput frontCoralSensor;
-  public final DigitalInput backCoralSensor;
+  public final SparkLimitSwitch frontCoralSensor;
+  public final SparkLimitSwitch backCoralSensor;
 
   /** Creates a new Coral. */
   public Coral() {
@@ -57,8 +59,6 @@ public class Coral extends SubsystemBase {
     coralIntake.configure(
         intakeConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
-    frontCoralSensor = new DigitalInput(kCoral.frontSensorChannel);
-
     coralOuttake =
         getSparkMax(
             kCoral.outtakeRollerMotorCANID,
@@ -86,7 +86,8 @@ public class Coral extends SubsystemBase {
     coralOuttake.configure(
         outtakeConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
-    backCoralSensor = new DigitalInput(kCoral.backSensorChannel);
+    frontCoralSensor = coralOuttake.getForwardLimitSwitch();
+    backCoralSensor = coralOuttake.getReverseLimitSwitch();
   }
 
   public void setIntakeSpeed(double speed) {
@@ -103,16 +104,16 @@ public class Coral extends SubsystemBase {
   }
   public Command coralOuttake(double speed) {
     return new RunCommand(() -> setOuttakeSpeed(kCoral.outtakeSpeed))
-        .until(() -> !frontCoralSensor.get())
+        .until(() -> !frontCoralSensor.isPressed())
         .andThen(() -> stopDeployer());
   }
 
   public Command coralIntake(double speed) {
     return new RunCommand(() -> setIntakeSpeed(kCoral.intakeSpeed))
-        .until(() -> backCoralSensor.get())
+        .until(() -> backCoralSensor.isPressed())
           .andThen(() -> setIntakeSpeed(speed))
           .andThen(() -> setOuttakeSpeed(speed))
-        .until(() -> !backCoralSensor.get())
+        .until(() -> !backCoralSensor.isPressed())
           .andThen(() -> stopDeployer());
   }
 

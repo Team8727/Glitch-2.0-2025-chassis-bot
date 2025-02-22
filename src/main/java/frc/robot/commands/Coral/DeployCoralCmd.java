@@ -37,16 +37,16 @@ public class DeployCoralCmd extends Command {
   public void execute() {
     if (m_scoreLevel == 1) {
       m_elevator.setElevatorHeight(kElevator.ElevatorPosition.L1);
-      m_coral.coralOuttake(kCoral.coraldeploySpeedL1);
+      // m_coral.coralOuttake(kCoral.coraldeploySpeedL1);
     } else if (m_scoreLevel == 2) {
       m_elevator.setElevatorHeight(kElevator.ElevatorPosition.L2);
-      m_coral.coralOuttake(kCoral.coraldeploySpeedL2);
+      // m_coral.coralOuttake(kCoral.coraldeploySpeedL2);
     } else if (m_scoreLevel == 3) {
       m_elevator.setElevatorHeight(kElevator.ElevatorPosition.L3);
-      m_coral.coralOuttake(kCoral.coraldeploySpeedL3);
+      // m_coral.coralOuttake(kCoral.coraldeploySpeedL3);
     } else if (m_scoreLevel == 4) {
       m_elevator.setElevatorHeight(kElevator.ElevatorPosition.L4);
-      m_coral.coralOuttake(kCoral.coraldeploySpeedL4);
+      // m_coral.coralOuttake(kCoral.coraldeploySpeedL4);
     }
 
     m_ledSubsytem.setPatternForDuration(m_ledSubsytem.coralPickup.reversed(), 2);

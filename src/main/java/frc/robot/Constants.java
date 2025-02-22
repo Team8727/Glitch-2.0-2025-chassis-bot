@@ -29,6 +29,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.SPI.Port;
@@ -327,6 +328,9 @@ public final class Constants {
           }
       }
 
+      public TrapezoidProfile pivotMotionProfile = new TrapezoidProfile(
+        new TrapezoidProfile.Constraints(10, 20));
+
       public static int intakePivotEncoderChannelA =
           0; // TODO: not set yet because intake is not built yet
       public static int intakePivotEncoderChannelB =
@@ -342,7 +346,7 @@ public final class Constants {
     public static class kAlgaeIntakeRollers {
       public static int rollerMotorCANID = 16; // TODO: not set yet because intake is not built yet
 
-      public static int sensorChannel = 5; // TODO: not set yet because intake is not built yet
+      public static int sensorChannel = 2; // TODO: not set yet because intake is not built yet
 
       public static int intakeSpeed = 11; // TODO: not set yet because intake is not built yet
       public static int scoreVoltage = -11; // TODO: not final yet because intake is not built yet
@@ -355,9 +359,6 @@ public final class Constants {
         15; // TODO: not set yet because intake is not built yet
     public static int outtakeRollerMotorCANID =
         14; // TODO: not set yet because intake is not built yet
-
-    public static int frontSensorChannel = 7; // TODO: not set yet because intake is not built yet
-    public static int backSensorChannel = 2; // TODO: not set yet because intake is not built yet
 
     public static int intakeSpeed = 11; // TODO: not set yet because intake is not built yet
     public static int outtakeSpeed = -5; // TODO: not set yet because intake is not built yet
