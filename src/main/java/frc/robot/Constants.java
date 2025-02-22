@@ -328,7 +328,7 @@ public final class Constants {
           }
       }
 
-      public final TrapezoidProfile pivotMotionProfile = new TrapezoidProfile(
+      public TrapezoidProfile pivotMotionProfile = new TrapezoidProfile(
         new TrapezoidProfile.Constraints(10, 20));
 
       public static int intakePivotEncoderChannelA =
