@@ -58,11 +58,11 @@ public class SwerveJoystickCmd extends Command {
       // get elevator height for anti-tipping
       double elevatorHeight = m_Elevator.getElevatorHeight();
       xSpeed = xSpeed * kSwerve.maxTransSpeed * (elevatorHeight / kElevator.ElevatorPosition.L4.getOutputRotations())
-       + kSwerve.DriveSpeedScaling.minDriveSpeed; // Scaling to elevator height
+       * kSwerve.DriveSpeedScaling.minDriveSpeed; // Scaling to elevator height
       ySpeed = ySpeed * kSwerve.maxTransSpeed * (elevatorHeight / kElevator.ElevatorPosition.L4.getOutputRotations())
-       + kSwerve.DriveSpeedScaling.minDriveSpeed; // Scaling to elevator height
+       * kSwerve.DriveSpeedScaling.minDriveSpeed; // Scaling to elevator height
       turningSpeed = turningSpeed * kSwerve.maxAngSpeed * (elevatorHeight / kElevator.ElevatorPosition.L4.getOutputRotations())
-       + kSwerve.DriveSpeedScaling.minDriveSpeed; // Scaling to elevator height
+       * kSwerve.DriveSpeedScaling.minDriveSpeed; // Scaling to elevator height
     
     } else {
       xSpeed *= kSwerve.maxTransSpeed;
