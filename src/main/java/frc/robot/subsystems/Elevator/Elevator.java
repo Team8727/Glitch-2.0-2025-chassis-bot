@@ -45,7 +45,7 @@ public class Elevator extends SubsystemBase {
 
     motorRConfig = new SparkMaxConfig();
     motorRConfig // TODO: SET ALL OF THIS STUFF
-      .smartCurrentLimit(60) 
+      .smartCurrentLimit(10) 
       .idleMode(IdleMode.kBrake)
       .closedLoop
       .velocityFF(0) // Find Using SysId

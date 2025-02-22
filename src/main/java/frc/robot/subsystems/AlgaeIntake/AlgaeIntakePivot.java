@@ -17,6 +17,7 @@ import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.wpilibj.Encoder;
@@ -90,6 +91,7 @@ public class AlgaeIntakePivot extends SubsystemBase {
         .outputRange(-1, 1) // TODO: this is set to full range of motor speed, might want to scale down to test.
         .velocityFF(0)
         .pid(0, 0, 0)
+        .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
         .positionWrappingEnabled(false) /*Might need to disable, but this just means it won't try to go the reverse direction to reach a point instead of going forward 
         //                                        (basically we don't want it slamming into the floor; IMPORTANT, if this is what it is) */
 
