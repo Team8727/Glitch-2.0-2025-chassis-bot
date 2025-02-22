@@ -104,7 +104,11 @@ public class Elevator extends SubsystemBase {
   }
 
   public double getElevatorHeight() {
-    return elevatorMotorR.getEncoder().getPosition();
+    try {
+      return elevatorMotorR.getEncoder().getPosition();
+    } catch (NullPointerException e) {
+      return 0;
+    }
   }
 
   public void resetElevatorEncoders() {
