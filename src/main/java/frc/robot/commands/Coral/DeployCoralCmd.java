@@ -19,12 +19,12 @@ public class DeployCoralCmd extends Command {
   private final LEDSubsystem m_ledSubsytem;
 
   /** Creates a new coralDeployer. */
-  public DeployCoralCmd(Coral coral, double scoreLevel, Elevator elevator) {
+  public DeployCoralCmd(Coral coral, double scoreLevel, Elevator elevator, LEDSubsystem ledSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies
     m_coral = coral;
     m_elevator = elevator;
     m_scoreLevel = scoreLevel;
-    m_ledSubsytem = new LEDSubsystem();
+    m_ledSubsytem = ledSubsystem;
     addRequirements(coral, elevator);
   }
 

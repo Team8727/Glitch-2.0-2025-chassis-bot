@@ -115,15 +115,15 @@ public class RobotContainer {
     // m_driverController.povDown().onTrue(new removeAlgae(m_AlgaeRemoverPivot, m_AlgeaRemoverRollers, 2, m_elevator));
 
     // intake coral
-    m_driverController.leftBumper().onTrue(new IntakeCoralCmd(m_coral, m_elevator));
+    m_driverController.leftBumper().onTrue(new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsytem));
     // Deploy coral L1
-    m_driverController.x().onTrue(new DeployCoralCmd(m_coral, 1, m_elevator));
+    m_driverController.x().onTrue(new DeployCoralCmd(m_coral, 1, m_elevator, m_ledSubsytem));
     // Deploy coral L2
-    m_driverController.y().onTrue(new DeployCoralCmd(m_coral, 2, m_elevator));
+    m_driverController.y().onTrue(new DeployCoralCmd(m_coral, 2, m_elevator, m_ledSubsytem));
     // Deploy coral L3
-    m_driverController.b().onTrue(new DeployCoralCmd(m_coral, 3, m_elevator));
+    m_driverController.b().onTrue(new DeployCoralCmd(m_coral, 3, m_elevator, m_ledSubsytem));
     // Deploy coral L4
-    m_driverController.a().onTrue(new DeployCoralCmd(m_coral, 4, m_elevator));
+    m_driverController.a().onTrue(new DeployCoralCmd(m_coral, 4, m_elevator, m_ledSubsytem));
 
     // Align to pose
     m_driverController.povLeft().onTrue(m_Autos.align(kPoses.blueFrontLeft).andThen(() -> System.out.println("aligginginsdaod")));
