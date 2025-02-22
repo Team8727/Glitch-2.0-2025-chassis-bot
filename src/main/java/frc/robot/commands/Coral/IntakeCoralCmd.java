@@ -16,10 +16,10 @@ public class IntakeCoralCmd extends Command {
   private final Elevator m_elevator;
   private final LEDSubsystem m_ledSubsytem;
   /** Creates a new IntakeCoral. */
-  public IntakeCoralCmd(Coral coral, Elevator elevator) {
+  public IntakeCoralCmd(Coral coral, Elevator elevator, LEDSubsystem ledSubsystem) {
     m_coral = coral;
     m_elevator = elevator;
-    m_ledSubsytem = new LEDSubsystem();
+    m_ledSubsytem = ledSubsystem;
     addRequirements(coral, elevator);
     // Use addRequirements() here to declare subsystem dependencies.
   }

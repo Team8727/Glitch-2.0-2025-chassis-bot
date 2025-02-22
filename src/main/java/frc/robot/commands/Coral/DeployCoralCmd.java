@@ -19,28 +19,25 @@ public class DeployCoralCmd extends Command {
   private final LEDSubsystem m_ledSubsytem;
 
   /** Creates a new coralDeployer. */
-  public DeployCoralCmd(Coral coral, double scoreLevel, Elevator elevator) {
+  public DeployCoralCmd(Coral coral, double scoreLevel, Elevator elevator, LEDSubsystem ledSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies
     m_coral = coral;
     m_elevator = elevator;
     m_scoreLevel = scoreLevel;
-    m_ledSubsytem = new LEDSubsystem();
+    m_ledSubsytem = ledSubsystem;
     addRequirements(coral, elevator);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
-
-  // Called every time the scheduler runs while the command is scheduled
-  @Override
-  public void execute() {
+  public void initialize() {
     if (m_scoreLevel == 1) {
       m_elevator.setElevatorHeight(kElevator.ElevatorPosition.L1);
       // m_coral.coralOuttake(kCoral.coraldeploySpeedL1);
     } else if (m_scoreLevel == 2) {
       m_elevator.setElevatorHeight(kElevator.ElevatorPosition.L2);
       // m_coral.coralOuttake(kCoral.coraldeploySpeedL2);
+      System.out.println("command commanded");
     } else if (m_scoreLevel == 3) {
       m_elevator.setElevatorHeight(kElevator.ElevatorPosition.L3);
       // m_coral.coralOuttake(kCoral.coraldeploySpeedL3);
@@ -49,7 +46,13 @@ public class DeployCoralCmd extends Command {
       // m_coral.coralOuttake(kCoral.coraldeploySpeedL4);
     }
 
-    m_ledSubsytem.setPatternForDuration(m_ledSubsytem.coralPickup.reversed(), 2);
+    // m_ledSubsytem.setPatternForDuration(m_ledSubsytem.coralPickup.reversed(), 2);
+  }
+
+  // Called every time the scheduler runs while the command is scheduled
+  @Override
+  public void execute() {
+    
   }
 
   // Called once the command ends or is interrupted.
