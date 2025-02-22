@@ -15,6 +15,8 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
+
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.kAlgaeRemover;
 import frc.robot.utilities.SparkConfigurator.LogData;
@@ -24,6 +26,10 @@ public class AlgaeRemoverPivot extends SubsystemBase {
   private final SparkMax removerPivotMotor;
   private final SparkMaxConfig config;
   private final SparkClosedLoopController removerPivotPID;
+  private final TrapezoidProfile.Constraints trapezoidConstraints;
+  private final TrapezoidProfile trapezoidProfile;
+  private final TrapezoidProfile.State currentState;
+  private final TrapezoidProfile.State goalState;
 
   /** Creates a new AlgaePivot. */
   public AlgaeRemoverPivot() {
@@ -58,6 +64,11 @@ public class AlgaeRemoverPivot extends SubsystemBase {
         PersistMode.kNoPersistParameters);
 
     removerPivotPID = removerPivotMotor.getClosedLoopController();
+
+    trapezoidConstraints = new TrapezoidProfile.Constraints(0, 0); // TODO: set constraints
+    trapezoidProfile = new TrapezoidProfile(trapezoidConstraints);
+    currentState = new TrapezoidProfile.State(0, 0);
+    goalState = new TrapezoidProfile.State(0, 0);
   }
 
   // set pivot position

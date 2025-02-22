@@ -145,7 +145,7 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
 
   public void setPattern(LEDPattern pattern) {
     currentPattern = pattern;
-    System.out.println("Pattern set to: " + pattern);
+    //System.out.println("Pattern set to: " + pattern);
   }
 
   /**
@@ -162,12 +162,12 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
       () -> currentPattern = LEDPattern.solid(Color.kBlack));
 
     //Notify of duration pattern
-    System.out.println("Pattern was set to: " + pattern + " for " + seconds + " seconds");
+    //System.out.println("Pattern was set to: " + pattern + " for " + seconds + " seconds");
   }
 
   public void turnLEDsOff() {
     currentPattern = LEDPattern.solid(Color.kBlack);
-    System.out.println("Pattern set to: " + LEDPattern.solid(Color.kBlack));
+    //System.out.println("Pattern set to: " + LEDPattern.solid(Color.kBlack));
   }
 
   @Override

@@ -14,10 +14,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.kSwerve;
 
 public class Autos extends SubsystemBase {
-//  private final LEDSubsystem m_ledSubsytem; DO NOT USE THE LED CODE UNTIL IT IS FIXED
+ private final LEDSubsystem m_ledSubsytem;
   /** Creates a new Autos. */
-  public Autos() {
-  //  m_ledSubsytem = new LEDSubsystem();
+  public Autos(LEDSubsystem ledSubsystem) {
+   m_ledSubsytem = ledSubsystem;
 
   // // Load a full Choreo trajectory as a PathPlannerPath
   // PathPlannerPath exampleChoreoTraj = PathPlannerPath.fromChoreoTrajectory("Example Choreo Traj");
@@ -45,10 +45,10 @@ public class Autos extends SubsystemBase {
             kSwerve.Auton.maxOnTheFlyAcc,
             kSwerve.Auton.maxAngVel,
             kSwerve.Auton.maxAngAccel))
-              // .andThen(
-              //    run(() -> m_ledSubsytem.setPatternForDuration(
-              //       m_ledSubsytem.rainbow, 
-              //       2)))
+              .andThen(
+                 run(() -> m_ledSubsytem.setPatternForDuration(
+                    m_ledSubsytem.rainbow, 
+                    2)))
                     ;
   }
 
@@ -60,11 +60,11 @@ public class Autos extends SubsystemBase {
             kSwerve.Auton.maxOnTheFlyAcc,
             kSwerve.Auton.maxAngVel,
             kSwerve.Auton.maxAngAccel))
-              // .andThen(
-              //   run(
-              //     () -> m_ledSubsytem.setPatternForDuration(
-              //       m_ledSubsytem.rainbow, 
-              //       2)))
+              .andThen(
+                run(
+                  () -> m_ledSubsytem.setPatternForDuration(
+                    m_ledSubsytem.rainbow, 
+                    2)))
                     ;
   }
 
