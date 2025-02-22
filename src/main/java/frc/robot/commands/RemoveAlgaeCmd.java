@@ -21,12 +21,12 @@ public class RemoveAlgaeCmd extends Command {
 
   /** Creates a new removeAlgae. */
   public RemoveAlgaeCmd(
-      AlgaeRemoverPivot algaeRemoverPivot, AlgaeRemoverRollers algaeRemoverRollers, double level, Elevator elevator) {
+      AlgaeRemoverPivot algaeRemoverPivot, AlgaeRemoverRollers algaeRemoverRollers, double level, Elevator elevator, LEDSubsystem ledSubsystem) {
     m_pivot = algaeRemoverPivot;
     m_rollers = algaeRemoverRollers;
     m_setPos = level;
     m_elevator = elevator;
-    m_ledSubsystem = new LEDSubsystem();
+    m_ledSubsystem = ledSubsystem;
     addRequirements(algaeRemoverPivot, algaeRemoverRollers, elevator); // Add the required subsystems here
     // Use addRequirements() here to declare subsystem dependencies.
   }

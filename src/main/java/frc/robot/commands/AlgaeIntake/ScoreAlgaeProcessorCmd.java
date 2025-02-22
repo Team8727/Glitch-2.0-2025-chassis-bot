@@ -19,10 +19,10 @@ public class ScoreAlgaeProcessorCmd extends Command {
   AlgaeIntakeRollers m_algaeIntakeRollers;
 
   public ScoreAlgaeProcessorCmd(
-      AlgaeIntakePivot algaeIntakePivot, AlgaeIntakeRollers algaeIntakeRollers) {
+      AlgaeIntakePivot algaeIntakePivot, AlgaeIntakeRollers algaeIntakeRollers, LEDSubsystem ledSubsystem) {
     this.m_algaeIntakePivot = algaeIntakePivot;
     this.m_algaeIntakeRollers = algaeIntakeRollers;
-    m_ledSubsystem = new LEDSubsystem();
+    m_ledSubsystem = ledSubsystem;
     addRequirements(algaeIntakePivot, algaeIntakeRollers); // Add the required subsystems here
     // Use addRequirements() here to declare subsystem dependencies.
   }
