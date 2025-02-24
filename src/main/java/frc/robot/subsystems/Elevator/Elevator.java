@@ -85,6 +85,7 @@ public class Elevator extends SubsystemBase {
     targetRotations = height.getOutputRotations();
     System.out.println("numbers" + targetRotations);
     elevatorMotorR.getClosedLoopController().setReference(targetRotations, ControlType.kPosition);
+
     // run(() -> elevatorPID.setReference(targetRotations, ControlType.kPosition))
     //   .until(limitSwitch::get)
     //   .andThen(() -> resetElevatorEncoders())
@@ -136,7 +137,11 @@ public class Elevator extends SubsystemBase {
 
   @Override
   public void periodic() {
-    logger.logDouble(getName(), elevatorMotorR.getOutputCurrent());
+    logger.logDouble("Lcurrent", elevatorMotorL.getOutputCurrent());
+    logger.logDouble("Lrotations", elevatorMotorL.getEncoder().getPosition());
+    logger.logDouble("Rcurrent", elevatorMotorR.getOutputCurrent());
+    logger.logDouble("Rrotations", elevatorMotorR.getEncoder().getPosition());
+
     // This method will be called once per scheduler run
   }
 }

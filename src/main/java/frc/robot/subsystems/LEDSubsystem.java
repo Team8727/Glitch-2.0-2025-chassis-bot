@@ -175,8 +175,8 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
   public void periodic() {
     // This method will be called once per scheduler run
     if (currentPattern != null) {
-      currentPattern.atBrightness(Percent.of(50)).applyTo(leftSide);
-      currentPattern.atBrightness(Percent.of(50)).applyTo(rightSide);
+      currentPattern.atBrightness(Percent.of(30)).applyTo(leftSide);
+      currentPattern.atBrightness(Percent.of(30)).applyTo(rightSide);
       lightStrip.setData(stripBuffer);
     }
   }
