@@ -138,6 +138,8 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
       .scrollAtRelativeSpeed(
         Percent.per(Second).of(10));
     }
+
+    currentPattern = LEDPattern.solid(m_green);
     currentPattern.applyTo(stripBuffer);
     lightStrip.setData(stripBuffer);
     lightStrip.start();
