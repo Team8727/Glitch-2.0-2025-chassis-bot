@@ -125,6 +125,7 @@ public class RobotContainer {
     // Deploy coral L4
     m_driverController.a().onTrue(new DeployCoralCmd(m_coral, 4, m_elevator, m_ledSubsytem));
 
+    m_driverController.povDown().onTrue(new InstantCommand(() -> m_elevator.resetElevatorEncoders()));
     // Align to pose
     m_driverController.povLeft().onTrue(m_Autos.align(kPoses.blueFrontLeft).andThen(() -> System.out.println("aligginginsdaod")));
 

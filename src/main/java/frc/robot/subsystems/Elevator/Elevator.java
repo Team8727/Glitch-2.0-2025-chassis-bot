@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.kElevator;
 import frc.robot.utilities.NetworkTableLogger;
@@ -55,8 +56,7 @@ public class Elevator extends SubsystemBase {
       .idleMode(IdleMode.kBrake)
       .inverted(false)
       .closedLoop
-      // .velocityFF(0) // Find Using SysId
-      .pid(2, 0, 0)
+      .pidf(.4, 0.0, 4, 0.001)
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
       // .maxMotion
       // .maxVelocity(0)
@@ -68,7 +68,7 @@ public class Elevator extends SubsystemBase {
       elevatorMotorR, 
       kElevator.elevatorMotorLCANID, 
       SparkMax.MotorType.kBrushless, 
-      false);
+      true);
 
     elevatorPID = elevatorMotorR.getClosedLoopController();
 
@@ -137,6 +137,7 @@ public class Elevator extends SubsystemBase {
   @Override
   public void periodic() {
     logger.logDouble(getName(), elevatorMotorR.getOutputCurrent());
+    SmartDashboard.putNumber("setpos", targetRotations);
     // This method will be called once per scheduler run
   }
 }
