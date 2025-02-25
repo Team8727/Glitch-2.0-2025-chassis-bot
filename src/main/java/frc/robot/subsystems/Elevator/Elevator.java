@@ -60,13 +60,13 @@ public class Elevator extends SubsystemBase {
       .inverted(false)
       .closedLoop
       .velocityFF(3.71) // Find Using SysId
-      .pid(.1, 0, 0)
-      .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-      .maxMotion
-      .positionMode(MAXMotionPositionMode.kMAXMotionTrapezoidal)
-      .maxVelocity(4771.41593898)
-      .maxAcceleration(236.923835739)
-      .allowedClosedLoopError(0);//DO NOT CHANGE THEIS UNLESS YOURE 100000% SURE YOU KNOW WHAT YOUR DOING PLEAS LISTE TO THIS WARNEING OR ELCE YOU WILL DIE IM NOT EVEN JOKING PLEAS DONT CHANG THIS.
+      .pid(.01, 0, 0)
+      .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+      // .maxMotion
+      // .positionMode(MAXMotionPositionMode.kMAXMotionTrapezoidal)
+      // .maxVelocity(4771.41593898)
+      // .maxAcceleration(236.923835739)
+      // .allowedClosedLoopError(0);//DO NOT CHANGE THEIS UNLESS YOURE 100000% SURE YOU KNOW WHAT YOUR DOING PLEAS LISTE TO THIS WARNEING OR ELCE YOU WILL DIE IM NOT EVEN JOKING PLEAS DONT CHANG THIS.
     elevatorMotorR.configure(motorRConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
     elevatorMotorL = getFollowerMax(
@@ -88,7 +88,7 @@ public class Elevator extends SubsystemBase {
     // get double from enum
     targetHeight = height;
     targetRotations = height.getOutputRotations();
-    elevatorMotorR.getClosedLoopController().setReference(targetRotations, ControlType.kMAXMotionPositionControl);
+    elevatorMotorR.getClosedLoopController().setReference(targetRotations, ControlType.kPosition);
 
     // run(() -> elevatorPID.setReference(targetRotations, ControlType.kPosition))
     //   .until(limitSwitch::get)
