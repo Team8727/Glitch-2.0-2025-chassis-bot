@@ -56,19 +56,19 @@ public class Elevator extends SubsystemBase {
       .inverted(false)
       .closedLoop
       // .velocityFF(0) // Find Using SysId
-      .pid(2, 0, 0)
-      .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
-      // .maxMotion
-      // .maxVelocity(0)
-      // .maxAcceleration(0)
-      // .allowedClosedLoopError(0);
+      .pid(1, 0.05, 0)
+      .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+      .maxMotion
+      .maxVelocity(4771.41593898)
+      .maxAcceleration(236.923835739)
+      .allowedClosedLoopError(0);//DO NOT CHANGE THEIS UNLESS YOURE 100000% SURE YOU KNOW WHAT YOUR DOING PLEAS LISTE TO THIS WARNEING OR ELCE YOU WILL DIE IM NOT EVEN JOKING PLEAS DONT CHANG THIS.
     elevatorMotorR.configure(motorRConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
     elevatorMotorL = getFollowerMax(
       elevatorMotorR, 
       kElevator.elevatorMotorLCANID, 
       SparkMax.MotorType.kBrushless, 
-      false);
+      true);
 
     elevatorPID = elevatorMotorR.getClosedLoopController();
 
@@ -84,7 +84,7 @@ public class Elevator extends SubsystemBase {
     targetHeight = height;
     targetRotations = height.getOutputRotations();
     System.out.println("numbers" + targetRotations);
-    elevatorMotorR.getClosedLoopController().setReference(targetRotations, ControlType.kPosition);
+    elevatorMotorR.getClosedLoopController().setReference(targetRotations, ControlType.kMAXMotionPositionControl);
 
     // run(() -> elevatorPID.setReference(targetRotations, ControlType.kPosition))
     //   .until(limitSwitch::get)
@@ -137,10 +137,8 @@ public class Elevator extends SubsystemBase {
 
   @Override
   public void periodic() {
-    logger.logDouble("Lcurrent", elevatorMotorL.getOutputCurrent());
-    logger.logDouble("Lrotations", elevatorMotorL.getEncoder().getPosition());
-    logger.logDouble("Rcurrent", elevatorMotorR.getOutputCurrent());
     logger.logDouble("Rrotations", elevatorMotorR.getEncoder().getPosition());
+    logger.logDouble("Rcurrent", elevatorMotorR.getOutputCurrent());
 
     // This method will be called once per scheduler run
   }
