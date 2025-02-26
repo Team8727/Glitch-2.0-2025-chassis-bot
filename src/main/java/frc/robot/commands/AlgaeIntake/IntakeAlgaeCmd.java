@@ -28,15 +28,16 @@ public class IntakeAlgaeCmd extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    
+    // Set the intake pivot to the ground position and
+    // m_algaeIntakePivot.setIntakePivotPosition(kAlgaeIntakePivot.IntakePosition.DOWN);
+    m_algaeIntakeRollers.intake();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-    // Set the intake pivot to the ground position and
-    m_algaeIntakePivot.setIntakePivotPosition(kAlgaeIntakePivot.IntakePosition.DOWN);
-    m_algaeIntakeRollers.intake();
     m_ledSubsystem.setPatternForDuration(m_ledSubsystem.algaePickup, 2);
   }
 
@@ -48,7 +49,7 @@ public class IntakeAlgaeCmd extends Command {
     m_algaeIntakeRollers.setRollerSpeed(kAlgaeIntakePivot.idleAlgaeIntakeVoltage);
 
     // Go back to home position
-    m_algaeIntakePivot.setIntakePivotPosition(kAlgaeIntakePivot.IntakePosition.HOME);
+    // m_algaeIntakePivot.setIntakePivotPosition(kAlgaeIntakePivot.IntakePosition.HOME);
   }
 
   // Returns true when the command should end.

@@ -142,7 +142,7 @@ boolean m_shouldLog = false;
         .until(() -> getAlgaeCheck())
         .andThen(
             run(() -> setRollerSpeed(kAlgaeIntakeRollers.intakeSpeed))
-                .withTimeout(0.5)) // TODO: this additional time may have to be modified or removed
+                .withTimeout(0.2)) // TODO: this additional time may have to be modified or removed
         .finallyDo(() -> setRollerSpeed(0));
   }
 
