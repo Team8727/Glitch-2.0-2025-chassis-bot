@@ -129,6 +129,8 @@ public class RobotContainer {
     // Align to pose
     m_driverController.povLeft().onTrue(m_Autos.align(kPoses.blueFrontLeft).andThen(() -> System.out.println("aligginginsdaod")));
 
+    m_driverController.rightBumper().onTrue(m_AlgaeIntakeRollers.holdAlgae());
+
     // // Intake algae
     // m_driverController.rightBumper().onTrue(
     //   new IntakeAlgaeCmd(m_AlgaeIntakePivot, m_AlgaeIntakeRollers)

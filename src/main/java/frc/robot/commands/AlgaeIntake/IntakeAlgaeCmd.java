@@ -46,8 +46,7 @@ public class IntakeAlgaeCmd extends Command {
   public void end(boolean interrupted) {
 
     // Set the intake rollers to idle pull in voltage
-    m_algaeIntakeRollers.setRollerSpeed(kAlgaeIntakePivot.idleAlgaeIntakeVoltage);
-
+    m_algaeIntakeRollers.holdAlgae();
     // Go back to home position
     // m_algaeIntakePivot.setIntakePivotPosition(kAlgaeIntakePivot.IntakePosition.HOME);
   }

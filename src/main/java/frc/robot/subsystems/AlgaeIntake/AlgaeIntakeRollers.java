@@ -100,6 +100,10 @@ public class AlgaeIntakeRollers extends SubsystemBase {
     rollerPID.setReference(voltage, ControlType.kVoltage);
   }
 
+  public void setrollercurrent(double current) {
+    rollerPID.setReference(current, ControlType.kCurrent);
+  }
+
   public void stopRollers() {
     setRollerSpeed(0);
   }
@@ -150,6 +154,13 @@ boolean m_shouldLog = false;
     return run(() -> setRollerVoltage(-kAlgaeIntakeRollers.scoreVoltage))
         .until(() -> !getAlgaeCheck())
         .finallyDo(() -> setRollerVoltage(0));
+  }
+
+  public Command holdAlgae() {
+    return 
+      runOnce(() -> setRollerVoltage(3))
+      .alongWith(
+        runOnce(() -> setrollercurrent(20)));
   }
 
 // -=-=-=-=-=-=- Periodic Override -=-=-=-=-=-=-=-=-=-=-=-|Subsystem|
