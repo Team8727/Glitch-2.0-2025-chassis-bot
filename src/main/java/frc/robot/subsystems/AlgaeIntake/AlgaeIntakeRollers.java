@@ -162,3 +162,4 @@ boolean m_shouldLog = false;
     }
   }
 }
+
