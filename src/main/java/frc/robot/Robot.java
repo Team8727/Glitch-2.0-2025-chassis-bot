@@ -48,9 +48,9 @@ public class Robot extends TimedRobot {
   private final SwerveSubsystem m_SwerveSubsystem = new SwerveSubsystem();
   private final CommandXboxController m_driverController = new CommandXboxController(0);
   private final PoseEstimatior m_PoseEstimatior = new PoseEstimatior(m_SwerveSubsystem);
-  private final Autos m_Autos = new Autos();
-  private final NetworkTableLogger logger = new NetworkTableLogger("SHOW UPPPP");
   private final LEDSubsystem m_ledSubsytem = new LEDSubsystem();
+  private final Autos m_Autos = new Autos(m_ledSubsytem);
+  private final NetworkTableLogger logger = new NetworkTableLogger("SHOW UPPPP");
   private final AlgaeRemoverRollers m_AlgeaRemoverRollers = new AlgaeRemoverRollers();
   private final AlgaeRemoverPivot m_AlgaeRemoverPivot = new AlgaeRemoverPivot();
   private final Coral m_coral = new Coral();

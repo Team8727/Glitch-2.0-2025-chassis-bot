@@ -18,10 +18,10 @@ public class IntakeAlgaeCmd extends Command {
   private final LEDSubsystem m_ledSubsystem;
 
   public IntakeAlgaeCmd(
-      AlgaeIntakePivot algaeIntakePivot, AlgaeIntakeRollers algaeRemoverPivot) {
+      AlgaeIntakePivot algaeIntakePivot, AlgaeIntakeRollers algaeRemoverPivot, LEDSubsystem ledSubsystem) {
     m_algaeIntakePivot = algaeIntakePivot;
     m_algaeIntakeRollers = algaeRemoverPivot;
-    m_ledSubsystem = new LEDSubsystem();
+    m_ledSubsystem = ledSubsystem;
     addRequirements(algaeIntakePivot, algaeRemoverPivot); // Add the required subsystems here
     // Use addRequirements() here to declare subsystem dependencies.
   }

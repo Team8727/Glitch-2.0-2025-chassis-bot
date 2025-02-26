@@ -11,7 +11,9 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.config.MAXMotionConfig.MAXMotionPositionMode;
 
+import static edu.wpi.first.units.Units.Volt;
 import static frc.robot.utilities.SparkConfigurator.getFollowerMax;
 import static frc.robot.utilities.SparkConfigurator.getSparkMax;
 
@@ -21,6 +23,7 @@ import java.util.logging.Logger;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.kElevator;
 import frc.robot.utilities.NetworkTableLogger;
 import frc.robot.utilities.SparkConfigurator.LogData;
@@ -52,16 +55,17 @@ public class Elevator extends SubsystemBase {
 
     motorRConfig = new SparkMaxConfig();
     motorRConfig // TODO: SET ALL OF THIS STUFF
-      .smartCurrentLimit(60) 
+      .smartCurrentLimit(65, 65)
       .idleMode(IdleMode.kBrake)
       .inverted(false)
       .closedLoop
       .pidf(.4, 0.0, 4, 0.001)
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
       // .maxMotion
-      // .maxVelocity(0)
-      // .maxAcceleration(0)
-      // .allowedClosedLoopError(0);
+      // .positionMode(MAXMotionPositionMode.kMAXMotionTrapezoidal)
+      // .maxVelocity(4771.41593898)
+      // .maxAcceleration(236.923835739)
+      // .allowedClosedLoopError(0);//DO NOT CHANGE THEIS UNLESS YOURE 100000% SURE YOU KNOW WHAT YOUR DOING PLEAS LISTE TO THIS WARNEING OR ELCE YOU WILL DIE IM NOT EVEN JOKING PLEAS DONT CHANG THIS.
     elevatorMotorR.configure(motorRConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
     elevatorMotorL = getFollowerMax(
@@ -83,8 +87,8 @@ public class Elevator extends SubsystemBase {
     // get double from enum
     targetHeight = height;
     targetRotations = height.getOutputRotations();
-    System.out.println("numbers" + targetRotations);
     elevatorMotorR.getClosedLoopController().setReference(targetRotations, ControlType.kPosition);
+
     // run(() -> elevatorPID.setReference(targetRotations, ControlType.kPosition))
     //   .until(limitSwitch::get)
     //   .andThen(() -> resetElevatorEncoders())
@@ -134,9 +138,18 @@ public class Elevator extends SubsystemBase {
   //   // currentHeight = height;
   // }
 
+  // Creates a SysIdRoutine
+  SysIdRoutine routine = new SysIdRoutine(
+    new SysIdRoutine.Config(),
+    new SysIdRoutine.Mechanism((voltage) -> runVolts(voltage.in(Volt)), null, this)
+    );
+
+  private void runVolts(double voltage) {
+    elevatorMotorR.setVoltage(voltage);
+  }
+
   @Override
   public void periodic() {
-    logger.logDouble(getName(), elevatorMotorR.getOutputCurrent());
     SmartDashboard.putNumber("setpos", targetRotations);
     // This method will be called once per scheduler run
   }

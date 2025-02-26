@@ -109,7 +109,7 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
   /** Creates a new LEDSubsystem. */
   public LEDSubsystem() {
     // LED setup and port configuration
-    lightStrip = new AddressableLED(0); // Correct PWM port
+    lightStrip = new AddressableLED(2); // Correct PWM port
     stripBuffer = new AddressableLEDBuffer(135); // Correct LED count
     leftSide = new AddressableLEDBufferView(stripBuffer, 0, 67);
     rightSide = new AddressableLEDBufferView(stripBuffer, 68, 134).reversed();
@@ -138,6 +138,7 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
       .scrollAtRelativeSpeed(
         Percent.per(Second).of(10));
     }
+
     currentPattern.applyTo(stripBuffer);
     lightStrip.setData(stripBuffer);
     lightStrip.start();
@@ -145,7 +146,7 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
 
   public void setPattern(LEDPattern pattern) {
     currentPattern = pattern;
-    System.out.println("Pattern set to: " + pattern);
+    //System.out.println("Pattern set to: " + pattern);
   }
 
   /**
@@ -162,20 +163,20 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
       () -> currentPattern = LEDPattern.solid(Color.kBlack));
 
     //Notify of duration pattern
-    System.out.println("Pattern was set to: " + pattern + " for " + seconds + " seconds");
+    //System.out.println("Pattern was set to: " + pattern + " for " + seconds + " seconds");
   }
 
   public void turnLEDsOff() {
     currentPattern = LEDPattern.solid(Color.kBlack);
-    System.out.println("Pattern set to: " + LEDPattern.solid(Color.kBlack));
+    //System.out.println("Pattern set to: " + LEDPattern.solid(Color.kBlack));
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     if (currentPattern != null) {
-      currentPattern.applyTo(leftSide);
-      currentPattern.applyTo(rightSide);
+      currentPattern.atBrightness(Percent.of(30)).applyTo(leftSide);
+      currentPattern.atBrightness(Percent.of(30)).applyTo(rightSide);
       lightStrip.setData(stripBuffer);
     }
   }
