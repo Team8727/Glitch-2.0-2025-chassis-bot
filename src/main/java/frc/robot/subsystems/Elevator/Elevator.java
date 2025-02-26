@@ -20,10 +20,13 @@ import static frc.robot.utilities.SparkConfigurator.getSparkMax;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.kElevator;
 import frc.robot.utilities.NetworkTableLogger;
 import frc.robot.utilities.SparkConfigurator.LogData;
@@ -39,6 +42,20 @@ public class Elevator extends SubsystemBase {
   private kElevator.ElevatorPosition targetHeight;
   private double targetRotations;
   private NetworkTableLogger logger = new NetworkTableLogger("Elevator");
+
+//-=-=-=-=-=-=-=-=-TrapezoidProfile=-=-=-=-=-=-=-=- /
+
+  private static double kDt = 0.02;
+
+  // Create a motion profile with the given maximum velocity and maximum
+  // acceleration constraints for the next setpoint.
+  private final TrapezoidProfile m_profile =               //in/s
+      new TrapezoidProfile(new TrapezoidProfile.Constraints(103.33, 307.85)); //TODO: SET THESE
+  private TrapezoidProfile.State m_goal = new TrapezoidProfile.State();
+  private TrapezoidProfile.State m_setpoint = new TrapezoidProfile.State();
+
+//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- 
+
 
   /** Creates a new Elevator. */
   public Elevator() {
@@ -59,8 +76,8 @@ public class Elevator extends SubsystemBase {
       .idleMode(IdleMode.kBrake)
       .inverted(false)
       .closedLoop
-      .velocityFF(3.71) // Find Using SysId
-      .pid(.01, 0, 0)
+      .velocityFF(0) // Find Using SysId
+      .pid(.25, 0, 0)
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
       // .maxMotion
       // .positionMode(MAXMotionPositionMode.kMAXMotionTrapezoidal)
@@ -116,6 +133,46 @@ public class Elevator extends SubsystemBase {
     // }
   };
 
+  public void setElevatorHeightMotionProfile(kElevator.ElevatorPosition height_chosen) {
+    // get double from enum
+    targetHeight = height_chosen;
+    targetRotations = height_chosen.getOutputRotations();
+        
+    // Position zero with zero velocity.
+    m_goal = new TrapezoidProfile.State(targetRotations, 0);
+
+          //elevatorMotorR.getClosedLoopController().setReference(targetRotations, ControlType.kPosition);
+
+          // run(() -> elevatorPID.setReference(targetRotations, ControlType.kPosition))
+          //   .until(limitSwitch::get)
+          //   .andThen(() -> resetElevatorEncoders())
+          //   .withTimeout(1);// TODO: limit tune probobly
+          
+          // System.out.println("move");
+          
+          // if (targetHeight == kElevator.ElevatorPosition.HOME && !limitSwitch.get()) {
+          //   run(() -> elevatorPID.setReference(-30*5, ControlType.kVelocity)) //TODO: this ends instantly so until does nothing
+          //   .until(() -> limitSwitch.get())
+          //   .andThen(() -> {
+          //     elevatorPID.setReference(0, ControlType.kVelocity);
+          //     resetElevatorEncoders();
+          //   });
+          // }
+          // TODO: current zeroing?
+          // if (targetHeight == kElevator.ElevatorPosition.HOME) {
+          //   run(() -> elevatorPID.setReference(-30 * 5, ControlType.kVelocity))
+          //   .until(() -> elevatorMotorL.getOutputCurrent() >= 60)
+          //   .andThen(() -> {
+          //     elevatorPID.setReference(0, ControlType.kVelocity);
+          //     resetElevatorEncoders();
+          //   });
+          // }
+
+          // Retrieve the profiled setpoint for the next timestep. This setpoint moves
+          // toward the goal while obeying the constraints.
+
+  }
+
   public kElevator.ElevatorPosition getElevatorSetPosition() {
     return targetHeight;
   }
@@ -149,6 +206,7 @@ public class Elevator extends SubsystemBase {
     elevatorMotorR.setVoltage(voltage);
   }
 
+  // This method will be called once per scheduler run
   @Override
   public void periodic() {
     logger.logDouble("Rrotations", elevatorMotorR.getEncoder().getPosition());
@@ -157,6 +215,14 @@ public class Elevator extends SubsystemBase {
     SmartDashboard.putNumber("setpos_smart", targetRotations);
     logger.logDouble("setpos", 7.23663);
 
-    // This method will be called once per scheduler run
+
+    //-=-=-=-=-=-=-=- Trapezoid Profile -=-=-=-=-=-=-=-
+
+    // Retrieve the profiled setpoint for the next timestep. This setpoint moves
+    // toward the goal while obeying the constraints.
+    m_setpoint = m_profile.calculate(kDt, m_setpoint, m_goal);
+
+    // Send setpoint to offboard controller PID (I made this in periodic so when the setpositionTrapezoidProfile Method is updated it runs the elevator)
+    elevatorMotorR.getClosedLoopController().setReference(m_setpoint.position, ControlType.kPosition);
   }
 }
