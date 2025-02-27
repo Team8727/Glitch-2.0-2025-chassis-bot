@@ -57,7 +57,7 @@ public class Elevator extends SubsystemBase {
 
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- 
 
-  private final ElevatorFeedforward elevatorFeedforward = new ElevatorFeedforward(0, 0, 0);
+  private final ElevatorFeedforward elevatorFeedforward = new ElevatorFeedforward(0, 0, 0, 0);
 
   // The timer for trapezoid profile
   private final Timer m_timer = new Timer();
