@@ -9,13 +9,9 @@ import static frc.robot.utilities.SparkConfigurator.getSparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.AbsoluteEncoder;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkMaxAlternateEncoder;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -57,11 +53,11 @@ public class AlgaeRemoverPivot extends SubsystemBase {
           .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
           .outputRange(-1, 1) 
           .pid(0, 0, 0) 
-          .positionWrappingEnabled(false)
-        .maxMotion
-          .maxAcceleration(0)
-          .maxVelocity(0)
-          .allowedClosedLoopError(0);
+          .positionWrappingEnabled(false);
+        // .maxMotion
+        //   .maxAcceleration(0)
+        //   .maxVelocity(0)
+        //   .allowedClosedLoopError(0);
     removerPivotMotor.configure(
         config,
         ResetMode.kNoResetSafeParameters,

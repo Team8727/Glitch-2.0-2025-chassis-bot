@@ -51,8 +51,8 @@ public class Elevator extends SubsystemBase {
   // acceleration constraints for the next setpoint.
   private final TrapezoidProfile m_profile =               //in/s
       new TrapezoidProfile(new TrapezoidProfile.Constraints(103.33, 307.85)); //TODO: SET THESE
-  private TrapezoidProfile.State m_goal = new TrapezoidProfile.State();
-  private TrapezoidProfile.State m_setpoint = new TrapezoidProfile.State();
+  private TrapezoidProfile.State m_goal = new TrapezoidProfile.State(0,0);
+  private TrapezoidProfile.State m_setpoint = new TrapezoidProfile.State(0,0);
 
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- 
 
@@ -101,11 +101,9 @@ public class Elevator extends SubsystemBase {
     elevatorPID.setReference(0, ControlType.kDutyCycle);
   }
 
-  public void setElevatorHeight(kElevator.ElevatorPosition height) {
+  public void setElevatorHeight(double setpoint) {
     // get double from enum
-    targetHeight = height;
-    targetRotations = height.getOutputRotations();
-    elevatorMotorR.getClosedLoopController().setReference(targetRotations, ControlType.kPosition);
+    elevatorPID.setReference(setpoint, ControlType.kPosition);
 
     // run(() -> elevatorPID.setReference(targetRotations, ControlType.kPosition))
     //   .until(limitSwitch::get)
@@ -140,37 +138,6 @@ public class Elevator extends SubsystemBase {
         
     // Position zero with zero velocity.
     m_goal = new TrapezoidProfile.State(targetRotations, 0);
-
-          //elevatorMotorR.getClosedLoopController().setReference(targetRotations, ControlType.kPosition);
-
-          // run(() -> elevatorPID.setReference(targetRotations, ControlType.kPosition))
-          //   .until(limitSwitch::get)
-          //   .andThen(() -> resetElevatorEncoders())
-          //   .withTimeout(1);// TODO: limit tune probobly
-          
-          // System.out.println("move");
-          
-          // if (targetHeight == kElevator.ElevatorPosition.HOME && !limitSwitch.get()) {
-          //   run(() -> elevatorPID.setReference(-30*5, ControlType.kVelocity)) //TODO: this ends instantly so until does nothing
-          //   .until(() -> limitSwitch.get())
-          //   .andThen(() -> {
-          //     elevatorPID.setReference(0, ControlType.kVelocity);
-          //     resetElevatorEncoders();
-          //   });
-          // }
-          // TODO: current zeroing?
-          // if (targetHeight == kElevator.ElevatorPosition.HOME) {
-          //   run(() -> elevatorPID.setReference(-30 * 5, ControlType.kVelocity))
-          //   .until(() -> elevatorMotorL.getOutputCurrent() >= 60)
-          //   .andThen(() -> {
-          //     elevatorPID.setReference(0, ControlType.kVelocity);
-          //     resetElevatorEncoders();
-          //   });
-          // }
-
-          // Retrieve the profiled setpoint for the next timestep. This setpoint moves
-          // toward the goal while obeying the constraints.
-
   }
 
   public kElevator.ElevatorPosition getElevatorSetPosition() {
@@ -219,6 +186,7 @@ public class Elevator extends SubsystemBase {
     m_setpoint = m_profile.calculate(kDt, m_setpoint, m_goal);
 
     // Send setpoint to offboard controller PID (I made this in periodic so when the setpositionTrapezoidProfile Method is updated it runs the elevator)
-    elevatorMotorR.getClosedLoopController().setReference(m_setpoint.position, ControlType.kPosition);
+    setElevatorHeight(m_setpoint.position);
+    // elevatorMotorR.getClosedLoopController().setReference(m_setpoint.position, ControlType.kPosition);
   }
 }

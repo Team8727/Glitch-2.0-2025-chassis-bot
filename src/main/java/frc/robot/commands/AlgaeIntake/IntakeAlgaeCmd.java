@@ -32,7 +32,7 @@ public class IntakeAlgaeCmd extends Command {
     System.out.println("moving");
     
     // Set the intake pivot to the ground position and
-    m_algaeIntakePivot.setIntakePivotPosition(kAlgaeIntakePivot.IntakePosition.DOWN);
+    m_algaeIntakePivot.setPositionTrapazoidal(kAlgaeIntakePivot.IntakePosition.DOWN);
     // m_algaeIntakeRollers.intake();
   }
 
