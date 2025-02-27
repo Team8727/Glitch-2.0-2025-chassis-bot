@@ -15,6 +15,7 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.kAlgaeIntake.kAlgaeIntakeRollers;
@@ -23,10 +24,11 @@ import frc.robot.utilities.SparkConfigurator.LogData;
 import java.util.Set;
 
 public class AlgaeIntakeRollers extends SubsystemBase {
-  public final SparkMax intakeRollerMotor;
-  public final SparkMaxConfig config;
-  public final DigitalInput algaeCheck;
-  public final SparkClosedLoopController rollerPID;
+  private final SparkMax intakeRollerMotor;
+  private final SparkMaxConfig config;
+  private final DigitalInput algaeCheck;
+  private final SparkClosedLoopController rollerPID;
+  private boolean isMoving = false;
 
   /** Creates a new AlgaeIntakeRollers. */
   public AlgaeIntakeRollers() {
@@ -56,6 +58,7 @@ public class AlgaeIntakeRollers extends SubsystemBase {
       // Motor Config
       .smartCurrentLimit(25) // TODO: figure out what this should be
       .idleMode(IdleMode.kBrake)
+      .inverted(true)
 
       // PID Control
       .closedLoop
@@ -109,7 +112,7 @@ public class AlgaeIntakeRollers extends SubsystemBase {
   }
 
   public boolean getAlgaeCheck() {
-    return algaeCheck.get();
+    return !algaeCheck.get();
   }
 
 // -=-=-=-=-=-=-=-= Logging =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-|Subsystem|
@@ -135,19 +138,23 @@ boolean m_shouldLog = false;
 // -=-=-=-=-=-=-=-=- Commands -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-|Subsystem|
 
   public Command outtake() {
-    return run(() -> setRollerSpeed(-kAlgaeIntakeRollers.outtakeSpeed))
+    return run(() -> isMoving = true)
+        .andThen(() -> setRollerSpeed(-kAlgaeIntakeRollers.outtakeSpeed))
         .until(() -> !getAlgaeCheck())
           .withTimeout(.5)
-        .finallyDo(() -> setRollerSpeed(0));
+        .andThen(() -> setRollerSpeed(0))
+        .finallyDo(() -> isMoving = false);
   }
 
   public Command intake() {
-    return run(() -> setRollerSpeed(kAlgaeIntakeRollers.intakeSpeed))
-        .until(() -> getAlgaeCheck())
-        .andThen(
-            run(() -> setRollerSpeed(kAlgaeIntakeRollers.intakeSpeed))
-                .withTimeout(0.2)) // TODO: this additional time may have to be modified or removed
-        .finallyDo(() -> setRollerSpeed(0));
+    return run(() -> isMoving = true)
+          .andThen(() -> setRollerSpeed(kAlgaeIntakeRollers.intakeSpeed))
+          .until(() -> getAlgaeCheck())
+          .andThen(
+              run(() -> setRollerSpeed(kAlgaeIntakeRollers.intakeSpeed))
+                  .withTimeout(0.2)) // TODO: this additional time may have to be modified or removed
+          .andThen(() -> setRollerSpeed(0))
+          .finallyDo(() -> isMoving = false);
   }
 
   public Command score() {
@@ -156,17 +163,23 @@ boolean m_shouldLog = false;
         .finallyDo(() -> setRollerVoltage(0));
   }
 
-  public Command holdAlgae() {
-    return 
-      runOnce(() -> setRollerVoltage(3))
-      .alongWith(
-        runOnce(() -> setrollercurrent(20)));
+  public void holdAlgae() {
+    if (getAlgaeCheck() == true) {
+      System.out.println("holding");
+      setrollercurrent(30);
+      setRollerVoltage(2);
+    } 
+    else if (isMoving == false){
+      setrollercurrent(0);
+      setRollerVoltage(0);
+    }
   }
 
 // -=-=-=-=-=-=- Periodic Override -=-=-=-=-=-=-=-=-=-=-=-|Subsystem|
   
   @Override
   public void periodic() {
+    holdAlgae();
     // This method will be called once per scheduler run
     if (m_shouldLog) {
       startLogging();

@@ -332,9 +332,9 @@ public final class Constants {
         new TrapezoidProfile.Constraints(10, 20));
 
       public static int intakePivotEncoderChannelA =
-          0; // TODO: not set yet because intake is not built yet
+          10; // TODO: not set yet because intake is not built yet
       public static int intakePivotEncoderChannelB =
-          1; // TODO: not set yet because intake is not built yet
+          11; // TODO: not set yet because intake is not built yet
       public static double encoderPulsesPerRevolution = 2048; // Maybe?
 
       public static double gearRatio = 4; // TODO: This is probably what it is, but either set using document in Glitch Drive, or ask CAD.
@@ -346,7 +346,7 @@ public final class Constants {
     public static class kAlgaeIntakeRollers {
       public static int rollerMotorCANID = 16; // TODO: not set yet because intake is not built yet
 
-      public static int sensorChannel = 2; // TODO: not set yet because intake is not built yet
+      public static int sensorChannel = 0; // TODO: not set yet because intake is not built yet
 
       public static int intakeSpeed = 11; // TODO: not set yet because intake is not built yet
       public static int scoreVoltage = -11; // TODO: not final yet because intake is not built yet

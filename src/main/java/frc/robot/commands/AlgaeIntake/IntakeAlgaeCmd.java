@@ -18,10 +18,10 @@ public class IntakeAlgaeCmd extends Command {
   private final LEDSubsystem m_ledSubsystem;
 
   public IntakeAlgaeCmd(
-      AlgaeIntakePivot algaeIntakePivot, AlgaeIntakeRollers algaeRemoverPivot) {
+      AlgaeIntakePivot algaeIntakePivot, AlgaeIntakeRollers algaeRemoverPivot, LEDSubsystem ledSubsystem) {
     m_algaeIntakePivot = algaeIntakePivot;
     m_algaeIntakeRollers = algaeRemoverPivot;
-    m_ledSubsystem = new LEDSubsystem();
+    m_ledSubsystem = ledSubsystem;
     addRequirements(algaeIntakePivot, algaeRemoverPivot); // Add the required subsystems here
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -29,10 +29,11 @@ public class IntakeAlgaeCmd extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    System.out.println("moving");
     
     // Set the intake pivot to the ground position and
-    // m_algaeIntakePivot.setIntakePivotPosition(kAlgaeIntakePivot.IntakePosition.DOWN);
-    m_algaeIntakeRollers.intake();
+    m_algaeIntakePivot.setIntakePivotPosition(kAlgaeIntakePivot.IntakePosition.DOWN);
+    // m_algaeIntakeRollers.intake();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -46,7 +47,6 @@ public class IntakeAlgaeCmd extends Command {
   public void end(boolean interrupted) {
 
     // Set the intake rollers to idle pull in voltage
-    m_algaeIntakeRollers.holdAlgae();
     // Go back to home position
     // m_algaeIntakePivot.setIntakePivotPosition(kAlgaeIntakePivot.IntakePosition.HOME);
   }
