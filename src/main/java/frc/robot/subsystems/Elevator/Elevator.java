@@ -56,7 +56,7 @@ public class Elevator extends SubsystemBase {
 
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- 
 
-  private final ElevatorFeedforward elevatorFeedforward = new ElevatorFeedforward(0, 0, 0);
+  private final ElevatorFeedforward elevatorFeedforward = new ElevatorFeedforward(0, 0, 0, 0);
 
   // The timer for trapezoid profile
   private final Timer m_timer = new Timer();
@@ -105,12 +105,10 @@ public class Elevator extends SubsystemBase {
     elevatorPID.setReference(0, ControlType.kDutyCycle);
   }
 
-  public void setElevatorHeight(kElevator.ElevatorPosition height) {
+  private void setElevatorHeight(double velocity) {
     // get double from enum
-    targetHeight = height;
-    targetRotations = height.getOutputRotations();
-    elevatorMotorR.getClosedLoopController().setReference(targetRotations, ControlType.kPosition);
-
+    elevatorPID.setReference(elevatorFeedforward.calculate(m_setpoint.velocity), ControlType.kVoltage);
+    
     // run(() -> elevatorPID.setReference(targetRotations, ControlType.kPosition))
     //   .until(limitSwitch::get)
     //   .andThen(() -> resetElevatorEncoders())
@@ -190,7 +188,8 @@ public class Elevator extends SubsystemBase {
     // toward the goal while obeying the constraints.
     m_setpoint = m_profile.calculate(kDt, m_setpoint, m_goal);
 
+    setElevatorHeight(m_setpoint.position);
     // Send setpoint to offboard controller PID (I made this in periodic so when the setpositionTrapezoidProfile Method is updated it runs the elevator)
-    elevatorMotorR.getClosedLoopController().setReference(elevatorFeedforward.calculate(m_setpoint.velocity), ControlType.kPosition);//.setReference(m_setpoint.position, );
+    // elevatorMotorR.getClosedLoopController().setReference(elevatorFeedforward.calculate(m_setpoint.velocity), ControlType.kPosition);//.setReference(m_setpoint.position, );
   }
 }
