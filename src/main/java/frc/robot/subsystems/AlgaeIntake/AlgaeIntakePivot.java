@@ -64,7 +64,7 @@ public class AlgaeIntakePivot extends SubsystemBase {
 
   // -=-=-=-=- Feedforward (Arm) for the IntakePivot (Not used currently) -=-=-=-=-=-=-|Constructor|
 
-    pivotFeedforward = new ArmFeedforward(0, 0, 0, 0); // TODO: Calculate these using sysID
+    pivotFeedforward = new ArmFeedforward(0, .74, .92, .03); // TODO: Calculate these using sysID
 
   // =-=-=-=- pivotMotor config, PID config, and maxMotion Constraints config -=-=-=-=-|Constructor|
 
