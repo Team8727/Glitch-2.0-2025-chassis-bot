@@ -83,7 +83,7 @@ public class Elevator extends SubsystemBase {
       // .positionMode(MAXMotionPositionMode.kMAXMotionTrapezoidal)
       // .maxVelocity(4771.41593898)
       // .maxAcceleration(236.923835739)
-      // .allowedClosedLoopError(0);//DO NOT CHANGE THEIS UNLESS YOURE 100000% SURE YOU KNOW WHAT YOUR DOING PLEAS LISTE TO THIS WARNEING OR ELCE YOU WILL DIE IM NOT EVEN JOKING PLEAS DONT CHANG THIS.
+      // .allowedClosedLoopError(0);//DO NOT CHANGE THIS UNLESS YOU'RE 100000% SURE YOU KNOW WHAT YOUR DOING PLEASE LISTEN TO THIS WARNING OR ELSE YOU WILL DIE IM NOT EVEN JOKING PLEASE DON'T CHANGE THIS.
     elevatorMotorR.configure(motorRConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
     elevatorMotorL = getFollowerMax(
