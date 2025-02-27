@@ -39,8 +39,6 @@ public class AlgaeIntakePivot extends SubsystemBase {
   private final ArmFeedforward pivotFeedforward;
   private final SparkClosedLoopController pivotPID;
 
-  private final Encoder pivotEncoder;
-
   /** Creates a new PhantomIntake. */
   public AlgaeIntakePivot() {
 
@@ -60,16 +58,16 @@ public class AlgaeIntakePivot extends SubsystemBase {
 
 // -=-=-=-=- Encoder -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=|Constructor|
 
-    pivotEncoder =
-    new Encoder(
-        kAlgaeIntakePivot.intakePivotEncoderChannelA,
-        kAlgaeIntakePivot
-            .intakePivotEncoderChannelB); // TODO: figure out the ports for the encoder
+    // pivotEncoder =
+    // new Encoder(
+    //     kAlgaeIntakePivot.intakePivotEncoderChannelA,
+    //     kAlgaeIntakePivot
+    //         .intakePivotEncoderChannelB); // TODO: figure out the ports for the encoder
 
-    pivotEncoder.setDistancePerPulse(
-    2 * Math.PI
-    / (kAlgaeIntakePivot.encoderPulsesPerRevolution * kAlgaeIntakePivot.gearRatio)); // TODO: set these two values if not set
-    pivotEncoder.reset();
+    // pivotEncoder.setDistancePerPulse(
+    // 2 * Math.PI
+    // / (kAlgaeIntakePivot.encoderPulsesPerRevolution * kAlgaeIntakePivot.gearRatio)); // TODO: set these two values if not set
+    // pivotEncoder.reset();
 
 // -=-=-=-=- Feedforward (Arm) for the IntakePivot (Not used currently) -=-=-=-=-=-=-|Constructor|
 
@@ -84,30 +82,30 @@ public class AlgaeIntakePivot extends SubsystemBase {
 
     config
       // Motor Config
-      .smartCurrentLimit(25) // TODO: figure out what this should be
+      .smartCurrentLimit(60) // TODO: figure out what this should be
       .idleMode(IdleMode.kBrake)
+      .inverted(false)
 
       // PID Control
       .closedLoop
         .outputRange(-1, 1) // TODO: this is set to full range of motor speed, might want to scale down to test.
         .velocityFF(0)
-        .pid(0, 0, 0)
+        .pid(.5, 0, 0)
         .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
         .positionWrappingEnabled(false) /*Might need to disable, but this just means it won't try to go the reverse direction to reach a point instead of going forward 
         //                                        (basically we don't want it slamming into the floor; IMPORTANT, if this is what it is) */
 
       // MaxMotion Control for more precise position control
         .maxMotion
-          .maxVelocity(0) // TODO: this is set to zero right now!!
-          .maxAcceleration(0)
+          .maxVelocity(100) // TODO: this is set to zero right now!!
+          .maxAcceleration(50)
           .allowedClosedLoopError(0); // TODO: set this
 
     // Configuring Motor With Config
     intakePivotMotor.configure(
         config,
         ResetMode.kNoResetSafeParameters,
-        PersistMode
-            .kNoPersistParameters); // TODO: Might need to be resetsafe and presistsafe, but nothing
+        PersistMode.kNoPersistParameters); // TODO: Might need to be resetsafe and presistsafe, but nothing
     // is set yet, so I said no
 
 // -=-=-=-=- PID controller for the motor for convenience -=-=-=-=-=-=-=-=|Constructor|
@@ -173,21 +171,18 @@ public class AlgaeIntakePivot extends SubsystemBase {
   public void startLogging() { // Only for calling in the periodic of this subsystem
     periodicLogger.logDouble("Motor Current", intakePivotMotor.getOutputCurrent());
     periodicLogger.logDouble("Motor Encoder Value (Relative Encoder):", intakePivotMotor.getEncoder().getPosition());
-    periodicLogger.logDouble("External Encoder Value:", pivotEncoder.getDistance());
   }
 
 // -=-=-=-=-=-=- Methods -=-=-=-=-=-=-=-=-=-=-|Subsystem|
 
-  public void resetEncoder() {
-    pivotEncoder.reset();
-  }
-
   public void setIntakePivotPosition(IntakePosition intakePositionDegrees) {
-    pivotPID.setReference(intakePositionDegrees.getIntakePositionDegrees(), SparkBase.ControlType.kMAXMotionPositionControl);
+    double rotation = intakePositionDegrees.getIntakePositionDegrees() / 360;
+    pivotPID.setReference(rotation, SparkBase.ControlType.kMAXMotionPositionControl);
   }
 
-  public void setIntakePivotPosition(double positionRadians) {
-    pivotPID.setReference(positionRadians, SparkBase.ControlType.kMAXMotionPositionControl);
+  public void setIntakePivotPosition(double degrees) {
+    double rotation = degrees / 360;
+    pivotPID.setReference(rotation, SparkBase.ControlType.kMAXMotionPositionControl);
   }
 
   public void setMotorFFandPID(double positionRadians, double velocityRadPerSec) {

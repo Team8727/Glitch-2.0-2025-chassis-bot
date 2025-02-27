@@ -209,13 +209,9 @@ public class Elevator extends SubsystemBase {
   // This method will be called once per scheduler run
   @Override
   public void periodic() {
-    logger.logDouble("Rrotations", elevatorMotorR.getEncoder().getPosition());
-    logger.logDouble("Rcurrent", elevatorMotorR.getOutputCurrent());
+    // This method will be called once per scheduler run
+    SmartDashboard.putNumber("setpos", targetRotations);
     
-    SmartDashboard.putNumber("setpos_smart", targetRotations);
-    logger.logDouble("setpos", 7.23663);
-
-
     //-=-=-=-=-=-=-=- Trapezoid Profile -=-=-=-=-=-=-=-
 
     // Retrieve the profiled setpoint for the next timestep. This setpoint moves

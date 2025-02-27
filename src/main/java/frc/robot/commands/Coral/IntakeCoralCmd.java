@@ -32,7 +32,7 @@ public class IntakeCoralCmd extends Command {
   @Override
   public void execute() {
     m_elevator.setElevatorHeight(kElevator.ElevatorPosition.HOME);
-    m_coral.coralIntake(0);//TODO: set speed
+    m_coral.coralIntake();//TODO: set speed
     m_ledSubsytem.setPatternForDuration(m_ledSubsytem.coralPickup, 2);
   }
 

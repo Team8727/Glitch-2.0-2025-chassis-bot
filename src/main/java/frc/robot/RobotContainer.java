@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import frc.robot.Constants.kVision.kPoses;
+import frc.robot.Constants.kCoral;
 import frc.robot.Constants.kSwerve;
 import frc.robot.commands.RemoveAlgaeCmd;
 import frc.robot.commands.AlgaeIntake.IntakeAlgaeCmd;
@@ -125,8 +126,11 @@ public class RobotContainer {
     // Deploy coral L4
     m_driverController.a().onTrue(new DeployCoralCmd(m_coral, 4, m_elevator, m_ledSubsytem));
 
+    m_driverController.povDown().onTrue(new InstantCommand(() -> m_elevator.resetElevatorEncoders()));
     // Align to pose
-    m_driverController.povLeft().onTrue(m_Autos.align(kPoses.blueFrontLeft).andThen(() -> System.out.println("aligginginsdaod")));
+    // m_driverController.povLeft().onTrue(m_Autos.align(kPoses.blueFrontLeft).andThen(() -> System.out.println("aligginginsdaod")));
+
+    m_driverController.povRight().onTrue(new IntakeAlgaeCmd(m_AlgaeIntakePivot, m_AlgaeIntakeRollers, m_ledSubsytem));
 
     // // Intake algae
     // m_driverController.rightBumper().onTrue(
