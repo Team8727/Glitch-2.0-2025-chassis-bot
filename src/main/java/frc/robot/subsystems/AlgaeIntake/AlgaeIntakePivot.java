@@ -9,7 +9,9 @@ import static frc.robot.utilities.SparkConfigurator.getSparkMax;
 
 import java.util.Set;
 
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
@@ -110,8 +112,10 @@ public class AlgaeIntakePivot extends SubsystemBase {
 
   private void setMotorFFandPIDPosition(double intakePosition, double VelocitySetpoint) {
     pivotPID.setReference(
-        pivotFeedforward.calculate(intakePosition, VelocitySetpoint),
-        SparkBase.ControlType.kVoltage);
+        intakePosition,
+        ControlType.kPosition, 
+        ClosedLoopSlot.kSlot0);
+    System.out.println(pivotFeedforward.calculate(intakePosition, VelocitySetpoint));
   }
 
   public void setPositionTrapazoidal(IntakePosition intakePositionDegrees) {

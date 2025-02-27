@@ -108,7 +108,12 @@ public class Elevator extends SubsystemBase {
 
   private void setElevatorHeight(double velocity) {
     // get double from enum
-    elevatorMotorR.getClosedLoopController().setReference(m_setpoint.position, ControlType.kPosition, ClosedLoopSlot.kSlot0, elevatorFeedforward.calculate(m_setpoint.velocity) / 12);
+    elevatorPID.setReference(
+      m_setpoint.position, 
+      ControlType.kPosition, 
+      ClosedLoopSlot.kSlot0);
+
+    System.out.println(elevatorFeedforward.calculate(m_setpoint.velocity));
 
     // run(() -> elevatorPID.setReference(targetRotations, ControlType.kPosition))
     //   .until(limitSwitch::get)
