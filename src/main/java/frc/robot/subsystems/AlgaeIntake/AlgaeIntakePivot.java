@@ -115,7 +115,7 @@ public class AlgaeIntakePivot extends SubsystemBase {
         intakePosition,
         ControlType.kPosition, 
         ClosedLoopSlot.kSlot0);
-    System.out.println(pivotFeedforward.calculate(intakePosition, VelocitySetpoint));
+    System.out.println("intake" + pivotFeedforward.calculate(intakePosition, VelocitySetpoint));
   }
 
   public void setPositionTrapazoidal(IntakePosition intakePositionDegrees) {
