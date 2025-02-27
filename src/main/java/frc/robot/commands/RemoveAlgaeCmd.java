@@ -39,10 +39,10 @@ public class RemoveAlgaeCmd extends Command {
   @Override
   public void execute() {
     if (m_setPos == 2) {
-      m_elevator.setElevatorHeight(kElevator.ElevatorPosition.A2); // TODO: set positions
+      m_elevator.setElevatorHeightMotionProfile(kElevator.ElevatorPosition.A2); // TODO: set positions
       m_pivot.setRemoverPos(0); // TODO: set positions
     } else if (m_setPos == 3) {
-      m_elevator.setElevatorHeight(kElevator.ElevatorPosition.A3); // TODO: set positions
+      m_elevator.setElevatorHeightMotionProfile(kElevator.ElevatorPosition.A3); // TODO: set positions
       m_pivot.setRemoverPos(0); // TODO: set positions
     }
     m_rollers.spinnnnnnn(); // TODO: set speed
