@@ -144,7 +144,6 @@ public class Elevator extends SubsystemBase {
   }
 
   public void setElevatorHeightMotionProfile(kElevator.ElevatorPosition height_chosen) {
-    
     // get double from enum
     targetHeight = height_chosen;
     targetRotations = height_chosen.getOutputRotations();
@@ -189,6 +188,7 @@ public class Elevator extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("setpos", targetRotations);
+    SmartDashboard.putNumber("TrapezoidProfile", m_setpoint.position);
     
     //-=-=-=-=-=-=-=- Trapezoid Profile -=-=-=-=-=-=-=-
 
@@ -196,8 +196,11 @@ public class Elevator extends SubsystemBase {
     // toward the goal while obeying the constraints.
     m_setpoint = m_profile.calculate(kDt, m_setpoint, m_goal);
 
+
     // Send setpoint to offboard controller PID (I made this in periodic so when the setpositionTrapezoidProfile Method is updated it runs the elevator)
     //elevatorMotorR.getClosedLoopController().setReference(m_setpoint.position, ControlType.kPosition);
     setElevatorHeight(m_setpoint.position);
+
+    
   }
 }
