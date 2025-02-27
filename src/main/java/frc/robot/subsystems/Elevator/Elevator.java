@@ -82,7 +82,7 @@ public class Elevator extends SubsystemBase {
       .inverted(false)
       .closedLoop
       .velocityFF(0) // Find Using SysId
-      .pid(.25, 0, 0)
+      .pid(.4, 0, 4)
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
       // .maxMotion
       // .positionMode(MAXMotionPositionMode.kMAXMotionTrapezoidal)
@@ -100,6 +100,8 @@ public class Elevator extends SubsystemBase {
     elevatorPID = elevatorMotorR.getClosedLoopController();
 
     limitSwitch = new DigitalInput(kElevator.limitSwitchDIO);
+
+    setElevatorHeightMotionProfile(kElevator.ElevatorPosition.L1);
   }
 
   public void stopElevator() {
