@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.Elevator;
 
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
@@ -56,7 +57,7 @@ public class Elevator extends SubsystemBase {
 
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- 
 
-  private final ElevatorFeedforward elevatorFeedforward = new ElevatorFeedforward(0, 0, 0, 0);
+  private final ElevatorFeedforward elevatorFeedforward = new ElevatorFeedforward(0, 0, 0);
 
   // The timer for trapezoid profile
   private final Timer m_timer = new Timer();
@@ -107,8 +108,8 @@ public class Elevator extends SubsystemBase {
 
   private void setElevatorHeight(double velocity) {
     // get double from enum
-    elevatorPID.setReference(elevatorFeedforward.calculate(m_setpoint.velocity), ControlType.kVoltage);
-    
+    elevatorMotorR.getClosedLoopController().setReference(m_setpoint.position, ControlType.kPosition, ClosedLoopSlot.kSlot0, elevatorFeedforward.calculate(m_setpoint.velocity) / 12);
+
     // run(() -> elevatorPID.setReference(targetRotations, ControlType.kPosition))
     //   .until(limitSwitch::get)
     //   .andThen(() -> resetElevatorEncoders())
@@ -133,7 +134,7 @@ public class Elevator extends SubsystemBase {
     //     resetElevatorEncoders();
     //   });
     // }
-  };
+  }
 
   public void setElevatorHeightMotionProfile(kElevator.ElevatorPosition height_chosen) {
     
@@ -188,8 +189,8 @@ public class Elevator extends SubsystemBase {
     // toward the goal while obeying the constraints.
     m_setpoint = m_profile.calculate(kDt, m_setpoint, m_goal);
 
-    setElevatorHeight(m_setpoint.position);
     // Send setpoint to offboard controller PID (I made this in periodic so when the setpositionTrapezoidProfile Method is updated it runs the elevator)
-    // elevatorMotorR.getClosedLoopController().setReference(elevatorFeedforward.calculate(m_setpoint.velocity), ControlType.kPosition);//.setReference(m_setpoint.position, );
+    //elevatorMotorR.getClosedLoopController().setReference(m_setpoint.position, ControlType.kPosition);
+    setElevatorHeight(m_setpoint.position);
   }
 }
