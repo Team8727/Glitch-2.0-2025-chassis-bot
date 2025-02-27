@@ -370,6 +370,7 @@ public final class Constants {
   }
 
   public static class kElevator {
+    // elevator calculations https://www.desmos.com/calculator/suqtj7vxc7
     public static int elevatorMotorRCANID = 10; // TODO: not set yet because elevator is not built yet
     public static int elevatorMotorLCANID = 11; // TODO: not set yet because elevator is not built yet
 
@@ -377,7 +378,6 @@ public final class Constants {
     public static double gearRatio = 5;
 
     public enum ElevatorPosition {
-      // graph: https://www.desmos.com/calculator/0ovkuadc86
       HOME(0), // TODO: SET WITH ACTUAL VALUES
       L1(0), // TODO: SET WITH ACTUAL VALUES
       L2(7.23663),// TODO: SET WITH ACTUAL VALUES

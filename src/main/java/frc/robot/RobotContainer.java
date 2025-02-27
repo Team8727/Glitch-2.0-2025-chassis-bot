@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import frc.robot.Constants.kVision.kPoses;
+import frc.robot.Constants.kCoral;
 import frc.robot.Constants.kSwerve;
 import frc.robot.commands.RemoveAlgaeCmd;
 import frc.robot.commands.AlgaeIntake.IntakeAlgaeCmd;
