@@ -101,13 +101,17 @@ public class Coral extends SubsystemBase {
     setOuttakeSpeed(0);
   }
   public Command coralOuttake(double speed) {
-    return new RunCommand(() -> setOuttakeSpeed(kCoral.outtakeSpeed))
+    return 
+      run(() -> setOuttakeSpeed(kCoral.outtakeSpeed))
         .until(() -> !frontCoralSensor.isPressed())
-        .andThen(() -> stopDeployer());
+          .andThen(() -> coralIntake.getClosedLoopController().setReference(
+            coralIntake.getEncoder().getPosition()+1, 
+            ControlType.kPosition))
+      .andThen(() -> stopDeployer());
   }
 
   public Command coralIntake() {
-    return new RunCommand(() -> setIntakeSpeed(kCoral.intakeSpeed))
+    return run(() -> setIntakeSpeed(kCoral.intakeSpeed))
         .until(() -> backCoralSensor.isPressed())
           .andThen(() -> setIntakeSpeed(kCoral.intakeSpeed))
           .andThen(() -> setOuttakeSpeed(kCoral.intakeSpeed))
