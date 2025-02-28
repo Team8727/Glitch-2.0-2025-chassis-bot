@@ -30,7 +30,7 @@ public class AlgaeRemoverPivot extends SubsystemBase {
   private final SparkClosedLoopController removerPivotPID;
 
   private final TrapezoidProfile m_profile = new TrapezoidProfile(
-    new TrapezoidProfile.Constraints(0, 0));
+    new TrapezoidProfile.Constraints(3.53, 0.01)); // TODO: May need to adjust these values later
   private TrapezoidProfile.State m_goal = new TrapezoidProfile.State(0,0);
   private TrapezoidProfile.State m_setpoint = new TrapezoidProfile.State(0,0);
 
