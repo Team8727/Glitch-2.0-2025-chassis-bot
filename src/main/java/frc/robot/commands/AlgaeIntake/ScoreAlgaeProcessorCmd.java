@@ -37,7 +37,7 @@ public class ScoreAlgaeProcessorCmd extends Command {
 
     // Set the intake to score position, score the algae by running rollers, and then set the intake to home position.
     m_algaeIntakePivot.setPositionTrapazoidal(kAlgaeIntakePivot.IntakePosition.SCORE);
-    m_algaeIntakeRollers.score();
+    m_algaeIntakeRollers.outtake();
     m_ledSubsystem.setPatternForDuration(m_ledSubsystem.algaePickup.reversed(), 2);
   }
 
@@ -52,6 +52,6 @@ public class ScoreAlgaeProcessorCmd extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_algaeIntakeRollers.score().isFinished();
+    return m_algaeIntakeRollers.outtake().isFinished();
   }
 }
