@@ -29,16 +29,18 @@ public class ScoreAlgaeProcessorCmd extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    // Set the intake to score position, score the algae by running rollers, and then set the intake to home position.
+    m_algaeIntakePivot.setPositionTrapazoidal(kAlgaeIntakePivot.IntakePosition.SCORE);
+    m_algaeIntakeRollers.outtake();
+    m_ledSubsystem.setPatternForDuration(m_ledSubsystem.algaePickup.reversed(), 2);
+  
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
 
-    // Set the intake to score position, score the algae by running rollers, and then set the intake to home position.
-    m_algaeIntakePivot.setPositionTrapazoidal(kAlgaeIntakePivot.IntakePosition.SCORE);
-    m_algaeIntakeRollers.outtake();
-    m_ledSubsystem.setPatternForDuration(m_ledSubsystem.algaePickup.reversed(), 2);
   }
 
   // Called once the command ends or is interrupted.
