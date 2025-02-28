@@ -15,6 +15,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.kCoral;
@@ -100,8 +101,8 @@ public class Coral extends SubsystemBase {
     setIntakeSpeed(0);
     setOuttakeSpeed(0);
   }
-  public Command coralOuttake(double speed) {
-    return 
+  public void coralOuttake(double speed) { 
+    System.out.println("coralOuttake");
       run(() -> setOuttakeSpeed(kCoral.outtakeSpeed))
         .until(() -> !frontCoralSensor.isPressed())
           .andThen(() -> coralIntake.getClosedLoopController().setReference(
@@ -110,14 +111,15 @@ public class Coral extends SubsystemBase {
       .andThen(() -> stopDeployer());
   }
 
-  public Command coralIntake() {
-    return run(() -> setIntakeSpeed(kCoral.intakeSpeed))
-        .until(() -> backCoralSensor.isPressed())
-          .andThen(() -> setIntakeSpeed(kCoral.intakeSpeed))
-          .andThen(() -> setOuttakeSpeed(kCoral.intakeSpeed))
-        .until(() -> !backCoralSensor.isPressed())
-          .andThen(() -> stopDeployer());
-  }
+  public void coralIntake() {
+    System.out.println("coralIntake");
+    run(() -> setIntakeSpeed(kCoral.intakeSpeed))
+      .until(() -> backCoralSensor.isPressed())
+        .andThen(() -> setIntakeSpeed(kCoral.intakeSpeed))
+        .andThen(() -> setOuttakeSpeed(kCoral.intakeSpeed))
+      .until(() -> !backCoralSensor.isPressed())
+        .andThen(() -> stopDeployer());
+    }
 
   @Override
   public void periodic() {

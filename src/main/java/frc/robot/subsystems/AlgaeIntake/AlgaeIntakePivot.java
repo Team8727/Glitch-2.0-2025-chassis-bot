@@ -113,10 +113,10 @@ public class AlgaeIntakePivot extends SubsystemBase {
     pivotPID.setReference(
         intakePosition,
         ControlType.kPosition, 
-        ClosedLoopSlot.kSlot0,
-        pivotFeedforward.calculate(
-          Math.toRadians(95 - (intakePosition/360)), 
-          VelocitySetpoint));
+        ClosedLoopSlot.kSlot0);
+    // System.out.println(pivotFeedforward.calculate(
+    //   Math.toRadians(95 - (intakePosition/360)), 
+    //   VelocitySetpoint));
     // System.out.println("intake" + pivotFeedforward.calculate(intakePosition, VelocitySetpoint));
   }
 

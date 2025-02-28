@@ -110,11 +110,11 @@ public class Elevator extends SubsystemBase {
     elevatorPID.setReference(
       m_setpoint.position, 
       ControlType.kPosition, 
-      ClosedLoopSlot.kSlot0);
-
-    System.out.println(elevatorFeedforward.calculateWithVelocities(elevatorMotorR.getEncoder().getVelocity(),nextVel));
-
+      ClosedLoopSlot.kSlot0
+      );
+    // System.out.println(elevatorFeedforward.calculateWithVelocities(elevatorMotorR.getEncoder().getVelocity(),nextVel));
     // run(() -> elevatorPID.setReference(targetRotations, ControlType.kPosition))
+    
     //   .until(limitSwitch::get)
     //   .andThen(() -> resetElevatorEncoders())
     //   .withTimeout(1);// TODO: limit tune probobly

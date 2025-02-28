@@ -165,12 +165,11 @@ boolean m_shouldLog = false;
   public void holdAlgae() {
     if (getAlgaeCheck() == true) {
       System.out.println("holding");
-      setrollercurrent(30);
-      setRollerSpeed(500);
+      setRollerSpeed(200);
+      // rollerPID.setReference(30, ControlType.kVelocity);
     } 
     else if (isMoving == false){
-      setrollercurrent(0);
-      setRollerVoltage(0);
+      setRollerSpeed(0);
     }
   }
 
