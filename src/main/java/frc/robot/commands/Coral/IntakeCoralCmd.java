@@ -26,13 +26,14 @@ public class IntakeCoralCmd extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    m_elevator.setElevatorHeightMotionProfile(kElevator.ElevatorPosition.L1);
+    m_coral.coralIntake();//TODO: set speed
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_elevator.setElevatorHeightMotionProfile(kElevator.ElevatorPosition.HOME);
-    m_coral.coralIntake();//TODO: set speed
     m_ledSubsytem.setPatternForDuration(m_ledSubsytem.coralPickup, 2);
   }
 

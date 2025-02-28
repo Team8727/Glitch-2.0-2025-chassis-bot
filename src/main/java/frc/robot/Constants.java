@@ -318,7 +318,7 @@ public final class Constants {
       public enum IntakePosition {
           HOME(0), 
           SCORE(10), 
-          DOWN(65); // TODO: SET WITH ACTUAL VALUES
+          DOWN(70); // TODO: SET WITH ACTUAL VALUES
 
           private final double degrees;
           private IntakePosition(double degrees) { this.degrees = degrees; }
@@ -378,11 +378,10 @@ public final class Constants {
     public static double gearRatio = 5;
 
     public enum ElevatorPosition { //IN INCHES
-      HOME(0), // TODO: SET WITH ACTUAL VALUES
       L1(0.3848), // TODO: SET WITH ACTUAL VALUES
       L2(7.23663),// TODO: SET WITH ACTUAL VALUES
       L3(19.43877), // TODO: SET WITH ACTUAL VALUES
-      L4(38.69053), // TODO: SET WITH ACTUAL VALUES
+      L4(40.03888), // TODO: SET WITH ACTUAL VALUES
       A2(13.3377), // TODO: SET WITH ACTUAL VALUES
       A3(29.06465); // TODO: SET WITH ACTUAL VALUES
     

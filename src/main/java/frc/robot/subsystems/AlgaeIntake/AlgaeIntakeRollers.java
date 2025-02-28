@@ -166,7 +166,7 @@ boolean m_shouldLog = false;
     if (getAlgaeCheck() == true) {
       System.out.println("holding");
       setrollercurrent(30);
-      setRollerVoltage(2);
+      setRollerSpeed(500);
     } 
     else if (isMoving == false){
       setrollercurrent(0);

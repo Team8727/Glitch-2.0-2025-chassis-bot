@@ -82,7 +82,7 @@ public class AlgaeIntakePivot extends SubsystemBase {
       .closedLoop
         .outputRange(-1, 1)
         .velocityFF(0)
-        .pid(.5, 0, 0)
+        .pid(2, 0.0007, 2)
         .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
         // .maxMotion // MaxMotion Control for more precise position control
         //   .maxVelocity(100) 
@@ -99,7 +99,7 @@ public class AlgaeIntakePivot extends SubsystemBase {
 
     pivotPID = intakePivotMotor.getClosedLoopController();
     
-    setPositionTrapazoidal(IntakePosition.HOME);
+    setPositionTrapazoidal(IntakePosition.SCORE);
   }
 
 // -=-=-=-=-=-=- Methods -=-=-=-=-=-=-=-=-=-=-|Subsystem|
@@ -115,7 +115,7 @@ public class AlgaeIntakePivot extends SubsystemBase {
         ControlType.kPosition, 
         ClosedLoopSlot.kSlot0,
         pivotFeedforward.calculate(
-          Math.toRadians(IntakePosition.HOME.getIntakePositionDegrees()+(intakePosition*360)), 
+          Math.toRadians(95 - (intakePosition/360)), 
           VelocitySetpoint));
     // System.out.println("intake" + pivotFeedforward.calculate(intakePosition, VelocitySetpoint));
   }
