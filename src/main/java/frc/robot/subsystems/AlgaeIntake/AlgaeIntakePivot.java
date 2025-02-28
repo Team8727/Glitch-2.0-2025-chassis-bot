@@ -26,7 +26,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-
+import frc.robot.Constants.kAlgaeIntake;
 import frc.robot.Constants.kAlgaeIntake.kAlgaeIntakePivot;
 import frc.robot.Constants.kAlgaeIntake.kAlgaeIntakePivot.IntakePosition;
 import frc.robot.utilities.NetworkTableLogger;
@@ -84,8 +84,7 @@ public class AlgaeIntakePivot extends SubsystemBase {
         .outputRange(-1, 1)
         .velocityFF(0)
         .pid(.5, 0, 0)
-        .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-        .positionWrappingEnabled(false);
+        .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
         // .maxMotion // MaxMotion Control for more precise position control
         //   .maxVelocity(100) 
         //   .maxAcceleration(50)
@@ -101,12 +100,13 @@ public class AlgaeIntakePivot extends SubsystemBase {
 
     pivotPID = intakePivotMotor.getClosedLoopController();
     
+    setPositionTrapazoidal(IntakePosition.HOME);
   }
 
 // -=-=-=-=-=-=- Methods -=-=-=-=-=-=-=-=-=-=-|Subsystem|
 
   public void setIntakePivotPositionSimple(IntakePosition intakePositionDegrees) {
-    double rotation = intakePositionDegrees.getIntakePositionDegrees() / 360;
+    double rotation = (intakePositionDegrees.getIntakePositionDegrees() / 360);
     pivotPID.setReference(rotation, SparkBase.ControlType.kMAXMotionPositionControl);
   }
 
@@ -114,12 +114,15 @@ public class AlgaeIntakePivot extends SubsystemBase {
     pivotPID.setReference(
         intakePosition,
         ControlType.kPosition, 
-        ClosedLoopSlot.kSlot0);
-    System.out.println("intake" + pivotFeedforward.calculate(intakePosition, VelocitySetpoint));
+        ClosedLoopSlot.kSlot0,
+        pivotFeedforward.calculate(
+          Math.toRadians(IntakePosition.HOME.getIntakePositionDegrees()+(intakePosition*360)), 
+          VelocitySetpoint));
+    // System.out.println("intake" + pivotFeedforward.calculate(intakePosition, VelocitySetpoint));
   }
 
   public void setPositionTrapazoidal(IntakePosition intakePositionDegrees) {
-    double rotation = intakePositionDegrees.getIntakePositionDegrees() / 360;
+    double rotation = (intakePositionDegrees.getIntakePositionDegrees() / 360);
     m_goal = new TrapezoidProfile.State(rotation, 0);
   }
 
