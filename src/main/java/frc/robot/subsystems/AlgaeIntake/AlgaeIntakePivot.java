@@ -42,7 +42,7 @@ public class AlgaeIntakePivot extends SubsystemBase {
   private final double kDt = 0.02;
 
   private final TrapezoidProfile m_profile = new TrapezoidProfile(
-    new TrapezoidProfile.Constraints(0, 0)); //TODO: SET THESE
+    new TrapezoidProfile.Constraints(100, 100)); //TODO: SET THESE
   private TrapezoidProfile.State m_goal = new TrapezoidProfile.State(0,0);
   private TrapezoidProfile.State m_setpoint = new TrapezoidProfile.State(0,0);
 
@@ -148,8 +148,8 @@ public class AlgaeIntakePivot extends SubsystemBase {
 
 @Override
 public void periodic() {
+  
   m_setpoint = m_profile.calculate(kDt, m_setpoint, m_goal);
-
   setMotorFFandPIDPosition(m_setpoint.position, m_setpoint.velocity);
 
   // This method will be called once per scheduler run

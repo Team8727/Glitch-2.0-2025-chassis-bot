@@ -8,7 +8,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-
+import frc.robot.Constants.kAlgaeIntake.kAlgaeIntakePivot.IntakePosition;
+import frc.robot.Constants.kElevator.ElevatorPosition;
 import frc.robot.commands.AlgaeIntake.IntakeAlgaeCmd;
 import frc.robot.commands.Coral.DeployCoralCmd;
 import frc.robot.commands.Coral.IntakeCoralCmd;
@@ -128,6 +129,9 @@ public class RobotContainer {
     m_driverController.povRight().onTrue(new IntakeAlgaeCmd(m_AlgaeIntakePivot, m_AlgaeIntakeRollers, m_ledSubsytem));
 
     m_driverController.povLeft().onTrue(new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsytem));
+
+    m_driverController.leftBumper().onTrue(new InstantCommand(() -> m_AlgaeIntakePivot.setPositionTrapazoidal(IntakePosition.HOME)));
+    m_driverController.rightBumper().onTrue(new InstantCommand(() -> m_AlgaeIntakePivot.setPositionTrapazoidal(IntakePosition.SCORE)));
 
     // // Intake algae
     // m_driverController.rightBumper().onTrue(

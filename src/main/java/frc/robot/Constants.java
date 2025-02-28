@@ -317,8 +317,8 @@ public final class Constants {
 
       public enum IntakePosition {
           HOME(0), 
-          SCORE(10), 
-          DOWN(70); // TODO: SET WITH ACTUAL VALUES
+          SCORE(20), 
+          DOWN(80); // TODO: SET WITH ACTUAL VALUES
 
           private final double degrees;
           private IntakePosition(double degrees) { this.degrees = degrees; }
