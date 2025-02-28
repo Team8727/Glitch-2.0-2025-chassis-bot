@@ -75,7 +75,8 @@ public class Coral extends SubsystemBase {
         .idleMode(IdleMode.kBrake)
         .closedLoop
         .velocityFF(0) 
-        .pid(0, 0, 0);
+        .pid(0, 0, 0)
+;
         // .maxMotion
         // .maxAcceleration(0)          // Disabling max motion for these rollers (no need to be very precise). 
         // .maxAcceleration(0)
@@ -122,5 +123,8 @@ public class Coral extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    if (backCoralSensor.isPressed() || frontCoralSensor.isPressed()) {
+      System.out.println("Coral Sensor Pressed");
+    }
   }
 }
