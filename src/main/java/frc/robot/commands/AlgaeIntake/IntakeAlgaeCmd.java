@@ -33,7 +33,8 @@ public class IntakeAlgaeCmd extends Command {
     
     // Set the intake pivot to the ground position and
     m_algaeIntakePivot.setPositionTrapazoidal(kAlgaeIntakePivot.IntakePosition.DOWN);
-    // m_algaeIntakeRollers.intake();
+    // m_algaeIntakeRollers.intake()
+    // .andThen(() -> m_algaeIntakePivot.setPositionTrapazoidal(kAlgaeIntakePivot.IntakePosition.HOME));
   }
 
   // Called every time the scheduler runs while the command is scheduled.

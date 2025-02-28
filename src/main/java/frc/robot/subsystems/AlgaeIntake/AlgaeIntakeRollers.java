@@ -63,13 +63,12 @@ public class AlgaeIntakeRollers extends SubsystemBase {
       .closedLoop
         .outputRange(-1, 1) // TODO: currently set to full range
         .velocityFF(0) // TODO: tune
-        // .pidf(0, 0, 0, 0)
-
+        .pid(1, 0, 0);
       // MaxMotion Control for more precise position control
-        .maxMotion
-          .maxVelocity(0)
-          .maxAcceleration(0)
-          .allowedClosedLoopError(0);
+        // .maxMotion
+        //   .maxVelocity(0)
+        //   .maxAcceleration(0)
+        //   .allowedClosedLoopError(0);
 
     // Configuring Motor With Config
     intakeRollerMotor.configure(
@@ -156,11 +155,11 @@ boolean m_shouldLog = false;
           .finallyDo(() -> isMoving = false);
   }
 
-  public Command score() {
-    return run(() -> setRollerVoltage(-kAlgaeIntakeRollers.scoreVoltage))
-        .until(() -> !getAlgaeCheck())
-        .finallyDo(() -> setRollerVoltage(0));
-  }
+  // public Command score() {
+  //   return run(() -> setRollerVoltage(-kAlgaeIntakeRollers.scoreVoltage))
+  //       .until(() -> !getAlgaeCheck())
+  //       .finallyDo(() -> setRollerVoltage(0));
+  // }
 
   public void holdAlgae() {
     if (getAlgaeCheck() == true) {
