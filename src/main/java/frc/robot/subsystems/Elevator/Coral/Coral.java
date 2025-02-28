@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.kCoral;
+import frc.robot.utilities.NetworkTableLogger;
 import frc.robot.utilities.SparkConfigurator.LogData;
 import java.util.Set;
 
@@ -28,6 +29,8 @@ public class Coral extends SubsystemBase {
   private final SparkMaxConfig outtakeConfig;
   public final SparkLimitSwitch frontCoralSensor;
   public final SparkLimitSwitch backCoralSensor;
+
+  private final NetworkTableLogger logger = new NetworkTableLogger(this.getSubsystem().toString());
 
   /** Creates a new Coral. */
   public Coral() {
@@ -123,8 +126,12 @@ public class Coral extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    if (backCoralSensor.isPressed() || frontCoralSensor.isPressed()) {
-      System.out.println("Coral Sensor Pressed");
-    }
+    logger.logBoolean(
+      "Front Coral Sensor", 
+      frontCoralSensor.isPressed());
+
+    logger.logBoolean(
+      "Back Coral Sensor", 
+      backCoralSensor.isPressed());;
   }
 }
