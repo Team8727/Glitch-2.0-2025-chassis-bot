@@ -45,7 +45,7 @@ public class DeployCoralCmd extends Command {
       // m_coral.coralOuttake(kCoral.coraldeploySpeedL4);
     }
 
-    // m_ledSubsytem.setPatternForDuration(m_ledSubsytem.coralPickup.reversed(), 2);
+    m_ledSubsytem.setPatternForDuration(m_ledSubsytem.coralPickup.reversed(), 2);
   }
 
   // Called every time the scheduler runs while the command is scheduled

@@ -23,11 +23,8 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.Constants.kAlgaeIntake.kAlgaeIntakePivot.IntakePosition;
 import frc.robot.Constants.kElevator;
 import frc.robot.utilities.NetworkTableLogger;
 import frc.robot.utilities.SparkConfigurator.LogData;
@@ -57,7 +54,7 @@ public class Elevator extends SubsystemBase {
 
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- 
 
-  private final ElevatorFeedforward elevatorFeedforward = new ElevatorFeedforward(0, 0, 0);
+  private final ElevatorFeedforward elevatorFeedforward = new ElevatorFeedforward(0, 1.28, 3.71, 0.23);
 
   // The timer for trapezoid profile
   private final Timer m_timer = new Timer();
@@ -82,7 +79,7 @@ public class Elevator extends SubsystemBase {
       .inverted(false)
       .closedLoop
       .velocityFF(0) // Find Using SysId
-      .pid(.25, 0, 0)
+      .pid(.4, 0, 4)
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
       // .maxMotion
       // .positionMode(MAXMotionPositionMode.kMAXMotionTrapezoidal)
@@ -100,20 +97,22 @@ public class Elevator extends SubsystemBase {
     elevatorPID = elevatorMotorR.getClosedLoopController();
 
     limitSwitch = new DigitalInput(kElevator.limitSwitchDIO);
+
+    setElevatorHeightMotionProfile(kElevator.ElevatorPosition.L1);
   }
 
   public void stopElevator() {
     elevatorPID.setReference(0, ControlType.kDutyCycle);
   }
 
-  private void setElevatorHeight(double velocity) {
+  private void setElevatorHeight(double nextVel) {
     // get double from enum
     elevatorPID.setReference(
       m_setpoint.position, 
       ControlType.kPosition, 
       ClosedLoopSlot.kSlot0);
 
-    System.out.println(elevatorFeedforward.calculate(m_setpoint.velocity));
+    System.out.println(elevatorFeedforward.calculateWithVelocities(elevatorMotorR.getEncoder().getVelocity(),nextVel));
 
     // run(() -> elevatorPID.setReference(targetRotations, ControlType.kPosition))
     //   .until(limitSwitch::get)
@@ -142,7 +141,6 @@ public class Elevator extends SubsystemBase {
   }
 
   public void setElevatorHeightMotionProfile(kElevator.ElevatorPosition height_chosen) {
-    
     // get double from enum
     targetHeight = height_chosen;
     targetRotations = height_chosen.getOutputRotations();
@@ -186,16 +184,18 @@ public class Elevator extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("setpos", targetRotations);
+    logger.logDouble("setpos", targetRotations);
+    logger.logDouble("TrapezoidProfile", m_setpoint.position);
     
     //-=-=-=-=-=-=-=- Trapezoid Profile -=-=-=-=-=-=-=-
 
-    // Retrieve the profiled setpoint for the next timestep. This setpoint moves
-    // toward the goal while obeying the constraints.
+    // Retrieve the profiled setpoint for the next timestep. This setpoint moves toward the goal while obeying the constraints.
     m_setpoint = m_profile.calculate(kDt, m_setpoint, m_goal);
 
+
     // Send setpoint to offboard controller PID (I made this in periodic so when the setpositionTrapezoidProfile Method is updated it runs the elevator)
-    //elevatorMotorR.getClosedLoopController().setReference(m_setpoint.position, ControlType.kPosition);
     setElevatorHeight(m_setpoint.position);
+
+    
   }
 }
