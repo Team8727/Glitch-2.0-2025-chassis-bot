@@ -105,14 +105,14 @@ public class Elevator extends SubsystemBase {
     elevatorPID.setReference(0, ControlType.kDutyCycle);
   }
 
-  private void setElevatorHeight(double velocity) {
+  private void setElevatorHeight(double nextVel) {
     // get double from enum
     elevatorPID.setReference(
       m_setpoint.position, 
       ControlType.kPosition, 
       ClosedLoopSlot.kSlot0);
 
-    System.out.println(elevatorFeedforward.calculate(m_setpoint.velocity));
+    System.out.println(elevatorFeedforward.calculateWithVelocities(elevatorMotorR.getEncoder().getVelocity(),nextVel));
 
     // run(() -> elevatorPID.setReference(targetRotations, ControlType.kPosition))
     //   .until(limitSwitch::get)
