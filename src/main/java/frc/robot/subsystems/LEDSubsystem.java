@@ -111,7 +111,7 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
     // LED setup and port configuration
     lightStrip = new AddressableLED(5); // Correct PWM port
     stripBuffer = new AddressableLEDBuffer(135); // Correct LED count
-    leftSide = new AddressableLEDBufferView(stripBuffer, 0, 67);
+    leftSide = new AddressableLEDBufferView(stripBuffer, 0, 67); // TODO: LEDs are currently MIA :(
     rightSide = new AddressableLEDBufferView(stripBuffer, 68, 134).reversed();
 
     lightStrip.setLength(stripBuffer.getLength());
