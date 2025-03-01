@@ -64,6 +64,15 @@ public final class Constants {
                 60,
                 1),
             kSwerve.kinematics.getModules());
+
+    public static final DCMotor neoMotor = 
+      new DCMotor(
+        12,
+        2.6,
+        105, 
+        1.8, 
+        594.4, 
+        1);
   }
 
   public static int configurationSetRetries = 5;
