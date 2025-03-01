@@ -48,7 +48,7 @@ public class IntakeCoralCmd extends Command {
   public void execute() {
     m_ledSubsytem.setPatternForDuration(m_ledSubsytem.coralPickup, 2);
 
-    if (m_coral.backCoralSensor.isPressed()) {
+    if (m_coral.backCoralSensor.isPressed() && sensedCoral == false) {
 
       m_coral.setIntakeSpeed(kCoral.intakeSpeed);
       m_coral.setOuttakeSpeed(kCoral.intakeSpeed);
@@ -57,7 +57,8 @@ public class IntakeCoralCmd extends Command {
     } 
 
     if (!m_coral.backCoralSensor.isPressed() && sensedCoral == true) {
-      m_coral.stopDeployer();
+      m_coral.holdPosition();
+      this.cancel();
     }
 
   }

@@ -107,6 +107,12 @@ public class Coral extends SubsystemBase {
     coralOuttake.getClosedLoopController().setReference(0, ControlType.kDutyCycle);
   }
 
+  public void holdPosition() {
+    coralOuttake.getClosedLoopController().setReference(
+      coralOuttake.getEncoder().getPosition(), 
+      ControlType.kPosition);
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
