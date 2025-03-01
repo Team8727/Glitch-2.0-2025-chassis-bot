@@ -83,6 +83,7 @@ public class DeployCoralCmd extends Command {
           Thread.currentThread().interrupt();
         }
         m_elevator.setElevatorHeightMotionProfile(kElevator.ElevatorPosition.L1);
+        sensedCoral = true;
         this.cancel();
         Thread.currentThread().interrupt();
       }).start();
