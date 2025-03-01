@@ -5,6 +5,8 @@
 package frc.robot.commands.AlgaeIntake;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.Constants.kAlgaeIntake.kAlgaeIntakePivot;
 import frc.robot.subsystems.AlgaeIntake.AlgaeIntakePivot;
 import frc.robot.subsystems.AlgaeIntake.AlgaeIntakeRollers;
@@ -32,9 +34,11 @@ public class IntakeAlgaeCmd extends Command {
     System.out.println("moving");
     
     // Set the intake pivot to the ground position and
-    m_algaeIntakePivot.setPositionTrapazoidal(kAlgaeIntakePivot.IntakePosition.DOWN);
-    // m_algaeIntakeRollers.intake()
-    // .andThen(() -> m_algaeIntakePivot.setPositionTrapazoidal(kAlgaeIntakePivot.IntakePosition.HOME));
+    new RunCommand(
+      () -> m_algaeIntakePivot.setPositionTrapazoidal(kAlgaeIntakePivot.IntakePosition.DOWN))
+      .andThen(() -> m_algaeIntakeRollers.intake())
+      .andThen(new InstantCommand(() -> m_algaeIntakePivot.setPositionTrapazoidal(kAlgaeIntakePivot.IntakePosition.HOME)))
+      .finallyDo(() -> this.cancel());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -57,6 +61,6 @@ public class IntakeAlgaeCmd extends Command {
   public boolean isFinished() {
 
     // Finish when algae is detected
-    return m_algaeIntakeRollers.intake().isFinished();
+    return false;
   }
 }

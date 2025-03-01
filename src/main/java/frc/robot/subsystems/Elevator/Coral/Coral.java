@@ -95,11 +95,11 @@ public class Coral extends SubsystemBase {
   }
 
   public void setIntakeSpeed(double speed) {
-    coralIntake.getClosedLoopController().setReference(speed, ControlType.kVelocity);
+    coralIntake.getClosedLoopController().setReference(speed, ControlType.kDutyCycle);
   }
 
   public void setOuttakeSpeed(double speed) {
-    coralOuttake.getClosedLoopController().setReference(speed, ControlType.kVelocity);
+    coralOuttake.getClosedLoopController().setReference(speed, ControlType.kDutyCycle);
   }
 
   public void stopDeployer() {
