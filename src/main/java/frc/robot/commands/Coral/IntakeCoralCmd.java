@@ -30,7 +30,7 @@ public class IntakeCoralCmd extends Command {
   public void initialize() {
     m_elevator.setElevatorHeightMotionProfile(kElevator.ElevatorPosition.L1);
     System.out.println("coralIntake");
-    m_coral.setIntakeSpeedDuty(.1);
+    m_coral.setIntakeSpeedDuty(.3);
   }
 
   boolean sensedCoral = false;
