@@ -5,6 +5,8 @@
 package frc.robot.commands.Coral;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.Constants.kCoral;
 import frc.robot.Constants.kElevator;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.Coral.Coral;
@@ -28,8 +30,13 @@ public class IntakeCoralCmd extends Command {
   @Override
   public void initialize() {
     m_elevator.setElevatorHeightMotionProfile(kElevator.ElevatorPosition.L1);
-    m_coral.coralIntake();//TODO: set speed
-  }
+    System.out.println("coralIntake");
+    m_coral.setIntakeSpeed(kCoral.intakeSpeed);
+      Commands.waitUntil(() -> m_coral.backCoralSensor.isPressed())
+        .andThen(() -> m_coral.setIntakeSpeed(kCoral.intakeSpeed))
+        .andThen(() -> m_coral.setOuttakeSpeed(kCoral.intakeSpeed));
+      Commands.waitUntil(() -> !m_coral.backCoralSensor.isPressed())
+        .andThen(() -> m_coral.stopDeployer());  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
