@@ -40,8 +40,8 @@ public class IntakeCoralCmd extends Command {
     m_ledSubsystem.setPatternForDuration(m_ledSubsystem.coralPickup, 2);
 
     if (m_coral.backCoralSensor.isPressed() && sensedCoral == false) {
-      m_coral.setIntakeSpeedDuty(kCoral.intakeSpeed);
-      m_coral.setOuttakeSpeedDuty(kCoral.intakeSpeed);
+      m_coral.setIntakeSpeedDuty(.2);
+      m_coral.setOuttakeSpeedDuty(.2);
       sensedCoral = true;
     } 
 

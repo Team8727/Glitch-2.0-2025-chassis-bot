@@ -74,6 +74,7 @@ public class DeployCoralCmd extends Command {
       sensedCoral = false;
     }
 
+    // TODO: this is stupid vvvvvvvvvvvvvvvvvvvvvvv
     if (!m_coral.frontCoralSensor.isPressed() && sensedCoral == false) {
       new Thread(() -> {
         try {
