@@ -370,7 +370,7 @@ public final class Constants {
         14; // TODO: not set yet because intake is not built yet
 
     public static double intakeSpeed = .2; // TODO: not set yet because intake is not built yet
-    public static double outtakeSpeed = .75;//-500; // TODO: not set yet because intake is not built yet
+    public static double outtakeSpeed = .75;// TODO: not set yet because intake is not built yet
 
     public static double coraldeploySpeedL1 = 0.5; // TODO: not set yet because intake is not built yet
     public static double coraldeploySpeedL2 = 0.5; // TODO: not set yet because intake is not built yet

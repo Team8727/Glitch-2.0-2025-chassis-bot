@@ -74,6 +74,7 @@ public class Coral extends SubsystemBase {
     frontConfig// TODO: tune configs
         .smartCurrentLimit(25) 
         .idleMode(IdleMode.kBrake)
+        .inverted(true)
         .closedLoop
         .velocityFF(0) 
         .pid(0.5, 0, 0)
