@@ -369,8 +369,8 @@ public final class Constants {
     public static int outtakeRollerMotorCANID =
         14; // TODO: not set yet because intake is not built yet
 
-    public static int intakeSpeed = 150; // TODO: not set yet because intake is not built yet
-    public static int outtakeSpeed = -500; // TODO: not set yet because intake is not built yet
+    public static double intakeSpeed = .2; // TODO: not set yet because intake is not built yet
+    public static double outtakeSpeed = .75;//-500; // TODO: not set yet because intake is not built yet
 
     public static double coraldeploySpeedL1 = 0.5; // TODO: not set yet because intake is not built yet
     public static double coraldeploySpeedL2 = 0.5; // TODO: not set yet because intake is not built yet
