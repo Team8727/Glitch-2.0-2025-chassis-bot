@@ -142,7 +142,6 @@ public class Elevator extends SubsystemBase {
 
   public void setElevatorHeightMotionProfile(kElevator.ElevatorPosition height_chosen) {
     // get double from enum
-    targetHeight = height_chosen;
     targetRotations = height_chosen.getOutputRotations();
     m_goal = new TrapezoidProfile.State(targetRotations, 0);
   }
