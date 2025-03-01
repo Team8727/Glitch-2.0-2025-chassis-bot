@@ -80,9 +80,9 @@ public class Elevator extends SubsystemBase {
       true,
       0.0); // Can optionally include standard deviation in measurements, but we don't have that right now!
 
-  private final PWMSim m_PWMSim;
-  private final Encoder m_Encoder;
-  private final EncoderSim encoderSim;
+  // private final PWMSim m_PWMSim;
+  // private final Encoder m_Encoder;
+  // private final EncoderSim encoderSim;
 
   // The timer for trapezoid profile
   private final Timer m_timer = new Timer();
@@ -124,14 +124,14 @@ public class Elevator extends SubsystemBase {
 
     elevatorPID = elevatorMotorR.getClosedLoopController();
 
-    m_Encoder = 
-      (Encoder) elevatorMotorR.getEncoder();
+    // m_Encoder = 
+    //   (Encoder) elevatorMotorR.getEncoder();
 
-    encoderSim = 
-      new EncoderSim(m_Encoder);
+    // encoderSim = 
+    //   new EncoderSim(m_Encoder);
 
-    m_PWMSim =
-      new PWMSim(elevatorMotorR.getDeviceId());
+    // m_PWMSim =
+    //   new PWMSim(elevatorMotorR.getDeviceId());
 
     limitSwitch = new DigitalInput(kElevator.limitSwitchDIO);
 
@@ -235,16 +235,16 @@ public class Elevator extends SubsystemBase {
     
   }
 
-  public void simulationPeriodic() {
-    elevatorSim.setInput(m_PWMSim.getSpeed() * RobotController.getBatteryVoltage());
+  // public void simulationPeriodic() {
+  //   elevatorSim.setInput(m_PWMSim.getSpeed() * RobotController.getBatteryVoltage());
 
-    elevatorSim.update(0.02);
+  //   elevatorSim.update(0.02);
 
     
-    encoderSim.setDistance(elevatorSim.getPositionMeters());
+  //   encoderSim.setDistance(elevatorSim.getPositionMeters());
 
-    RoboRioSim.setVInVoltage(
-      BatterySim.calculateDefaultBatteryLoadedVoltage(elevatorSim.getCurrentDrawAmps())
-    );
-  }
+  //   RoboRioSim.setVInVoltage(
+  //     BatterySim.calculateDefaultBatteryLoadedVoltage(elevatorSim.getCurrentDrawAmps())
+  //   );
+  // }
 }
