@@ -28,9 +28,11 @@ import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj.simulation.PWMSim;
@@ -41,6 +43,7 @@ import frc.robot.Robot;
 import frc.robot.Constants;
 import frc.robot.Constants.kConfigs;
 import frc.robot.Constants.kElevator;
+import frc.robot.Constants.kElevator.ElevatorPosition;
 import frc.robot.utilities.NetworkTableLogger;
 import frc.robot.utilities.SparkConfigurator.LogData;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -83,8 +86,8 @@ public class Elevator extends SubsystemBase {
 
   private final SparkMaxSim m_SparkMaxSim;
 
-  // The timer for trapezoid profile
   private final Timer m_timer = new Timer();
+  private final XboxController m_driverController = new XboxController(0);
 
   /** Creates a new Elevator. */
   public Elevator() {
@@ -215,6 +218,7 @@ public class Elevator extends SubsystemBase {
     // This method will be called once per scheduler run
     logger.logDouble("setpos", targetRotations);
     logger.logDouble("TrapezoidProfile", m_setpoint.position);
+    logger.logDouble("simPosition", elevatorSim.getPositionMeters());
     
     //-=-=-=-=-=-=-=- Trapezoid Profile -=-=-=-=-=-=-=-
 
@@ -240,5 +244,11 @@ public class Elevator extends SubsystemBase {
       BatterySim.calculateDefaultBatteryLoadedVoltage(elevatorSim.getCurrentDrawAmps())
     );
     
+  }
+
+  public void teleopPeriodic() {
+    if (Robot.isSimulation()) {
+      setElevatorHeightMotionProfile(ElevatorPosition.L4);
+    }
   }
 }

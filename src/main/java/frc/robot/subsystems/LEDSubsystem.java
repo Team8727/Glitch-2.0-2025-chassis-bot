@@ -75,7 +75,20 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
   public LEDPattern colorCheck = LEDPattern.solid(m_purple);
 
   // Green pattern that breathes
-  public LEDPattern green = LEDPattern.solid(m_green).breathe(Second.of(2));
+  public LEDPattern green = 
+    LEDPattern.steps(
+      Map.of(
+        0, 
+        m_green, 
+        0.5, 
+        new Color(
+          0,
+          0,
+          200)))
+      .scrollAtRelativeSpeed(
+        Percent.per(Second).of(15))
+      .mask(
+        LEDPattern.gradient(GradientType.kDiscontinuous, Color.kWhite, Color.kBlack));
 
   // Elevator progress bar pattern
   private LEDPattern elevatorProgressMap = LEDPattern.progressMaskLayer(
