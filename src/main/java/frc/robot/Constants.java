@@ -327,7 +327,7 @@ public final class Constants {
       public enum IntakePosition {
           HOME(0), 
           SCORE(20), 
-          DOWN(80); // TODO: SET WITH ACTUAL VALUES
+          DOWN(82); // TODO: SET WITH ACTUAL VALUES
 
           private final double degrees;
           private IntakePosition(double degrees) { this.degrees = degrees; }
@@ -370,7 +370,7 @@ public final class Constants {
         14; // TODO: not set yet because intake is not built yet
 
     public static int intakeSpeed = 150; // TODO: not set yet because intake is not built yet
-    public static int outtakeSpeed = 500; // TODO: not set yet because intake is not built yet
+    public static int outtakeSpeed = -500; // TODO: not set yet because intake is not built yet
 
     public static double coraldeploySpeedL1 = 0.5; // TODO: not set yet because intake is not built yet
     public static double coraldeploySpeedL2 = 0.5; // TODO: not set yet because intake is not built yet
@@ -386,7 +386,7 @@ public final class Constants {
     public static int limitSwitchDIO = 3; // TODO: not set yet because elevator is not built yet
     public static double gearRatio = 5;
 
-    public enum ElevatorPosition { //IN INCHES
+    public enum ElevatorPosition {
       L1(0.3848), // TODO: SET WITH ACTUAL VALUES
       L2(7.23663),// TODO: SET WITH ACTUAL VALUES
       L3(19.43877), // TODO: SET WITH ACTUAL VALUES
