@@ -30,7 +30,7 @@ public class IntakeCoralCmd extends Command {
   public void initialize() {
     m_elevator.setElevatorHeightMotionProfile(kElevator.ElevatorPosition.L1);
     System.out.println("coralIntake");
-    m_coral.setIntakeSpeedDuty(.2);
+    m_coral.setIntakeSpeedDuty(.1);
   }
 
   boolean sensedCoral = false;
@@ -40,13 +40,14 @@ public class IntakeCoralCmd extends Command {
     m_ledSubsystem.setPatternForDuration(m_ledSubsystem.coralPickup, 2);
 
     if (m_coral.backCoralSensor.isPressed() && sensedCoral == false) {
-      m_coral.setIntakeSpeedDuty(.2);
-      m_coral.setOuttakeSpeedDuty(.2);
+      m_coral.setIntakeSpeedDuty(.1);
+      m_coral.setOuttakeSpeedDuty(.1);
       sensedCoral = true;
     } 
 
     if (!m_coral.backCoralSensor.isPressed() && sensedCoral == true) {
       m_coral.holdPosition();
+      m_coral.setIntakeSpeedDuty(0);
       this.cancel();
     }
 
