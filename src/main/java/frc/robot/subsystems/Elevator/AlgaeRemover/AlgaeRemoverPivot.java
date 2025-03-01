@@ -17,6 +17,7 @@ import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.kAlgaeRemover;
@@ -33,6 +34,8 @@ public class AlgaeRemoverPivot extends SubsystemBase {
     new TrapezoidProfile.Constraints(3.53, 0.01)); // TODO: May need to adjust these values later
   private TrapezoidProfile.State m_goal = new TrapezoidProfile.State(0,0);
   private TrapezoidProfile.State m_setpoint = new TrapezoidProfile.State(0,0);
+
+  private final ArmFeedforward pivotFeedforward =  new ArmFeedforward(0, 0.13, 0.56);
 
   private final double kDt = 0.02;
 
@@ -81,7 +84,10 @@ public class AlgaeRemoverPivot extends SubsystemBase {
     removerPivotPID.setReference(
       removerPosition,
       ControlType.kPosition,
-      ClosedLoopSlot.kSlot0);
+      ClosedLoopSlot.kSlot0,
+      pivotFeedforward.calculate(
+        removerPosition, 
+        velocitySetpoint));
   }
 
   public void setPositionTrapazoidal(RemoverPositions removerPosition) {
