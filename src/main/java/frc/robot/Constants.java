@@ -377,7 +377,7 @@ public final class Constants {
     public static int limitSwitchDIO = 3; // TODO: not set yet because elevator is not built yet
     public static double gearRatio = 5;
 
-    public enum ElevatorPosition { //IN INCHES
+    public enum ElevatorPosition {
       L1(0.3848), // TODO: SET WITH ACTUAL VALUES
       L2(7.23663),// TODO: SET WITH ACTUAL VALUES
       L3(19.43877), // TODO: SET WITH ACTUAL VALUES
