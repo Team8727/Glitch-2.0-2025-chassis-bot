@@ -4,7 +4,11 @@
 
 package frc.robot.commands.Coral;
 
+import com.revrobotics.spark.SparkBase.ControlType;
+
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.Constants.kCoral;
 import frc.robot.Constants.kElevator;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.Coral.Coral;
@@ -32,26 +36,35 @@ public class DeployCoralCmd extends Command {
   public void initialize() {
     if (m_scoreLevel == 1) {
       m_elevator.setElevatorHeightMotionProfile(kElevator.ElevatorPosition.L1);
-      // m_coral.coralOuttake(kCoral.coraldeploySpeedL1);
+      outake();
     } else if (m_scoreLevel == 2) {
       m_elevator.setElevatorHeightMotionProfile(kElevator.ElevatorPosition.L2);
-      // m_coral.coralOuttake(kCoral.coraldeploySpeedL2);
+      outake();
       System.out.println("command commanded");
     } else if (m_scoreLevel == 3) {
       m_elevator.setElevatorHeightMotionProfile(kElevator.ElevatorPosition.L3);
-      // m_coral.coralOuttake(kCoral.coraldeploySpeedL3);
+      outake();
     } else if (m_scoreLevel == 4) {
       m_elevator.setElevatorHeightMotionProfile(kElevator.ElevatorPosition.L4);
-      // m_coral.coralOuttake(kCoral.coraldeploySpeedL4);
+      outake();
     }
-
-    m_ledSubsytem.setPatternForDuration(m_ledSubsytem.coralPickup.reversed(), 2);
   }
 
+  private void outake() {
+    System.out.println("coralOuttake");
+    m_coral.coralOuttake.getClosedLoopController().setReference(.5, ControlType.kDutyCycle);
+      // Commands.waitUntil(() -> !m_coral.frontCoralSensor.isPressed())
+      //   .andThen(() -> m_coral.coralOuttake.getClosedLoopController().setReference(
+      //     m_coral.coralOuttake.getEncoder().getPosition()+1, 
+      //     ControlType.kPosition));
+      // Commands.waitSeconds(.2)
+      //   .andThen(() -> m_coral.stopDeployer());
+      // this.cancel();
+  }
   // Called every time the scheduler runs while the command is scheduled
   @Override
   public void execute() {
-    
+    m_ledSubsytem.setPatternForDuration(m_ledSubsytem.coralPickup.reversed(), 2);
   }
 
   // Called once the command ends or is interrupted.

@@ -136,15 +136,6 @@ boolean m_shouldLog = false;
   }
 // -=-=-=-=-=-=-=-=- Commands -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-|Subsystem|
 
-  public void outtake() {
-    run(() -> isMoving = true)
-      .andThen(() -> rollerPID.setReference(.3, ControlType.kDutyCycle));
-      Commands.waitUntil(() -> !getAlgaeCheck())
-        .withTimeout(.5)
-      .andThen(() -> rollerPID.setReference(0, ControlType.kDutyCycle))
-      .finallyDo(() -> isMoving = false);
-  }
-
   // public Command score() {
   //   return run(() -> setRollerVoltage(-kAlgaeIntakeRollers.scoreVoltage))
   //       .until(() -> !getAlgaeCheck())
@@ -152,14 +143,13 @@ boolean m_shouldLog = false;
   // }
 
   private void holdAlgae() {
-    if (getAlgaeCheck() == true) {
-      System.out.println("holding");
-      // setRollerSpeed(200);
-      rollerPID.setReference(.4, ControlType.kDutyCycle);
-      
-    } 
-    else if (isMoving == false){
+    if (isMoving == false) {
+      if (getAlgaeCheck() == true) {
+        rollerPID.setReference(.4, ControlType.kDutyCycle);
+        System.out.println("holding");
+      } else {
       rollerPID.setReference(0, ControlType.kDutyCycle);
+      }
     }
   }
 
