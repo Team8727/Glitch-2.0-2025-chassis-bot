@@ -6,6 +6,7 @@ package frc.robot.subsystems.Elevator;
 
 import com.pathplanner.lib.config.RobotConfig;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.sim.SparkMaxSim;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkClosedLoopController;
@@ -80,9 +81,7 @@ public class Elevator extends SubsystemBase {
       true,
       0.0); // Can optionally include standard deviation in measurements, but we don't have that right now!
 
-  // private final PWMSim m_PWMSim;
-  // private final Encoder m_Encoder;
-  // private final EncoderSim encoderSim;
+  private final SparkMaxSim m_SparkMaxSim;
 
   // The timer for trapezoid profile
   private final Timer m_timer = new Timer();
@@ -124,14 +123,8 @@ public class Elevator extends SubsystemBase {
 
     elevatorPID = elevatorMotorR.getClosedLoopController();
 
-    // m_Encoder = 
-    //   (Encoder) elevatorMotorR.getEncoder();
-
-    // encoderSim = 
-    //   new EncoderSim(m_Encoder);
-
-    // m_PWMSim =
-    //   new PWMSim(elevatorMotorR.getDeviceId());
+    m_SparkMaxSim = 
+      new SparkMaxSim(elevatorMotorR, kConfigs.neoMotor);
 
     limitSwitch = new DigitalInput(kElevator.limitSwitchDIO);
 
@@ -235,16 +228,17 @@ public class Elevator extends SubsystemBase {
     
   }
 
-  // public void simulationPeriodic() {
-  //   elevatorSim.setInput(m_PWMSim.getSpeed() * RobotController.getBatteryVoltage());
+  public void simulationPeriodic() {
+    elevatorSim.setInput(m_SparkMaxSim.getAppliedOutput() * RobotController.getBatteryVoltage());
 
-  //   elevatorSim.update(0.02);
+    elevatorSim.update(0.02);
 
     
-  //   encoderSim.setDistance(elevatorSim.getPositionMeters());
+    m_SparkMaxSim.setPosition(elevatorSim.getPositionMeters());
 
-  //   RoboRioSim.setVInVoltage(
-  //     BatterySim.calculateDefaultBatteryLoadedVoltage(elevatorSim.getCurrentDrawAmps())
-  //   );
-  // }
+    RoboRioSim.setVInVoltage(
+      BatterySim.calculateDefaultBatteryLoadedVoltage(elevatorSim.getCurrentDrawAmps())
+    );
+    
+  }
 }
