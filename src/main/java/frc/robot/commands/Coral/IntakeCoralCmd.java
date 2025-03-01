@@ -42,21 +42,23 @@ public class IntakeCoralCmd extends Command {
     // this.cancel(); 
   }
 
+  boolean sensedCoral = false;
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     m_ledSubsytem.setPatternForDuration(m_ledSubsytem.coralPickup, 2);
 
     if (m_coral.backCoralSensor.isPressed()) {
-      
+
       m_coral.setIntakeSpeed(kCoral.intakeSpeed);
       m_coral.setOuttakeSpeed(kCoral.intakeSpeed);
-
-      if (!m_coral.backCoralSensor.isPressed()) {
-        m_coral.stopDeployer();
-      }
+      sensedCoral = true;
 
     } 
+
+    if (!m_coral.backCoralSensor.isPressed() && sensedCoral == true) {
+      m_coral.stopDeployer();
+    }
 
   }
 
