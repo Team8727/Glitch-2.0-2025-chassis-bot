@@ -46,6 +46,18 @@ public class IntakeCoralCmd extends Command {
   @Override
   public void execute() {
     m_ledSubsytem.setPatternForDuration(m_ledSubsytem.coralPickup, 2);
+
+    if (m_coral.backCoralSensor.isPressed()) {
+      
+      m_coral.setIntakeSpeed(kCoral.intakeSpeed);
+      m_coral.setOuttakeSpeed(kCoral.intakeSpeed);
+
+      if (!m_coral.backCoralSensor.isPressed()) {
+        m_coral.stopDeployer();
+      }
+
+    } 
+
   }
 
   // Called once the command ends or is interrupted.
