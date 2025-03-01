@@ -18,12 +18,12 @@ import frc.robot.subsystems.LEDSubsystem;
 public class IntakeCoralCmd extends Command {
   private final Coral m_coral;
   private final Elevator m_elevator;
-  private final LEDSubsystem m_ledSubsytem;
+  private final LEDSubsystem m_ledSubsystem;
   /** Creates a new IntakeCoral. */
   public IntakeCoralCmd(Coral coral, Elevator elevator, LEDSubsystem ledSubsystem) {
     m_coral = coral;
     m_elevator = elevator;
-    m_ledSubsytem = ledSubsystem;
+    m_ledSubsystem = ledSubsystem;
     addRequirements(coral, elevator);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -46,14 +46,12 @@ public class IntakeCoralCmd extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_ledSubsytem.setPatternForDuration(m_ledSubsytem.coralPickup, 2);
+    m_ledSubsystem.setPatternForDuration(m_ledSubsystem.coralPickup, 2);
 
     if (m_coral.backCoralSensor.isPressed() && sensedCoral == false) {
-
       m_coral.setIntakeSpeed(kCoral.intakeSpeed);
       m_coral.setOuttakeSpeed(kCoral.intakeSpeed);
       sensedCoral = true;
-
     } 
 
     if (!m_coral.backCoralSensor.isPressed() && sensedCoral == true) {
