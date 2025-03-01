@@ -4,6 +4,8 @@
 
 package frc.robot.commands.Coral;
 
+import com.revrobotics.spark.SparkBase.ControlType;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants.kCoral;
@@ -31,12 +33,14 @@ public class IntakeCoralCmd extends Command {
   public void initialize() {
     m_elevator.setElevatorHeightMotionProfile(kElevator.ElevatorPosition.L1);
     System.out.println("coralIntake");
-    m_coral.setIntakeSpeed(kCoral.intakeSpeed);
-      Commands.waitUntil(() -> m_coral.backCoralSensor.isPressed())
-        .andThen(() -> m_coral.setIntakeSpeed(kCoral.intakeSpeed))
-        .andThen(() -> m_coral.setOuttakeSpeed(kCoral.intakeSpeed));
-      Commands.waitUntil(() -> !m_coral.backCoralSensor.isPressed())
-        .andThen(() -> m_coral.stopDeployer());  }
+    m_coral.coralIntake.getClosedLoopController().setReference(.4, ControlType.kDutyCycle);
+    //   Commands.waitUntil(() -> m_coral.backCoralSensor.isPressed())
+    //     .andThen(() -> m_coral.setIntakeSpeed(kCoral.intakeSpeed))
+    //     .andThen(() -> m_coral.setOuttakeSpeed(kCoral.intakeSpeed));
+    //   Commands.waitUntil(() -> !m_coral.backCoralSensor.isPressed())
+    //     .andThen(() -> m_coral.stopDeployer()); 
+    // this.cancel(); 
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override

@@ -25,9 +25,9 @@ import frc.robot.utilities.SparkConfigurator.LogData;
 import java.util.Set;
 
 public class Coral extends SubsystemBase {
-  private final SparkMax coralIntake;
+  public final SparkMax coralIntake;
   private final SparkMaxConfig intakeConfig;
-  private final SparkMax coralOuttake;
+  public final SparkMax coralOuttake;
   private final SparkMaxConfig outtakeConfig;
   public final SparkLimitSwitch frontCoralSensor;
   public final SparkLimitSwitch backCoralSensor;
@@ -105,15 +105,6 @@ public class Coral extends SubsystemBase {
   public void stopDeployer() {
     coralIntake.getClosedLoopController().setReference(0, ControlType.kDutyCycle);
     coralOuttake.getClosedLoopController().setReference(0, ControlType.kDutyCycle);
-  }
-  public void coralOuttake(double speed) { 
-    System.out.println("coralOuttake");
-      run(() -> setOuttakeSpeed(kCoral.outtakeSpeed))
-        .until(() -> !frontCoralSensor.isPressed())
-          .andThen(() -> coralIntake.getClosedLoopController().setReference(
-            coralIntake.getEncoder().getPosition()+1, 
-            ControlType.kPosition))
-      .andThen(() -> stopDeployer());
   }
 
   @Override

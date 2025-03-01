@@ -4,7 +4,10 @@
 
 package frc.robot.commands.AlgaeIntake;
 
+import com.revrobotics.spark.SparkBase.ControlType;
+
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.AlgaeIntake.AlgaeIntakePivot;
 import frc.robot.subsystems.AlgaeIntake.AlgaeIntakeRollers;
 import frc.robot.Constants.kAlgaeIntake.kAlgaeIntakePivot;
@@ -32,14 +35,19 @@ public class ScoreAlgaeProcessorCmd extends Command {
   public void initialize() {
     // Set the intake to score position, score the algae by running rollers, and then set the intake to home position.
     m_algaeIntakePivot.setPositionTrapazoidal(kAlgaeIntakePivot.IntakePosition.SCORE);
-    m_algaeIntakeRollers.outtake();
-    m_ledSubsystem.setPatternForDuration(m_ledSubsystem.algaePickup.reversed(), 2);
-  
+    m_algaeIntakeRollers.isMoving = true;
+    m_algaeIntakeRollers.rollerPID.setReference(.3, ControlType.kDutyCycle);
+    //   Commands.waitUntil(() -> !m_algaeIntakeRollers.getAlgaeCheck())
+    //     .withTimeout(.5)
+    //   .andThen(() -> m_algaeIntakeRollers.rollerPID.setReference(0, ControlType.kDutyCycle))
+    // m_algaeIntakeRollers.isMoving = false;
+    // this.cancel();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    m_ledSubsystem.setPatternForDuration(m_ledSubsystem.algaePickup.reversed(), 2);
   }
 
   // Called once the command ends or is interrupted.
