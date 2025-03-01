@@ -52,7 +52,7 @@ public class DeployCoralCmd extends Command {
 
   private void outake() {
     System.out.println("coralOuttake");
-    m_coral.coralOuttake.getClosedLoopController().setReference(.5, ControlType.kDutyCycle);
+    m_coral.setOuttakeSpeedDuty(.5);
       // Commands.waitUntil(() -> !m_coral.frontCoralSensor.isPressed())
       //   .andThen(() -> m_coral.coralOuttake.getClosedLoopController().setReference(
       //     m_coral.coralOuttake.getEncoder().getPosition()+1, 
@@ -62,9 +62,17 @@ public class DeployCoralCmd extends Command {
       // this.cancel();
   }
   // Called every time the scheduler runs while the command is scheduled
+
+  boolean sensedCoral = false;
+
   @Override
   public void execute() {
     m_ledSubsytem.setPatternForDuration(m_ledSubsytem.coralPickup.reversed(), 2);
+
+    if (!m_coral.frontCoralSensor.isPressed()) {
+      m_coral.setOutakePos(m_coral.frontMotor.getEncoder().getPosition()+1);
+      sensedCoral = true;
+    }
   }
 
   // Called once the command ends or is interrupted.

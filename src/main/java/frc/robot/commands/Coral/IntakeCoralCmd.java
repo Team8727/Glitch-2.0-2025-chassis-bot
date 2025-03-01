@@ -31,12 +31,6 @@ public class IntakeCoralCmd extends Command {
     m_elevator.setElevatorHeightMotionProfile(kElevator.ElevatorPosition.L1);
     System.out.println("coralIntake");
     m_coral.setIntakeSpeedDuty(.4);
-    //   Commands.waitUntil(() -> m_coral.backCoralSensor.isPressed())
-    //     .andThen(() -> m_coral.setIntakeSpeed(kCoral.intakeSpeed))
-    //     .andThen(() -> m_coral.setOuttakeSpeed(kCoral.intakeSpeed));
-    //   Commands.waitUntil(() -> !m_coral.backCoralSensor.isPressed())
-    //     .andThen(() -> m_coral.stopDeployer()); 
-    // this.cancel(); 
   }
 
   boolean sensedCoral = false;

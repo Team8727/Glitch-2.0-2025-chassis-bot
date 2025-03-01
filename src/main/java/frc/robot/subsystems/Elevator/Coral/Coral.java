@@ -14,10 +14,6 @@ import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.kCoral;
 import frc.robot.utilities.NetworkTableLogger;
@@ -25,10 +21,10 @@ import frc.robot.utilities.SparkConfigurator.LogData;
 import java.util.Set;
 
 public class Coral extends SubsystemBase {
-  public final SparkMax coralIntake;
-  private final SparkMaxConfig intakeConfig;
-  public final SparkMax coralOuttake;
-  private final SparkMaxConfig outtakeConfig;
+  public final SparkMax backMotor;
+  private final SparkMaxConfig backConfig;
+  public final SparkMax frontMotor;
+  private final SparkMaxConfig frontConfig;
   public final SparkLimitSwitch frontCoralSensor;
   public final SparkLimitSwitch backCoralSensor;
 
@@ -36,7 +32,7 @@ public class Coral extends SubsystemBase {
 
   /** Creates a new Coral. */
   public Coral() {
-    coralIntake =
+    backMotor =
         getSparkMax(
             kCoral.intakeRollerMotorCANID,
             SparkLowLevel.MotorType.kBrushless,
@@ -47,8 +43,8 @@ public class Coral extends SubsystemBase {
                 LogData.VELOCITY,
                 LogData.VOLTAGE,
                 LogData.CURRENT));
-    intakeConfig = new SparkMaxConfig();
-    intakeConfig // TODO: tune configs
+    backConfig = new SparkMaxConfig();
+    backConfig // TODO: tune configs
         .smartCurrentLimit(25)
         .idleMode(IdleMode.kBrake)
         .closedLoop
@@ -59,10 +55,10 @@ public class Coral extends SubsystemBase {
         // .maxAcceleration(0)
         // .allowedClosedLoopError(0);
 
-    coralIntake.configure(
-        intakeConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+    backMotor.configure(
+      backConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
-    coralOuttake =
+    frontMotor =
         getSparkMax(
             kCoral.outtakeRollerMotorCANID,
             SparkLowLevel.MotorType.kBrushless,
@@ -74,8 +70,8 @@ public class Coral extends SubsystemBase {
                 LogData.VOLTAGE,
                 LogData.CURRENT));
 
-    outtakeConfig = new SparkMaxConfig();
-    outtakeConfig// TODO: tune configs
+    frontConfig = new SparkMaxConfig();
+    frontConfig// TODO: tune configs
         .smartCurrentLimit(25) 
         .idleMode(IdleMode.kBrake)
         .closedLoop
@@ -87,29 +83,33 @@ public class Coral extends SubsystemBase {
         // .maxAcceleration(0)
         // .allowedClosedLoopError(0);
 
-    coralOuttake.configure(
-        outtakeConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+    frontMotor.configure(
+        frontConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
-    frontCoralSensor = coralOuttake.getForwardLimitSwitch();
-    backCoralSensor = coralOuttake.getReverseLimitSwitch();
+    frontCoralSensor = frontMotor.getForwardLimitSwitch();
+    backCoralSensor = frontMotor.getReverseLimitSwitch();
   }
 
-  public void setIntakeSpeed(double speed) {
-    coralIntake.getClosedLoopController().setReference(speed, ControlType.kDutyCycle);
+  public void setIntakeSpeedDuty(double speed) {
+    backMotor.getClosedLoopController().setReference(speed, ControlType.kDutyCycle);
   }
 
-  public void setOuttakeSpeed(double speed) {
-    coralOuttake.getClosedLoopController().setReference(speed, ControlType.kDutyCycle);
+  public void setOuttakeSpeedDuty(double speed) {
+    frontMotor.getClosedLoopController().setReference(speed, ControlType.kDutyCycle);
+  }
+
+  public void setOutakePos(double position) {
+    frontMotor.getClosedLoopController().setReference(position, ControlType.kPosition);
   }
 
   public void stopDeployer() {
-    coralIntake.getClosedLoopController().setReference(0, ControlType.kDutyCycle);
-    coralOuttake.getClosedLoopController().setReference(0, ControlType.kDutyCycle);
+    backMotor.getClosedLoopController().setReference(0, ControlType.kDutyCycle);
+    frontMotor.getClosedLoopController().setReference(0, ControlType.kDutyCycle);
   }
 
   public void holdPosition() {
-    coralOuttake.getClosedLoopController().setReference(
-      coralOuttake.getEncoder().getPosition(), 
+    frontMotor.getClosedLoopController().setReference(
+      frontMotor.getEncoder().getPosition(), 
       ControlType.kPosition);
   }
 
