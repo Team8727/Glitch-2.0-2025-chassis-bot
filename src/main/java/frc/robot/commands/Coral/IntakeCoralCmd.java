@@ -4,10 +4,7 @@
 
 package frc.robot.commands.Coral;
 
-import com.revrobotics.spark.SparkBase.ControlType;
-
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants.kCoral;
 import frc.robot.Constants.kElevator;
 import frc.robot.subsystems.Elevator.Elevator;
@@ -33,7 +30,7 @@ public class IntakeCoralCmd extends Command {
   public void initialize() {
     m_elevator.setElevatorHeightMotionProfile(kElevator.ElevatorPosition.L1);
     System.out.println("coralIntake");
-    m_coral.coralIntake.getClosedLoopController().setReference(.4, ControlType.kDutyCycle);
+    m_coral.setIntakeSpeedDuty(.4);
     //   Commands.waitUntil(() -> m_coral.backCoralSensor.isPressed())
     //     .andThen(() -> m_coral.setIntakeSpeed(kCoral.intakeSpeed))
     //     .andThen(() -> m_coral.setOuttakeSpeed(kCoral.intakeSpeed));
@@ -49,9 +46,8 @@ public class IntakeCoralCmd extends Command {
     m_ledSubsytem.setPatternForDuration(m_ledSubsytem.coralPickup, 2);
 
     if (m_coral.backCoralSensor.isPressed() && sensedCoral == false) {
-
-      m_coral.setIntakeSpeed(kCoral.intakeSpeed);
-      m_coral.setOuttakeSpeed(kCoral.intakeSpeed);
+      m_coral.setIntakeSpeedDuty(kCoral.intakeSpeed);
+      m_coral.setOuttakeSpeedDuty(kCoral.intakeSpeed);
       sensedCoral = true;
 
     } 

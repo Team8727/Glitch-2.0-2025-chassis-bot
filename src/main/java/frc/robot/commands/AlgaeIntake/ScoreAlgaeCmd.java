@@ -14,14 +14,14 @@ import frc.robot.Constants.kAlgaeIntake.kAlgaeIntakePivot;
 import frc.robot.subsystems.LEDSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ScoreAlgaeProcessorCmd extends Command {
+public class ScoreAlgaeCmd extends Command {
   /** Creates a new ScoreAlgaeProcessorCmd. */
   private final LEDSubsystem m_ledSubsystem;
 
   AlgaeIntakePivot m_algaeIntakePivot;
   AlgaeIntakeRollers m_algaeIntakeRollers;
 
-  public ScoreAlgaeProcessorCmd(
+  public ScoreAlgaeCmd(
       AlgaeIntakePivot algaeIntakePivot, AlgaeIntakeRollers algaeIntakeRollers, LEDSubsystem ledSubsystem) {
     this.m_algaeIntakePivot = algaeIntakePivot;
     this.m_algaeIntakeRollers = algaeIntakeRollers;
