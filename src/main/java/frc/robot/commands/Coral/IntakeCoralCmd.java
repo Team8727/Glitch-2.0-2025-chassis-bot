@@ -48,6 +48,7 @@ public class IntakeCoralCmd extends Command {
     if (!m_coral.backCoralSensor.isPressed() && sensedCoral == true) {
       m_coral.holdPosition();
       m_coral.setIntakeSpeedDuty(0);
+      sensedCoral = false;
       this.cancel();
     }
 
