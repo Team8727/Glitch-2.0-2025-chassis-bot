@@ -57,7 +57,7 @@ public class AlgaeIntakeRollers extends SubsystemBase {
 
     config
       // Motor Config
-      .smartCurrentLimit(40) // TODO: figure out what this should be
+      .smartCurrentLimit(30) // TODO: figure out what this should be
       .idleMode(IdleMode.kBrake)
       .inverted(true)
 

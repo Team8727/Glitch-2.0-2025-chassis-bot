@@ -99,7 +99,7 @@ public class AlgaeIntakePivot extends SubsystemBase {
 
     pivotPID = intakePivotMotor.getClosedLoopController();
     
-    setPositionTrapazoidal(IntakePosition.HOME);
+    setPositionTrapazoidal(IntakePosition.SCORE);
   }
 
 // -=-=-=-=-=-=- Methods -=-=-=-=-=-=-=-=-=-=-|Subsystem|
