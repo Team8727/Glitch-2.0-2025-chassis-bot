@@ -53,17 +53,38 @@ public class DeployCoralCmd extends Command {
   private void outake() {
     System.out.println("coralOuttake");
     m_coral.setOuttakeSpeedDuty(.5);
+      // Commands.waitUntil(() -> !m_coral.frontCoralSensor.isPressed())
+      //   .andThen(() -> m_coral.coralOuttake.getClosedLoopController().setReference(
+      //     m_coral.coralOuttake.getEncoder().getPosition()+1, 
+      //     ControlType.kPosition));
+      // Commands.waitSeconds(.2)
+      //   .andThen(() -> m_coral.stopDeployer());
+      // this.cancel();
   }
   // Called every time the scheduler runs while the command is scheduled
 
+  boolean sensedCoral = true;
 
   @Override
   public void execute() {
     m_ledSubsytem.setPatternForDuration(m_ledSubsytem.coralPickup.reversed(), 2);
 
-    if (!m_coral.frontCoralSensor.isPressed()) {
+    if (!m_coral.frontCoralSensor.isPressed() && sensedCoral == true) {
       m_coral.setOutakePos(m_coral.frontMotor.getEncoder().getPosition()+1);
-      this.cancel();
+      sensedCoral = false;
+    }
+
+    if (!m_coral.frontCoralSensor.isPressed() && sensedCoral == false) {
+      new Thread(() -> {
+        try {
+          Thread.sleep(100);
+        } catch (InterruptedException e) {
+          Thread.currentThread().interrupt();
+        }
+        m_elevator.setElevatorHeightMotionProfile(kElevator.ElevatorPosition.L1);
+        this.cancel();
+        Thread.currentThread().interrupt();
+      }).start();
     }
   }
 
