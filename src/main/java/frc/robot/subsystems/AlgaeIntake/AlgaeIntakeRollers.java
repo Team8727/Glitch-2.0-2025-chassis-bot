@@ -17,7 +17,6 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.kAlgaeIntake.kAlgaeIntakeRollers;
 import frc.robot.utilities.NetworkTableLogger;
@@ -94,20 +93,12 @@ public class AlgaeIntakeRollers extends SubsystemBase {
    * @apiNote This also includes feedforward because we passed in a velocity FF 
    * gain into the built-in controller, and it will automatically use the FF.
    */
-  public void setRollerSpeed(double speed) {
-    rollerPID.setReference(speed, ControlType.kVelocity); 
-  }
-
-  public void setRollerVoltage(double voltage) {
-    rollerPID.setReference(voltage, ControlType.kVoltage);
-  }
-
-  public void setrollercurrent(double current) {
-    rollerPID.setReference(current, ControlType.kCurrent);
+  public void setRollerSpeedDuty(double speed) {
+    rollerPID.setReference(speed, ControlType.kDutyCycle); 
   }
 
   public void stopRollers() {
-    setRollerSpeed(0);
+    setRollerSpeedDuty(0);
   }
 
   public boolean getAlgaeCheck() {
@@ -136,19 +127,12 @@ boolean m_shouldLog = false;
   }
 // -=-=-=-=-=-=-=-=- Commands -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-|Subsystem|
 
-  // public Command score() {
-  //   return run(() -> setRollerVoltage(-kAlgaeIntakeRollers.scoreVoltage))
-  //       .until(() -> !getAlgaeCheck())
-  //       .finallyDo(() -> setRollerVoltage(0));
-  // }
-
   private void holdAlgae() {
     if (isMoving == false) {
       if (getAlgaeCheck() == true) {
-        rollerPID.setReference(.4, ControlType.kDutyCycle);
-        System.out.println("holding");
+        setRollerSpeedDuty(.5);
       } else {
-      rollerPID.setReference(0, ControlType.kDutyCycle);
+      stopRollers();
       }
     }
   }

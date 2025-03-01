@@ -325,7 +325,7 @@ public final class Constants {
           17; // TODO: not set yet because intake is not built yet
 
       public enum IntakePosition {
-          HOME(3), 
+          HOME(5), 
           SCORE(20), 
           DOWN(90); // TODO: SET WITH ACTUAL VALUES
 

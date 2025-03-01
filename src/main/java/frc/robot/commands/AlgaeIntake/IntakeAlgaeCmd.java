@@ -4,12 +4,7 @@
 
 package frc.robot.commands.AlgaeIntake;
 
-import com.revrobotics.spark.SparkBase.ControlType;
-
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.Constants.kAlgaeIntake.kAlgaeIntakePivot;
 import frc.robot.subsystems.AlgaeIntake.AlgaeIntakePivot;
 import frc.robot.subsystems.AlgaeIntake.AlgaeIntakeRollers;
@@ -35,9 +30,9 @@ public class IntakeAlgaeCmd extends Command {
   @Override
   public void initialize() {
     System.out.println("moving");
-    m_algaeIntakePivot.setPositionTrapazoidal(kAlgaeIntakePivot.IntakePosition.DOWN);
     m_algaeIntakeRollers.isMoving = true;
-    m_algaeIntakeRollers.rollerPID.setReference(.8, ControlType.kDutyCycle);
+    m_algaeIntakePivot.setPositionTrapazoidal(kAlgaeIntakePivot.IntakePosition.DOWN);
+    m_algaeIntakeRollers.setRollerSpeedDuty(.8);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -50,7 +45,7 @@ public class IntakeAlgaeCmd extends Command {
       m_algaeIntakePivot.setPositionTrapazoidal(kAlgaeIntakePivot.IntakePosition.SCORE);
       
       this.cancel();
-  }
+    }
   }
 
   // Called once the command ends or is interrupted.
