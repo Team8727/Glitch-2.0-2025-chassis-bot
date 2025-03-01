@@ -13,6 +13,7 @@ import frc.robot.commands.AlgaeIntake.IntakeAlgaeCmd;
 import frc.robot.commands.AlgaeIntake.ScoreAlgaeCmd;
 import frc.robot.commands.Coral.DeployCoralCmd;
 import frc.robot.commands.Coral.IntakeCoralCmd;
+import frc.robot.commands.SetElevatorHeightCmd;
 import frc.robot.commands.DriveCommands.SwerveJoystickCmd;
 import frc.robot.subsystems.Autos;
 import frc.robot.subsystems.LEDSubsystem;
@@ -111,27 +112,33 @@ public class RobotContainer {
     // // Remove algae L2
     // m_driverController.povDown().onTrue(new removeAlgae(m_AlgaeRemoverPivot, m_AlgeaRemoverRollers, 2, m_elevator));
 
+    
+    //               coral commands
     // intake coral
-    // m_driverController.leftBumper().onTrue(new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsytem));
-    // Deploy coral L1
-    m_driverController.x().onTrue(new DeployCoralCmd(m_coral, 1, m_elevator, m_ledSubsytem));
-    // Deploy coral L2
-    m_driverController.y().onTrue(new DeployCoralCmd(m_coral, 2, m_elevator, m_ledSubsytem));
-    // Deploy coral L3
-    m_driverController.b().onTrue(new DeployCoralCmd(m_coral, 3, m_elevator, m_ledSubsytem));
-    // Deploy coral L4
-    m_driverController.a().onTrue(new DeployCoralCmd(m_coral, 4, m_elevator, m_ledSubsytem));
+    m_driverController.leftTrigger().onTrue(new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsytem));
+    //deploy coral
 
+    m_driverController.rightBumper().onTrue(new DeployCoralCmd(m_coral, m_elevator, m_ledSubsytem));
+    // elevator L1
+    m_driverController.x().onTrue(new SetElevatorHeightCmd(1, m_elevator, m_ledSubsytem));
+    // elevator L2
+    m_driverController.y().onTrue(new SetElevatorHeightCmd(2, m_elevator, m_ledSubsytem));
+    // elevator L3
+    m_driverController.b().onTrue(new SetElevatorHeightCmd(3, m_elevator, m_ledSubsytem));
+    // elevator L4
+    m_driverController.a().onTrue(new SetElevatorHeightCmd(4, m_elevator, m_ledSubsytem));
+    // zero elevator
     m_driverController.povDown().onTrue(new InstantCommand(() -> m_elevator.resetElevatorEncoders()));
+
     // Align to pose
     // m_driverController.povLeft().onTrue(m_Autos.align(kPoses.blueFrontLeft).andThen(() -> System.out.println("aligginginsdaod")));
 
-    m_driverController.leftBumper().onTrue(new IntakeAlgaeCmd(m_AlgaeIntakePivot, m_AlgaeIntakeRollers, m_ledSubsytem));
-    m_driverController.rightBumper().onTrue(new ScoreAlgaeCmd(m_AlgaeIntakePivot, m_AlgaeIntakeRollers, m_ledSubsytem));
-
-    m_driverController.povLeft().onTrue(new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsytem));
-
-    m_driverController.povRight().onTrue(new InstantCommand(() -> m_AlgaeIntakePivot.setPositionTrapazoidal(IntakePosition.HOME)));
+    
+    //                algae commands
+    // Intake algae
+    m_driverController.rightTrigger().onTrue(new IntakeAlgaeCmd(m_AlgaeIntakePivot, m_AlgaeIntakeRollers, m_ledSubsytem));
+    // deploy algae
+    m_driverController.leftBumper().onTrue(new ScoreAlgaeCmd(m_AlgaeIntakePivot, m_AlgaeIntakeRollers, m_ledSubsytem));
 
     // // Intake algae
     // m_driverController.rightBumper().onTrue(
