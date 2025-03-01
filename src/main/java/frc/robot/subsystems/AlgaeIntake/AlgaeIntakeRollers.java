@@ -14,6 +14,8 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -55,16 +57,15 @@ public class AlgaeIntakeRollers extends SubsystemBase {
 
     config
       // Motor Config
-      .smartCurrentLimit(25) // TODO: figure out what this should be
+      .smartCurrentLimit(40) // TODO: figure out what this should be
       .idleMode(IdleMode.kBrake)
       .inverted(true)
 
       // PID Control
       .closedLoop
         .outputRange(-1, 1) // TODO: currently set to full range
-        .velocityFF(0) // TODO: tune
-        .pid(1, 0, 0);
-      // MaxMotion Control for more precise position control
+        .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+        // MaxMotion Control for more precise position control
         // .maxMotion
         //   .maxVelocity(0)
         //   .maxAcceleration(0)
@@ -137,22 +138,22 @@ boolean m_shouldLog = false;
 
   public Command outtake() {
     return run(() -> isMoving = true)
-        .andThen(() -> setRollerSpeed(-kAlgaeIntakeRollers.outtakeSpeed))
+        .andThen(() -> rollerPID.setReference(.3, ControlType.kDutyCycle))
         .until(() -> !getAlgaeCheck())
           .withTimeout(.5)
-        .andThen(() -> setRollerSpeed(0))
+        .andThen(() -> rollerPID.setReference(0, ControlType.kDutyCycle))
         .finallyDo(() -> isMoving = false);
   }
 
-  public Command intake() {
-    return run(() -> isMoving = true)
-          .andThen(() -> setRollerSpeed(kAlgaeIntakeRollers.intakeSpeed))
-          .until(() -> getAlgaeCheck())
-          .andThen(
-              run(() -> setRollerSpeed(kAlgaeIntakeRollers.intakeSpeed))
-                  .withTimeout(0.2)) // TODO: this additional time may have to be modified or removed
-          .andThen(() -> setRollerSpeed(0))
-          .finallyDo(() -> isMoving = false);
+  public void intake() {
+    run(() -> isMoving = true)
+      .andThen(() -> rollerPID.setReference(.3, ControlType.kDutyCycle))
+        .until(() -> getAlgaeCheck())
+      .andThen(
+          run(() -> rollerPID.setReference(.3, ControlType.kDutyCycle))
+              .withTimeout(0.2)) // TODO: this additional time may have to be modified or removed
+      .andThen(() -> rollerPID.setReference(0, ControlType.kDutyCycle))
+    .finallyDo(() -> isMoving = false);
   }
 
   // public Command score() {
@@ -164,11 +165,12 @@ boolean m_shouldLog = false;
   public void holdAlgae() {
     if (getAlgaeCheck() == true) {
       System.out.println("holding");
-      setRollerSpeed(200);
-      // rollerPID.setReference(30, ControlType.kVelocity);
+      // setRollerSpeed(200);
+      rollerPID.setReference(.4, ControlType.kDutyCycle);
+      
     } 
     else if (isMoving == false){
-      setRollerSpeed(0);
+      rollerPID.setReference(0, ControlType.kDutyCycle);
     }
   }
 

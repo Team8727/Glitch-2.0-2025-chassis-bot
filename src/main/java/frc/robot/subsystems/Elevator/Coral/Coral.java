@@ -94,11 +94,11 @@ public class Coral extends SubsystemBase {
   }
 
   public void setIntakeSpeed(double speed) {
-    coralIntake.getClosedLoopController().setReference(speed, ControlType.kVelocity);
+    coralIntake.getClosedLoopController().setReference(speed, ControlType.kDutyCycle);
   }
 
   public void setOuttakeSpeed(double speed) {
-    coralOuttake.getClosedLoopController().setReference(speed, ControlType.kVelocity);
+    coralOuttake.getClosedLoopController().setReference(speed, ControlType.kDutyCycle);
   }
 
   public void stopDeployer() {
@@ -117,10 +117,10 @@ public class Coral extends SubsystemBase {
 
   public void coralIntake() {
     System.out.println("coralIntake");
-    run(() -> setIntakeSpeed(kCoral.intakeSpeed))
+    run(() -> coralIntake.getClosedLoopController().setReference(kCoral.intakeSpeed, ControlType.kDutyCycle))
       .until(() -> backCoralSensor.isPressed())
-        .andThen(() -> setIntakeSpeed(kCoral.intakeSpeed))
-        .andThen(() -> setOuttakeSpeed(kCoral.intakeSpeed))
+        .andThen(() -> coralIntake.getClosedLoopController().setReference(kCoral.intakeSpeed, ControlType.kDutyCycle))
+        .andThen(() -> coralIntake.getClosedLoopController().setReference(kCoral.intakeSpeed, ControlType.kDutyCycle))
       .until(() -> !backCoralSensor.isPressed())
         .andThen(() -> stopDeployer());
     }
