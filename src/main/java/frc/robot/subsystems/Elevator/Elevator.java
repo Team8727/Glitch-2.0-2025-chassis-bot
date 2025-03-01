@@ -4,7 +4,10 @@
 
 package frc.robot.subsystems.Elevator;
 
+import com.pathplanner.lib.config.RobotConfig;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.ClosedLoopSlot;
+import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
@@ -21,15 +24,26 @@ import java.util.Set;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.simulation.BatterySim;
+import edu.wpi.first.wpilibj.simulation.ElevatorSim;
+import edu.wpi.first.wpilibj.simulation.EncoderSim;
+import edu.wpi.first.wpilibj.simulation.PWMSim;
+import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Robot;
+import frc.robot.Constants;
+import frc.robot.Constants.kConfigs;
 import frc.robot.Constants.kElevator;
 import frc.robot.utilities.NetworkTableLogger;
 import frc.robot.utilities.SparkConfigurator.LogData;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-
+import com.revrobotics.spark.SparkBase;
 public class Elevator extends SubsystemBase {
 
   private final SparkMax elevatorMotorR;
@@ -55,6 +69,20 @@ public class Elevator extends SubsystemBase {
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- 
 
   private final ElevatorFeedforward elevatorFeedforward = new ElevatorFeedforward(0, 1.28, 3.71, 0.23);
+
+  private final ElevatorSim elevatorSim =
+    new ElevatorSim(
+      3.71, 
+      0.23,
+      kConfigs.neoMotor,
+      0.01,
+      2.0,
+      true,
+      0.0); // Can optionally include standard deviation in measurements, but we don't have that right now!
+
+  private final PWMSim m_PWMSim;
+  private final Encoder m_Encoder;
+  private final EncoderSim encoderSim;
 
   // The timer for trapezoid profile
   private final Timer m_timer = new Timer();
@@ -95,6 +123,15 @@ public class Elevator extends SubsystemBase {
       true);
 
     elevatorPID = elevatorMotorR.getClosedLoopController();
+
+    m_Encoder = 
+      (Encoder) elevatorMotorR.getEncoder();
+
+    encoderSim = 
+      new EncoderSim(m_Encoder);
+
+    m_PWMSim =
+      new PWMSim(elevatorMotorR.getDeviceId());
 
     limitSwitch = new DigitalInput(kElevator.limitSwitchDIO);
 
@@ -196,5 +233,18 @@ public class Elevator extends SubsystemBase {
     setElevatorHeight(m_setpoint.position);
 
     
+  }
+
+  public void simulationPeriodic() {
+    elevatorSim.setInput(m_PWMSim.getSpeed() * RobotController.getBatteryVoltage());
+
+    elevatorSim.update(0.02);
+
+    
+    encoderSim.setDistance(elevatorSim.getPositionMeters());
+
+    RoboRioSim.setVInVoltage(
+      BatterySim.calculateDefaultBatteryLoadedVoltage(elevatorSim.getCurrentDrawAmps())
+    );
   }
 }
