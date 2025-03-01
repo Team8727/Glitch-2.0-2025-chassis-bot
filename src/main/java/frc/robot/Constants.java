@@ -316,9 +316,9 @@ public final class Constants {
           17; // TODO: not set yet because intake is not built yet
 
       public enum IntakePosition {
-          HOME(0), 
+          HOME(3), 
           SCORE(20), 
-          DOWN(82); // TODO: SET WITH ACTUAL VALUES
+          DOWN(90); // TODO: SET WITH ACTUAL VALUES
 
           private final double degrees;
           private IntakePosition(double degrees) { this.degrees = degrees; }

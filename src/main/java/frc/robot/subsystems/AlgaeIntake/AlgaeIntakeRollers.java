@@ -17,7 +17,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.kAlgaeIntake.kAlgaeIntakeRollers;
 import frc.robot.utilities.NetworkTableLogger;
@@ -28,8 +28,8 @@ public class AlgaeIntakeRollers extends SubsystemBase {
   private final SparkMax intakeRollerMotor;
   private final SparkMaxConfig config;
   private final DigitalInput algaeCheck;
-  private final SparkClosedLoopController rollerPID;
-  private boolean isMoving = false;
+  public final SparkClosedLoopController rollerPID;
+  public boolean isMoving = false;
 
   /** Creates a new AlgaeIntakeRollers. */
   public AlgaeIntakeRollers() {
@@ -136,24 +136,13 @@ boolean m_shouldLog = false;
   }
 // -=-=-=-=-=-=-=-=- Commands -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-|Subsystem|
 
-  public Command outtake() {
-    return run(() -> isMoving = true)
-        .andThen(() -> rollerPID.setReference(.3, ControlType.kDutyCycle))
-        .until(() -> !getAlgaeCheck())
-          .withTimeout(.5)
-        .andThen(() -> rollerPID.setReference(0, ControlType.kDutyCycle))
-        .finallyDo(() -> isMoving = false);
-  }
-
-  public void intake() {
+  public void outtake() {
     run(() -> isMoving = true)
-      .andThen(() -> rollerPID.setReference(.3, ControlType.kDutyCycle))
-        .until(() -> getAlgaeCheck())
-      .andThen(
-          run(() -> rollerPID.setReference(.3, ControlType.kDutyCycle))
-              .withTimeout(0.2)) // TODO: this additional time may have to be modified or removed
+      .andThen(() -> rollerPID.setReference(.3, ControlType.kDutyCycle));
+      Commands.waitUntil(() -> !getAlgaeCheck())
+        .withTimeout(.5)
       .andThen(() -> rollerPID.setReference(0, ControlType.kDutyCycle))
-    .finallyDo(() -> isMoving = false);
+      .finallyDo(() -> isMoving = false);
   }
 
   // public Command score() {
@@ -162,7 +151,7 @@ boolean m_shouldLog = false;
   //       .finallyDo(() -> setRollerVoltage(0));
   // }
 
-  public void holdAlgae() {
+  private void holdAlgae() {
     if (getAlgaeCheck() == true) {
       System.out.println("holding");
       // setRollerSpeed(200);

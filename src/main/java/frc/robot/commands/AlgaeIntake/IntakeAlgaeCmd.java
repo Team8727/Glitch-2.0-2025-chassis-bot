@@ -4,7 +4,10 @@
 
 package frc.robot.commands.AlgaeIntake;
 
+import com.revrobotics.spark.SparkBase.ControlType;
+
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.Constants.kAlgaeIntake.kAlgaeIntakePivot;
@@ -32,13 +35,15 @@ public class IntakeAlgaeCmd extends Command {
   @Override
   public void initialize() {
     System.out.println("moving");
-    
-    // Set the intake pivot to the ground position and
-    new RunCommand(
-      () -> m_algaeIntakePivot.setPositionTrapazoidal(kAlgaeIntakePivot.IntakePosition.DOWN))
-      .andThen(() -> m_algaeIntakeRollers.intake())
-      .andThen(new InstantCommand(() -> m_algaeIntakePivot.setPositionTrapazoidal(kAlgaeIntakePivot.IntakePosition.HOME)))
-      .finallyDo(() -> this.cancel());
+    m_algaeIntakePivot.setPositionTrapazoidal(kAlgaeIntakePivot.IntakePosition.DOWN);
+    m_algaeIntakeRollers.isMoving = true;
+    m_algaeIntakeRollers.rollerPID.setReference(.8, ControlType.kDutyCycle);
+      Commands.waitUntil(() -> m_algaeIntakeRollers.getAlgaeCheck())
+        .andThen(() -> System.out.println("algae seen")/*() -> m_algaeIntakeRollers.rollerPID.setReference(.5, ControlType.kDutyCycle)*/);
+    //         Commands.waitSeconds(.2) // TODO: this additional time may have to be modified or removed
+    // .finallyDo(() -> m_algaeIntakeRollers.isMoving = false);
+    // m_algaeIntakePivot.setPositionTrapazoidal(kAlgaeIntakePivot.IntakePosition.HOME);
+    // this.cancel();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
