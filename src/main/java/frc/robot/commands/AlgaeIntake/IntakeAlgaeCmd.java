@@ -38,8 +38,10 @@ public class IntakeAlgaeCmd extends Command {
     m_algaeIntakePivot.setPositionTrapazoidal(kAlgaeIntakePivot.IntakePosition.DOWN);
     m_algaeIntakeRollers.isMoving = true;
     m_algaeIntakeRollers.rollerPID.setReference(.8, ControlType.kDutyCycle);
+    System.out.println("check1");
       Commands.waitUntil(() -> m_algaeIntakeRollers.getAlgaeCheck())
         .andThen(() -> System.out.println("algae seen")/*() -> m_algaeIntakeRollers.rollerPID.setReference(.5, ControlType.kDutyCycle)*/);
+    System.out.println("check2");
     //         Commands.waitSeconds(.2) // TODO: this additional time may have to be modified or removed
     // .finallyDo(() -> m_algaeIntakeRollers.isMoving = false);
     // m_algaeIntakePivot.setPositionTrapazoidal(kAlgaeIntakePivot.IntakePosition.HOME);
