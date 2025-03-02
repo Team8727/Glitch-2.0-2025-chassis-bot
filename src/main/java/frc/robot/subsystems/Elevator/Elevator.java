@@ -210,6 +210,8 @@ public class Elevator extends SubsystemBase {
     logger.logDouble("setpos", targetRotations);
     logger.logDouble("TrapezoidProfile", m_setpoint.position);
     logger.logDouble("simPosition", elevatorSim.getPositionMeters());
+    logger.logDouble("actualPos", elevatorMotorR.getEncoder().getPosition());
+    logger.logString("elevator level", targetHeight.toString());
     
     //-=-=-=-=-=-=-=- Trapezoid Profile -=-=-=-=-=-=-=-
 

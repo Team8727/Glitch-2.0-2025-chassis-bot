@@ -127,8 +127,6 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     logger.logDouble("voltage", RobotController.getInputVoltage());
-    logger.logDouble("current", RobotController.getInputCurrent());
-    logger.logCan("can status", RobotController.getCANStatus());
     // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic

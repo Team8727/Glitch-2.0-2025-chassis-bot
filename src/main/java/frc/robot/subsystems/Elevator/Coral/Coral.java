@@ -123,6 +123,6 @@ public class Coral extends SubsystemBase {
 
     logger.logBoolean(
       "Back Coral Sensor", 
-      backCoralSensor.isPressed());;
+      backCoralSensor.isPressed());
   }
 }

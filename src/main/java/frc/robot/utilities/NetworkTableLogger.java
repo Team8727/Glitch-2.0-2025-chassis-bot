@@ -18,6 +18,7 @@ import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilderImpl;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants.kElevator.ElevatorPosition;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -58,6 +59,9 @@ public class NetworkTableLogger {
 
   // Can status logging objects
   DoubleArrayPublisher doubleArrayPublisher;
+
+  // ElevatorPosition logging objects
+  StructPublisher<ElevatorPosition> elevatorPositionPublisher;
 
   // -=-=- Stuff for log(key, value) =-=-=
   @SuppressWarnings("PMD.UseConcurrentHashMap")
@@ -162,7 +166,17 @@ public class NetworkTableLogger {
       pose2dPublisher = table.getStructTopic(key, Pose2d.struct).publish();
     pose2dPublisher.set(pose2d);
   }
-
+  /**
+   * Log method for logging an integer to the network table (can be seen using AdvantageScope, Glass,
+   * Elastic, etc.)
+   *
+   * @param key the key, a string, that will represent the value
+   * @param value the value (int) that will be logged
+   */
+  public void logInt(String key, int value) {
+    if (!table.containsKey(key)) doublePublisher = table.getDoubleTopic(key).publish();
+    doublePublisher.set((double) value);
+  }
   /**
    * Log method for logging a Pose3d to the network table (can be seen using AdvantageScope, Glass,
    * Elastic, etc.)
