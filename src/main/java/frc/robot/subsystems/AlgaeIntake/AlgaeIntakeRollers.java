@@ -27,8 +27,9 @@ public class AlgaeIntakeRollers extends SubsystemBase {
   private final SparkMax intakeRollerMotor;
   private final SparkMaxConfig config;
   private final DigitalInput algaeCheck;
-  public final SparkClosedLoopController rollerPID;
+  private final SparkClosedLoopController rollerPID;
   public boolean isMoving = false;
+
 
   /** Creates a new AlgaeIntakeRollers. */
   public AlgaeIntakeRollers() {
