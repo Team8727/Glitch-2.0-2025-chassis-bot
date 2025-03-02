@@ -39,6 +39,8 @@ public class AlgaeIntakePivot extends SubsystemBase {
   private final ArmFeedforward pivotFeedforward;
   private final SparkClosedLoopController pivotPID;
 
+  private final NetworkTableLogger logger = new NetworkTableLogger(this.getSubsystem().toString());
+
   private final double kDt = 0.02;
 
   private final TrapezoidProfile m_profile = new TrapezoidProfile(
@@ -120,13 +122,14 @@ public class AlgaeIntakePivot extends SubsystemBase {
     // System.out.println("intake" + pivotFeedforward.calculate(intakePosition, VelocitySetpoint));
   }
 
-  public void setPositionTrapazoidal(IntakePosition intakePositionDegrees) {
-    double rotation = (intakePositionDegrees.getIntakePositionDegrees() / 360);
+  public void setPositionTrapazoidal(IntakePosition intakePosition) {
+    logger.logString("Algae Intake Pos", intakePosition.toString());
+    double rotation = (intakePosition.getIntakePositionDegrees() / 360);
     m_goal = new TrapezoidProfile.State(rotation, 0);
   }
 
     // pivotMotor.setReference() //To set built-in PID (maybe put the feedforward calculation in
-    // here as parameter?)
+    // here as parameter?
     // pivotFeedforward.calculate(positionRadians, velocityRadPerSec);  //For velocity and position
     // control, acceleration assumed to be 0
     // pivotFeedforward.calculate(positionRadians, velocityRadPerSec, accelRadPerSecSquared);  //For

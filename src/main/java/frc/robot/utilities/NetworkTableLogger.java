@@ -1,10 +1,12 @@
 package frc.robot.utilities;
 
+import edu.wpi.first.hal.can.CANStatus;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.networktables.BooleanPublisher;
+import edu.wpi.first.networktables.DoubleArrayPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -16,6 +18,7 @@ import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilderImpl;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants.kElevator.ElevatorPosition;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -54,6 +57,12 @@ public class NetworkTableLogger {
   // Swerve Module States logging objects
   StructArrayPublisher<SwerveModuleState> swerveModuleStatePublisher;
 
+  // Can status logging objects
+  DoubleArrayPublisher doubleArrayPublisher;
+
+  // ElevatorPosition logging objects
+  StructPublisher<ElevatorPosition> elevatorPositionPublisher;
+
   // -=-=- Stuff for log(key, value) =-=-=
   @SuppressWarnings("PMD.UseConcurrentHashMap")
   private static final Map<String, Sendable> tablesToData = new HashMap<>();
@@ -88,6 +97,26 @@ public class NetworkTableLogger {
   }
 
   /**
+   * Log method for logging a can status to the network table (can be seen using AdvantageScope, Glass,
+   * Elastic, etc.)
+   *
+   * @param key the key, a string, that will represent the value
+   * @param value the value (double) that will be logged
+   */
+  public void logCan(String key, CANStatus value) {
+    double[] canStatusArray = new double[] {
+      value.percentBusUtilization,
+      value.busOffCount,
+      value.txFullCount,
+      value.receiveErrorCount,
+      value.transmitErrorCount
+    };
+
+    if (!table.containsKey(key)) doubleArrayPublisher = table.getDoubleArrayTopic(key).publish();
+    doubleArrayPublisher.set(canStatusArray);
+  }
+
+  /**
    * Log method for logging a boolean to the network table (can be seen using AdvantageScope, Glass,
    * Elastic, etc.)
    *
@@ -98,7 +127,16 @@ public class NetworkTableLogger {
     if (!table.containsKey(key)) booleanPublisher = table.getBooleanTopic(key).publish();
     booleanPublisher.set(value);
   }
-
+  /**
+   * Get method for retrieving a boolean from the network table (can be seen using AdvantageScope, Glass,
+   * Elastic, etc.)
+   *
+   * @param key the key, a string, that represents the value
+   * @return the boolean value associated with the key
+   */
+  public boolean getBoolean(String key, boolean defaultValue) {
+    return table.getBooleanTopic(key).getEntry(defaultValue).get();
+  }
   /**
    * Log method for logging a string to the network table (can be seen using AdvantageScope, Glass,
    * Elastic, etc.)
@@ -137,7 +175,17 @@ public class NetworkTableLogger {
       pose2dPublisher = table.getStructTopic(key, Pose2d.struct).publish();
     pose2dPublisher.set(pose2d);
   }
-
+  /**
+   * Log method for logging an integer to the network table (can be seen using AdvantageScope, Glass,
+   * Elastic, etc.)
+   *
+   * @param key the key, a string, that will represent the value
+   * @param value the value (int) that will be logged
+   */
+  public void logInt(String key, int value) {
+    if (!table.containsKey(key)) doublePublisher = table.getDoubleTopic(key).publish();
+    doublePublisher.set((double) value);
+  }
   /**
    * Log method for logging a Pose3d to the network table (can be seen using AdvantageScope, Glass,
    * Elastic, etc.)

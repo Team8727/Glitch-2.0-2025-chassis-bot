@@ -36,14 +36,14 @@ public class PoseEstimatior extends SubsystemBase {
   }
 
   // setup cameras
-  PhotonCamera camera1 = new PhotonCamera("frontCamera");
-  PhotonCamera camera2 = new PhotonCamera("backCamera");
-  PhotonCamera camera3 = new PhotonCamera("leftCamera");
-  PhotonCamera camera4 = new PhotonCamera("rightCamera");
+  PhotonCamera camera1 = new PhotonCamera("backRight");
+  PhotonCamera camera2 = new PhotonCamera("backLeft");
+  PhotonCamera camera3 = new PhotonCamera("front");
+  PhotonCamera camera4 = new PhotonCamera("backUp");
 
   // Field2d for logging the robot's 2d position on the field to the dashboard like AdvantageScope,
   // Elastic or Glass.
-  private Field2d field2d = new Field2d();
+  public Field2d field2d = new Field2d();
 
   // photon pose estimators
   PhotonPoseEstimator PoseEstimator1 =
@@ -147,14 +147,14 @@ public class PoseEstimatior extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // camera 1 pose estimation
-    addVisionMeasurement(camera1, PoseEstimator1);
-    // camera 2 pose estimation
-    addVisionMeasurement(camera2, PoseEstimator2);
-    // camera 3 pose estimation
-    addVisionMeasurement(camera3, PoseEstimator3);
-    // camera 4 pose estimation
-    addVisionMeasurement(camera4, PoseEstimator4);
+    // // camera 1 pose estimation
+    // addVisionMeasurement(camera1, PoseEstimator1);
+    // // camera 2 pose estimation
+    // addVisionMeasurement(camera2, PoseEstimator2);
+    // // camera 3 pose estimation
+    // addVisionMeasurement(camera3, PoseEstimator3);
+    // // camera 4 pose estimation
+    // addVisionMeasurement(camera4, PoseEstimator4);
 
     // try {
     //   // camera 1 pose estimation
@@ -223,12 +223,14 @@ public class PoseEstimatior extends SubsystemBase {
 
     // Update Field2d with pose to display the robot's visual position on the field to the dashboard
     field2d.setRobotPose(get2dPose());
+
     // field.setRobotPose(m_swervePoseEstimator.getEstimatedPosition().toPose2d());//pose 3d as 2d
     // pose
 
     // Log the robot's 2d position on the field to the dashboard using the NetworkTableLogger
     // Utility
     networkTableLogger.logField2d("Field2d", field2d);
+    networkTableLogger.logPose2d("2d pose", get2dPose());
     networkTableLogger.logPose2d("Robot 3d Pose", get2dPose());
     networkTableLogger.logPose3d("Robot 2d Pose", m_SwervePoseEstimator.getEstimatedPosition());
   }

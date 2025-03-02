@@ -6,25 +6,19 @@ package frc.robot.commands.Coral;
 
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.kElevator.ElevatorPosition;
-import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.Coral.Coral;
 import frc.robot.subsystems.LEDSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class DeployCoralCmd extends Command {
   private final Coral m_coral;
-  private final Elevator m_elevator;
   private final LEDSubsystem m_ledSubsytem;
-  private final ElevatorPosition m_level;
 
   /** Creates a new coralDeployer. */
-  public DeployCoralCmd(Coral coral, ElevatorPosition level, Elevator elevator, LEDSubsystem ledSubsystem) {
+  public DeployCoralCmd(Coral coral, LEDSubsystem ledSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies
     m_coral = coral;
     m_ledSubsytem = ledSubsystem;
-    m_elevator = elevator;
-    m_level = level;
     addRequirements(coral);
   }
 
@@ -36,30 +30,13 @@ public class DeployCoralCmd extends Command {
 
   // Called every time the scheduler runs while the command is scheduled
 
-  boolean sensedCoral = true;
-
   @Override
   public void execute() {
     m_ledSubsytem.setPatternForDuration(m_ledSubsytem.coralPickup.reversed(), 2);
 
-    if (!m_coral.frontCoralSensor.isPressed() && sensedCoral == true) {
-      m_coral.setOutakePos(m_coral.frontMotor.getEncoder().getPosition()+1);
-      sensedCoral = false;
-    }
-
-    // TODO: this is stupid vvvvvvvvvvvvvvvvvvvvvvv ok maybe not actualy
-    if (!m_coral.frontCoralSensor.isPressed() && sensedCoral == false) {
-      new Thread(() -> {
-        try {
-          Thread.sleep(100);
-        } catch (InterruptedException e) {
-          Thread.currentThread().interrupt();
-        }
-        m_elevator.setElevatorHeightMotionProfile(m_level);
-        sensedCoral = true;
-        this.cancel();
-        Thread.currentThread().interrupt();
-      }).start();
+    if (!m_coral.frontCoralSensor.isPressed()) {
+      m_coral.stopDeployer();
+      // m_coral.setOutakePos(m_coral.frontMotor.getEncoder().getPosition()+1);
     }
   }
 
