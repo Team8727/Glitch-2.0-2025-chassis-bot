@@ -36,30 +36,12 @@ public class DeployCoralCmd extends Command {
 
   // Called every time the scheduler runs while the command is scheduled
 
-  boolean sensedCoral = true;
-
   @Override
   public void execute() {
     m_ledSubsytem.setPatternForDuration(m_ledSubsytem.coralPickup.reversed(), 2);
 
-    if (!m_coral.frontCoralSensor.isPressed() && sensedCoral == true) {
+    if (!m_coral.frontCoralSensor.isPressed()) {
       m_coral.setOutakePos(m_coral.frontMotor.getEncoder().getPosition()+1);
-      sensedCoral = false;
-    }
-
-    // TODO: this is stupid vvvvvvvvvvvvvvvvvvvvvvv ok maybe not actualy
-    if (!m_coral.frontCoralSensor.isPressed() && sensedCoral == false) {
-      new Thread(() -> {
-        try {
-          Thread.sleep(100);
-        } catch (InterruptedException e) {
-          Thread.currentThread().interrupt();
-        }
-        m_elevator.setElevatorHeightMotionProfile(m_level);
-        sensedCoral = true;
-        this.cancel();
-        Thread.currentThread().interrupt();
-      }).start();
     }
   }
 
