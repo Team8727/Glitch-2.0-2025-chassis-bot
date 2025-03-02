@@ -27,8 +27,10 @@ public class IntakeCoralCmd extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_elevator.setElevatorHeightMotionProfile(kElevator.ElevatorPosition.L1);
-    System.out.println("coralIntake");
+    if (m_elevator.getElevatorSetPosition() != kElevator.ElevatorPosition.L1) {
+      System.out.println("go to L1");
+      this.cancel();
+    }
     m_coral.setIntakeSpeedDuty(.5);
   }
 
@@ -46,7 +48,6 @@ public class IntakeCoralCmd extends Command {
 
     if (!m_coral.backCoralSensor.isPressed() && sensedCoral == true) {
       m_coral.holdPosition();
-      m_coral.setIntakeSpeedDuty(0);
       sensedCoral = false;
       this.cancel();
     }
