@@ -4,16 +4,20 @@
 
 package frc.robot;
 
+import java.nio.file.Path;
+
+import com.pathplanner.lib.path.PathPlannerPath;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.kAlgaeIntake.kAlgaeIntakePivot.IntakePosition;
+import frc.robot.Constants.kElevator.ElevatorPosition;
 import frc.robot.commands.AlgaeIntake.IntakeAlgaeCmd;
-import frc.robot.commands.AlgaeIntake.ScoreAlgaeCmd;
+// import frc.robot.commands.AlgaeIntake.ScoreAlgaeProcessorCmd;
 import frc.robot.commands.Coral.DeployCoralCmd;
 import frc.robot.commands.Coral.IntakeCoralCmd;
-import frc.robot.commands.SetElevatorHeightCmd;
 import frc.robot.commands.DriveCommands.SwerveJoystickCmd;
 import frc.robot.subsystems.Autos;
 import frc.robot.subsystems.LEDSubsystem;
@@ -112,33 +116,27 @@ public class RobotContainer {
     // // Remove algae L2
     // m_driverController.povDown().onTrue(new removeAlgae(m_AlgaeRemoverPivot, m_AlgeaRemoverRollers, 2, m_elevator));
 
-    
-    //               coral commands
     // intake coral
-    m_driverController.leftTrigger().onTrue(new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsytem));
-    //deploy coral
+    m_driverController.leftBumper().onTrue(new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsytem));
+    // Deploy coral L1
+    m_driverController.x().onTrue(new DeployCoralCmd(m_coral, ElevatorPosition.L1, m_elevator, m_ledSubsytem));
+    // Deploy coral L2
+    m_driverController.y().onTrue(new DeployCoralCmd(m_coral, ElevatorPosition.L2, m_elevator, m_ledSubsytem));
+    // Deploy coral L3
+    m_driverController.b().onTrue(new DeployCoralCmd(m_coral, ElevatorPosition.L3, m_elevator, m_ledSubsytem));
+    // Deploy coral L4
+    m_driverController.a().onTrue(new DeployCoralCmd(m_coral, ElevatorPosition.L4, m_elevator, m_ledSubsytem));
 
-    m_driverController.rightBumper().onTrue(new DeployCoralCmd(m_coral, m_elevator, m_ledSubsytem));
-    // elevator L1
-    m_driverController.x().onTrue(new SetElevatorHeightCmd(1, m_elevator, m_ledSubsytem));
-    // elevator L2
-    m_driverController.y().onTrue(new SetElevatorHeightCmd(2, m_elevator, m_ledSubsytem));
-    // elevator L3
-    m_driverController.b().onTrue(new SetElevatorHeightCmd(3, m_elevator, m_ledSubsytem));
-    // elevator L4
-    m_driverController.a().onTrue(new SetElevatorHeightCmd(4, m_elevator, m_ledSubsytem));
-    // zero elevator
     m_driverController.povDown().onTrue(new InstantCommand(() -> m_elevator.resetElevatorEncoders()));
-
     // Align to pose
     // m_driverController.povLeft().onTrue(m_Autos.align(kPoses.blueFrontLeft).andThen(() -> System.out.println("aligginginsdaod")));
 
-    
-    //                algae commands
-    // Intake algae
-    m_driverController.rightTrigger().onTrue(new IntakeAlgaeCmd(m_AlgaeIntakePivot, m_AlgaeIntakeRollers, m_ledSubsytem));
-    // deploy algae
-    m_driverController.leftBumper().onTrue(new ScoreAlgaeCmd(m_AlgaeIntakePivot, m_AlgaeIntakeRollers, m_ledSubsytem));
+    m_driverController.povRight().onTrue(new IntakeAlgaeCmd(m_AlgaeIntakePivot, m_AlgaeIntakeRollers, m_ledSubsytem));
+
+    m_driverController.povLeft().onTrue(new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsytem));
+
+    m_driverController.leftBumper().onTrue(new InstantCommand(() -> m_AlgaeIntakePivot.setPositionTrapazoidal(IntakePosition.HOME)));
+    // m_driverController.rightBumper().onTrue(new ScoreAlgaeProcessorCmd(m_AlgaeIntakePivot, m_AlgaeIntakeRollers, m_ledSubsytem));
 
     // // Intake algae
     // m_driverController.rightBumper().onTrue(
@@ -200,6 +198,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return null;
+    return null; //m_Autos.alignToPath(PathPlannerPath.fromChoreoTrajectory("ML-L4-FE"));
   }
 }
