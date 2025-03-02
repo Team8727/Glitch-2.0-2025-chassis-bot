@@ -4,6 +4,12 @@
 
 package frc.robot.subsystems;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.LinkedHashMap;
+
+import org.json.simple.parser.ParseException;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -15,6 +21,7 @@ import frc.robot.Constants.kSwerve;
 
 public class Autos extends SubsystemBase {
  private final LEDSubsystem m_ledSubsytem;
+private final LinkedHashMap<String, PathPlannerPath> paths = new LinkedHashMap<String, PathPlannerPath>();
   /** Creates a new Autos. */
   public Autos(LEDSubsystem ledSubsystem) {
    m_ledSubsytem = ledSubsystem;
@@ -32,6 +39,26 @@ public class Autos extends SubsystemBase {
     
     //paths.put("EXAMPLE", PathPlannerPath.fromChoreoTrajectory("EXAMPLE"));
 
+  }
+
+  private void loadPaths() {
+    try {
+    paths.put("M-L4-H", PathPlannerPath.fromChoreoTrajectory("M-L4-H"));
+    paths.put("H-PC", PathPlannerPath.fromChoreoTrajectory("H-PC"));
+    paths.put("H-Refill", PathPlannerPath.fromChoreoTrajectory("H-Refill"));
+    paths.put("CL-L4-I", PathPlannerPath.fromChoreoTrajectory("CL-L4-I"));
+    paths.put("I-Refill", PathPlannerPath.fromChoreoTrajectory("I-Refill"));
+    paths.put("Refill-J", PathPlannerPath.fromChoreoTrajectory("Refill-J"));
+    paths.put("CR-L4-F", PathPlannerPath.fromChoreoTrajectory("CR-L4-F"));
+    paths.put("F-Refill", PathPlannerPath.fromChoreoTrajectory("F-Refill"));
+    paths.put("Refill-E", PathPlannerPath.fromChoreoTrajectory("Refill-E"));
+    paths.put("M-L4-G", PathPlannerPath.fromChoreoTrajectory("M-L4-G"));
+    paths.put("G-Refill", PathPlannerPath.fromChoreoTrajectory("G-Refill"));
+    } catch (IOException e) {
+      e.printStackTrace();
+    } catch (ParseException e) {
+      e.printStackTrace();
+    }
   }
 
 
