@@ -7,6 +7,7 @@ package frc.robot.commands.Coral;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.kElevator;
+import frc.robot.Constants.kElevator.ElevatorPosition;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.Coral.Coral;
 import frc.robot.subsystems.LEDSubsystem;
@@ -16,13 +17,15 @@ public class DeployCoralCmd extends Command {
   private final Coral m_coral;
   private final Elevator m_elevator;
   private final LEDSubsystem m_ledSubsytem;
+  private final ElevatorPosition m_level;
 
   /** Creates a new coralDeployer. */
-  public DeployCoralCmd(Coral coral, Elevator elevator, LEDSubsystem ledSubsystem) {
+  public DeployCoralCmd(Coral coral, ElevatorPosition level, Elevator elevator, LEDSubsystem ledSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies
     m_coral = coral;
     m_ledSubsytem = ledSubsystem;
     m_elevator = elevator;
+    m_level = level;
     addRequirements(coral);
   }
 
@@ -53,7 +56,7 @@ public class DeployCoralCmd extends Command {
         } catch (InterruptedException e) {
           Thread.currentThread().interrupt();
         }
-        m_elevator.setElevatorHeightMotionProfile(kElevator.ElevatorPosition.L1);
+        m_elevator.setElevatorHeightMotionProfile(m_level);
         sensedCoral = true;
         this.cancel();
         Thread.currentThread().interrupt();
