@@ -9,14 +9,19 @@ import static frc.robot.utilities.SparkConfigurator.getSparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
+
+import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.kRemover;
+import frc.robot.Constants.kAlgaeRemover;
+import frc.robot.Constants.kAlgaeRemover.kPivot.RemoverPositions;
 import frc.robot.utilities.SparkConfigurator.LogData;
 import java.util.Set;
 
@@ -25,11 +30,20 @@ public class AlgaeRemoverPivot extends SubsystemBase {
   private final SparkMaxConfig config;
   private final SparkClosedLoopController removerPivotPID;
 
+  private final TrapezoidProfile m_profile = new TrapezoidProfile(
+    new TrapezoidProfile.Constraints(3.53, 0.01)); // TODO: May need to adjust these values later
+  private TrapezoidProfile.State m_goal = new TrapezoidProfile.State(0,0);
+  private TrapezoidProfile.State m_setpoint = new TrapezoidProfile.State(0,0);
+
+  private final ArmFeedforward pivotFeedforward =  new ArmFeedforward(0, 0.13, 0.56);
+
+  private final double kDt = 0.02;
+
   /** Creates a new AlgaePivot. */
   public AlgaeRemoverPivot() {
     removerPivotMotor =
         getSparkMax(
-            kRemover.kPivot.removerPivotMotorCANID,
+            kAlgaeRemover.kPivot.removerPivotMotorCANID,
             SparkLowLevel.MotorType.kBrushless,
             false,
             Set.of(),
@@ -37,36 +51,48 @@ public class AlgaeRemoverPivot extends SubsystemBase {
                 LogData.POSITION,
                 LogData.VELOCITY,
                 LogData.VOLTAGE,
-                LogData.CURRENT)); // TODO: logging everything for now
+                LogData.CURRENT));
 
     config = new SparkMaxConfig();
-    config
-        .smartCurrentLimit(25) // TODO: figure out what this should be
+    config // TODO: config everything
+        .smartCurrentLimit(25) 
         .idleMode(IdleMode.kBrake)
         .closedLoop
-        .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-        .outputRange(-1, 1) // TODO: figure out what these should be
-        .pid(0, 0, 0) // TODO: figure out what these should be
-        .maxMotion // TODO: figure out what these should be
-        .maxAcceleration(0)
-        .maxVelocity(0)
-        .allowedClosedLoopError(0);
+          .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
+          .outputRange(-1, 1) 
+          .pid(0, 0, 0) 
+          .positionWrappingEnabled(false);
+        // .maxMotion
+        //   .maxAcceleration(0)
+        //   .maxVelocity(0)
+        //   .allowedClosedLoopError(0);
     removerPivotMotor.configure(
         config,
         ResetMode.kNoResetSafeParameters,
-        PersistMode
-            .kNoPersistParameters); // TODO: Might need to be resetsafe and presistsafe, but nothing
-    // is set yet, so I said no
+        PersistMode.kNoPersistParameters);
 
     removerPivotPID = removerPivotMotor.getClosedLoopController();
-    // 75:2 reduction
-    // 63:720 reduction
   }
 
   // set pivot position
   public void setRemoverPos(double angle) {
-    double rotations = angle * 75.0 / 2.0 / 360;
-    removerPivotPID.setReference(rotations, ControlType.kPosition);
+    // double rotations = angle * 75.0 / 2.0 / 360;
+    removerPivotPID.setReference(angle, ControlType.kPosition);
+  }
+
+  private void setMotorFFandPIDPosition(double removerPosition, double velocitySetpoint) {
+    removerPivotPID.setReference(
+      removerPosition,
+      ControlType.kPosition,
+      ClosedLoopSlot.kSlot0,
+      pivotFeedforward.calculate(
+        removerPosition, 
+        velocitySetpoint));
+  }
+
+  public void setPositionTrapazoidal(RemoverPositions removerPosition) {
+    double rotation = removerPosition.getOutputRotations() / 360;
+    m_goal = new TrapezoidProfile.State(rotation, 0);
   }
 
   // private double calculateVoltage(double goal) {
@@ -75,5 +101,9 @@ public class AlgaeRemoverPivot extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
+    m_setpoint = m_profile.calculate(kDt, m_setpoint, m_goal);
+
+    setMotorFFandPIDPosition(m_setpoint.position, m_setpoint.velocity);
   }
 }

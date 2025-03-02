@@ -4,45 +4,50 @@
 
 package frc.robot.commands.AlgaeIntake;
 
+import com.revrobotics.spark.SparkBase.ControlType;
+
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.kAlgaeIntake.kAlgaeIntakePivot;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.AlgaeIntake.AlgaeIntakePivot;
 import frc.robot.subsystems.AlgaeIntake.AlgaeIntakeRollers;
+import frc.robot.Constants.kAlgaeIntake.kAlgaeIntakePivot;
 import frc.robot.subsystems.LEDSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class IntakeAlgaeCmd extends Command {
-  /** Creates a new GroundIntakeAlgae. */
-  private final AlgaeIntakePivot m_algaeIntakePivot;
-  private final AlgaeIntakeRollers m_algaeIntakeRollers;
+public class ScoreAlgaeCmd extends Command {
+  /** Creates a new ScoreAlgaeProcessorCmd. */
   private final LEDSubsystem m_ledSubsystem;
 
-  public IntakeAlgaeCmd(
-      AlgaeIntakePivot algaeIntakePivot, AlgaeIntakeRollers algaeRemoverPivot, LEDSubsystem ledSubsystem) {
-    m_algaeIntakePivot = algaeIntakePivot;
-    m_algaeIntakeRollers = algaeRemoverPivot;
+  AlgaeIntakePivot m_algaeIntakePivot;
+  AlgaeIntakeRollers m_algaeIntakeRollers;
+
+  public ScoreAlgaeCmd(
+      AlgaeIntakePivot algaeIntakePivot, AlgaeIntakeRollers algaeIntakeRollers, LEDSubsystem ledSubsystem) {
+    this.m_algaeIntakePivot = algaeIntakePivot;
+    this.m_algaeIntakeRollers = algaeIntakeRollers;
     m_ledSubsystem = ledSubsystem;
-    addRequirements(algaeIntakePivot, algaeRemoverPivot); // Add the required subsystems here
+    addRequirements(algaeIntakePivot, algaeIntakeRollers); // Add the required subsystems here
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    System.out.println("moving");
+    // Set the intake to score position, score the algae by running rollers, and then set the intake to home position.
+    m_algaeIntakePivot.setPositionTrapazoidal(kAlgaeIntakePivot.IntakePosition.SCORE);
     m_algaeIntakeRollers.isMoving = true;
-    m_algaeIntakePivot.setPositionTrapazoidal(kAlgaeIntakePivot.IntakePosition.DOWN);
-    m_algaeIntakeRollers.setRollerSpeedDuty(.8);
+    m_algaeIntakeRollers.rollerPID.setReference(-1, ControlType.kDutyCycle);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_ledSubsystem.setPatternForDuration(m_ledSubsystem.algaePickup, 2);
+    m_ledSubsystem.setPatternForDuration(m_ledSubsystem.algaePickup.reversed(), 2);
 
-    if (m_algaeIntakeRollers.getAlgaeCheck()) {
-      m_algaeIntakeRollers.isMoving = false;
+    if (!m_algaeIntakeRollers.getAlgaeCheck()) {
+      m_algaeIntakeRollers.rollerPID.setReference(0, ControlType.kDutyCycle);
       m_algaeIntakePivot.setPositionTrapazoidal(kAlgaeIntakePivot.IntakePosition.SCORE);
+      m_algaeIntakeRollers.isMoving = false;
       
       this.cancel();
     }
@@ -52,16 +57,13 @@ public class IntakeAlgaeCmd extends Command {
   @Override
   public void end(boolean interrupted) {
 
-    // Set the intake rollers to idle pull in voltage
-    // Go back to home position
-    // m_algaeIntakePivot.setIntakePivotPosition(kAlgaeIntakePivot.IntakePosition.HOME);
+    // Go to home position (in robot) after scoring
+    m_algaeIntakePivot.setPositionTrapazoidal(kAlgaeIntakePivot.IntakePosition.HOME);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-
-    // Finish when algae is detected
     return false;
   }
 }

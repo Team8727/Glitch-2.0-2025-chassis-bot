@@ -4,28 +4,90 @@
 
 package frc.robot.subsystems.Elevator;
 
+import com.pathplanner.lib.config.RobotConfig;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.sim.SparkMaxSim;
+import com.revrobotics.spark.ClosedLoopSlot;
+import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 
+import static edu.wpi.first.units.Units.Volt;
 import static frc.robot.utilities.SparkConfigurator.getFollowerMax;
 import static frc.robot.utilities.SparkConfigurator.getSparkMax;
 
 import java.util.Set;
 
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.controller.ElevatorFeedforward;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.simulation.BatterySim;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.simulation.ElevatorSim;
+import edu.wpi.first.wpilibj.simulation.EncoderSim;
+import edu.wpi.first.wpilibj.simulation.PWMSim;
+import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Robot;
+import frc.robot.Constants;
+import frc.robot.Constants.kConfigs;
 import frc.robot.Constants.kElevator;
+import frc.robot.Constants.kElevator.ElevatorPosition;
+import frc.robot.utilities.NetworkTableLogger;
 import frc.robot.utilities.SparkConfigurator.LogData;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-
+import com.revrobotics.spark.SparkBase;
 public class Elevator extends SubsystemBase {
 
   private final SparkMax elevatorMotorR;
   private final SparkMax elevatorMotorL;
   private final SparkMaxConfig motorRConfig;
   private final SparkClosedLoopController elevatorPID;
-  // private double currentHeight;
+  private final DigitalInput limitSwitch;
+  private kElevator.ElevatorPosition targetHeight;
+  private double targetRotations;
+  private NetworkTableLogger logger = new NetworkTableLogger("Elevator");
+
+//-=-=-=-=-=-=-=-=-TrapezoidProfile=-=-=-=-=-=-=-=- /
+
+  private static double kDt = 0.02;
+
+  // Create a motion profile with the given maximum velocity and maximum
+  // acceleration constraints for the next setpoint.
+  private final TrapezoidProfile m_profile =               //in/s
+      new TrapezoidProfile(new TrapezoidProfile.Constraints(103.33, 307.85)); //TODO: SET THESE
+  private TrapezoidProfile.State m_goal = new TrapezoidProfile.State();
+  private TrapezoidProfile.State m_setpoint = new TrapezoidProfile.State();
+
+//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- 
+
+  private final ElevatorFeedforward elevatorFeedforward = new ElevatorFeedforward(0, 1.28, 3.71, 0.23);
+
+  private final ElevatorSim elevatorSim =
+    new ElevatorSim(
+      3.71, 
+      0.23,
+      kConfigs.neoMotor,
+      0.01,
+      2.0,
+      true,
+      0.0); // Can optionally include standard deviation in measurements, but we don't have that right now!
+
+  private final SparkMaxSim m_SparkMaxSim;
+
+  private final Timer m_timer = new Timer();
+  private final XboxController m_driverController = new XboxController(0);
 
   /** Creates a new Elevator. */
   public Elevator() {
@@ -41,16 +103,20 @@ public class Elevator extends SubsystemBase {
         LogData.CURRENT));
 
     motorRConfig = new SparkMaxConfig();
-    motorRConfig
-      .smartCurrentLimit(40) // TODO: SET ALL OF THIS STUFF
+    motorRConfig // TODO: SET ALL OF THIS STUFF
+      .smartCurrentLimit(65, 65)
       .idleMode(IdleMode.kBrake)
+      .inverted(false)
       .closedLoop
-      .velocityFF(0)
-      .pid(0, 0, 0)
-      .maxMotion
-      .maxAcceleration(0)
-      .maxAcceleration(0)
-      .allowedClosedLoopError(0);
+      .velocityFF(0) // Find Using SysId
+      .pid(.4, 0, 4)
+      .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+      // .maxMotion
+      // .positionMode(MAXMotionPositionMode.kMAXMotionTrapezoidal)
+      // .maxVelocity(4771.41593898)
+      // .maxAcceleration(236.923835739)
+      // .allowedClosedLoopError(0);//DO NOT CHANGE THIS UNLESS YOU'RE 100000% SURE YOU KNOW WHAT YOUR DOING PLEASE LISTEN TO THIS WARNING OR ELSE YOU WILL DIE IM NOT EVEN JOKING PLEASE DON'T CHANGE THIS.
+    elevatorMotorR.configure(motorRConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
     elevatorMotorL = getFollowerMax(
       elevatorMotorR, 
@@ -60,22 +126,128 @@ public class Elevator extends SubsystemBase {
 
     elevatorPID = elevatorMotorR.getClosedLoopController();
 
-    // currentHeight = 0;
+    m_SparkMaxSim = 
+      new SparkMaxSim(elevatorMotorR, kConfigs.neoMotor);
+
+    limitSwitch = new DigitalInput(kElevator.limitSwitchDIO);
+
+    setElevatorHeightMotionProfile(kElevator.ElevatorPosition.L1);
   }
 
-  private void stopElevator() {
+  public void stopElevator() {
     elevatorPID.setReference(0, ControlType.kDutyCycle);
   }
 
-  public void setElevatorHeight(kElevator.ElevatorPosition height) {
+  private void setElevatorHeight(double nextVel) {
     // get double from enum
-    double targetHeight = height.getRotations();
-    elevatorPID.setReference(targetHeight, ControlType.kPosition);
-    // currentHeight = height;
+    elevatorPID.setReference(
+      m_setpoint.position, 
+      ControlType.kPosition, 
+      ClosedLoopSlot.kSlot0
+      );
+    // System.out.println(elevatorFeedforward.calculateWithVelocities(elevatorMotorR.getEncoder().getVelocity(),nextVel));
+    // run(() -> elevatorPID.setReference(targetRotations, ControlType.kPosition))
+    
+    //   .until(limitSwitch::get)
+    //   .andThen(() -> resetElevatorEncoders())
+    //   .withTimeout(1);// TODO: limit tune probobly
+    
+    // System.out.println("move");
+    
+    // if (targetHeight == kElevator.ElevatorPosition.HOME && !limitSwitch.get()) {
+    //   run(() -> elevatorPID.setReference(-30*5, ControlType.kVelocity)) //TODO: this ends instantly so until does nothing
+    //   .until(() -> limitSwitch.get())
+    //   .andThen(() -> {
+    //     elevatorPID.setReference(0, ControlType.kVelocity);
+    //     resetElevatorEncoders();
+    //   });
+    // }
+    // TODO: current zeroing?
+    // if (targetHeight == kElevator.ElevatorPosition.HOME) {
+    //   run(() -> elevatorPID.setReference(-30 * 5, ControlType.kVelocity))
+    //   .until(() -> elevatorMotorL.getOutputCurrent() >= 60)
+    //   .andThen(() -> {
+    //     elevatorPID.setReference(0, ControlType.kVelocity);
+    //     resetElevatorEncoders();
+    //   });
+    // }
   }
 
+  public void setElevatorHeightMotionProfile(kElevator.ElevatorPosition height_chosen) {
+    // get double from enum
+    targetRotations = height_chosen.getOutputRotations();
+    m_goal = new TrapezoidProfile.State(targetRotations, 0);
+  }
+
+  public kElevator.ElevatorPosition getElevatorSetPosition() {
+    return targetHeight;
+  }
+
+  public double getElevatorHeight() {
+    try {
+      return elevatorMotorR.getEncoder().getPosition();
+    } catch (NullPointerException e) {
+      return 0;
+    }
+  }
+
+  public void resetElevatorEncoders() {
+    elevatorMotorR.getEncoder().setPosition(0);
+    elevatorMotorL.getEncoder().setPosition(0);
+  }
+  // public void setElevatorHeightFF(kElevator.ElevatorPosition height) {
+  //   // get double from enum
+  //   double targetHeight = height.getRotations();
+  //   elevatorPID.setReference(targetHeight, ControlType.kPosition);
+  //   // currentHeight = height;
+  // }
+
+  // Creates a SysIdRoutine
+  SysIdRoutine routine = new SysIdRoutine(
+    new SysIdRoutine.Config(),
+    new SysIdRoutine.Mechanism((voltage) -> runVolts(voltage.in(Volt)), null, this)
+    );
+
+  private void runVolts(double voltage) {
+    elevatorMotorR.setVoltage(voltage);
+  }
+
+  // This method will be called once per scheduler run
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    logger.logDouble("setpos", targetRotations);
+    logger.logDouble("TrapezoidProfile", m_setpoint.position);
+    logger.logDouble("simPosition", elevatorSim.getPositionMeters());
+    
+    //-=-=-=-=-=-=-=- Trapezoid Profile -=-=-=-=-=-=-=-
+
+    // Retrieve the profiled setpoint for the next timestep. This setpoint moves toward the goal while obeying the constraints.
+    m_setpoint = m_profile.calculate(kDt, m_setpoint, m_goal);
+
+
+    // Send setpoint to offboard controller PID (I made this in periodic so when the setpositionTrapezoidProfile Method is updated it runs the elevator)
+    setElevatorHeight(m_setpoint.position);
+
+    
+  }
+
+  public void simulationPeriodic() {
+    elevatorSim.setInput(m_SparkMaxSim.getAppliedOutput() * RobotController.getBatteryVoltage());
+
+    elevatorSim.update(0.02);
+    
+    m_SparkMaxSim.setPosition(elevatorSim.getPositionMeters());
+
+    RoboRioSim.setVInVoltage(
+      BatterySim.calculateDefaultBatteryLoadedVoltage(elevatorSim.getCurrentDrawAmps())
+    );
+    
+  }
+
+  public void teleopPeriodic() {
+    if (Robot.isSimulation()) {
+      setElevatorHeightMotionProfile(ElevatorPosition.L4);
+    }
   }
 }

@@ -8,6 +8,7 @@ import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.controllers.PathFollowingController;
 import com.pathplanner.lib.path.PathConstraints;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -28,6 +29,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.SPI.Port;
@@ -41,22 +43,36 @@ import edu.wpi.first.wpilibj.SPI.Port;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  public static class Kconfigs {
+  public static class kConfigs {
+
     public static RobotConfig robotConfig =
         new RobotConfig(
-            65, // TODO: find real value
-            10, // TODO: find real value
+          62.6864655, // TODO: find real value
+            5.22, // TODO: find real value
             new ModuleConfig(
                 .0381,
                 4.45,
                 1.4, // TODO: find real value
                 new DCMotor(
-                    12, 3.65, 218, 3.54, 6704, // TODO: probobly wrong
+                    12, 
+                    3.65, 
+                    218, 
+                    3.54, 
+                    1000, // TODO: probobly wrong
                     1),
                 5.08,
                 60,
                 1),
             kSwerve.kinematics.getModules());
+
+    public static final DCMotor neoMotor = 
+      new DCMotor(
+        12,
+        2.6,
+        105, 
+        1.8, 
+        594.4, 
+        1);
   }
 
   public static int configurationSetRetries = 5;
@@ -80,11 +96,15 @@ public final class Constants {
     // public static double maxAngAccel = 10 * 2 * Math.PI;//10
 
     // test speeds
-    public static double maxTransSpeed = .5; // 5
-    public static double maxAngSpeed = .3 * Math.PI; // 3
+    public static final double maxTransSpeed = 0.5; // 5
+    public static final double maxAngSpeed = 0.3 * Math.PI; // 3
 
-    public static double maxTransAccel = .135 * 9.81; // 1.35
-    public static double maxAngAccel = 1 * 2 * Math.PI; // 10
+    public static final double maxTransAccel = .135 * 9.81; // 1.35
+    public static final  double maxAngAccel = 1 * 2 * Math.PI; // 10
+
+    public static class DriveSpeedScaling {
+      public static final double minDriveSpeed = 0.5; // TODO: Set this for scaling
+    }
 
     // Operator interface constants
     public static class Teleop {
@@ -140,7 +160,7 @@ public final class Constants {
                   0, // TODO: tune this also figure out what it is
                   new Constraints(maxVel, maxAccel)));
 
-      public static final PPHolonomicDriveController pathFollowController =
+      public static final PathFollowingController pathFollowController =
           new PPHolonomicDriveController(
               new PIDConstants(Auton.transP, 0, 0), new PIDConstants(angP, 0, angD));
 
@@ -227,14 +247,14 @@ public final class Constants {
 
     // Motor CAN IDs
     public static class CANID {
-      public static int frontLeftDrive = 5; //
-      public static int frontLeftSteer = 2; //
-      public static int backLeftDrive = 9; //
-      public static int backLeftSteer = 8; //
-      public static int backRightDrive = 7; //
-      public static int backRightSteer = 6; //
-      public static int frontRightDrive = 3; //
-      public static int frontRightSteer = 4; //
+      public static int frontLeftDrive = 9; //
+      public static int frontLeftSteer = 8; //
+      public static int backLeftDrive = 3; //
+      public static int backLeftSteer = 2; //
+      public static int backRightDrive = 5; //
+      public static int backRightSteer = 4; //
+      public static int frontRightDrive = 7; //
+      public static int frontRightSteer = 6; //
     }
   }
 
@@ -273,44 +293,67 @@ public final class Constants {
     // distance
   }
 
-  public static class kRemover {
+  public static class kAlgaeRemover {
     public static class kPivot {
-      public static int removerPivotMotorCANID =
-          0; // TODO: not set yet because remover is not built yet
-    }
+      public static int removerPivotMotorCANID =12; // TODO: not set yet because remover is not built yet
+
+      public enum RemoverPositions {
+        Raised(15.6), // TODO: SET WITH ACTUAL VALUES
+        Stowed(-105); // TODO: SET WITH ACTUAL VALUES
+      
+        private final double degrees;
+        
+        private RemoverPositions(double degrees) {
+          this.degrees = degrees;
+        }
+  
+        public double getOutputRotations() {
+          return degrees * (75.0 / 2.0) / 360;
+        }
+      }
+}
 
     public static class kRollers {
       public static int removerRollerMotorCANID =
-          0; // TODO: not set yet because remover is not built yet
+          13; // TODO: not set yet because remover is not built yet
     }
   }
 
   public static class kAlgaeIntake {
     public static class kAlgaeIntakePivot {
       public static int intakePivotMotorCANID =
-          0; // TODO: not set yet because intake is not built yet
+          17; // TODO: not set yet because intake is not built yet
 
-      public static double intakePivotDownPosition =
-          0; // TODO: position not set yet because intake is not built yet
-      public static double intakePivotScorePosition =
-          0; // TODO: position not set yet because intake is not built yet
-      public static double intakePivotHomePosition =
-          0; // TODO: position not set yet because intake is not built yet
+      public enum IntakePosition {
+          HOME(5), 
+          SCORE(20), 
+          DOWN(90); // TODO: SET WITH ACTUAL VALUES
+
+          private final double degrees;
+          private IntakePosition(double degrees) { this.degrees = degrees; }
+
+          public double getIntakePositionDegrees() { 
+            return degrees; 
+          }
+      }
+
+      public TrapezoidProfile pivotMotionProfile = new TrapezoidProfile(
+        new TrapezoidProfile.Constraints(10, 20));
 
       public static int intakePivotEncoderChannelA =
-          0; // TODO: not set yet because intake is not built yet
+          10; // TODO: not set yet because intake is not built yet
       public static int intakePivotEncoderChannelB =
-          0; // TODO: not set yet because intake is not built yet
+          11; // TODO: not set yet because intake is not built yet
       public static double encoderPulsesPerRevolution = 2048; // Maybe?
 
-      public static double gearRatio = 0; // TODO: set using document in Glitch Drive.
+      public static double gearRatio = 4; // TODO: This is probably what it is, but either set using document in Glitch Drive, or ask CAD.
 
       public static double idleAlgaeIntakeVoltage = 0; // TODO: set as needed when testing
 
     }
 
     public static class kAlgaeIntakeRollers {
-      public static int rollerMotorCANID = 0; // TODO: not set yet because intake is not built yet
+      public static int rollerMotorCANID = 16; // TODO: not set yet because intake is not built yet
 
       public static int sensorChannel = 0; // TODO: not set yet because intake is not built yet
 
@@ -320,33 +363,36 @@ public final class Constants {
     }
   }
 
-  public static class kCoralIntake {
-    public static class kRollers {
-      public static int intakeRollerMotorCANID =
-          0; // TODO: not set yet because intake is not built yet
-      public static int outtakeRollerMotorCANID =
-          0; // TODO: not set yet because intake is not built yet
+  public static class kCoral {
+    public static int intakeRollerMotorCANID =
+        15; // TODO: not set yet because intake is not built yet
+    public static int outtakeRollerMotorCANID =
+        14; // TODO: not set yet because intake is not built yet
 
-      public static int frontSensorChannel = 0; // TODO: not set yet because intake is not built yet
-      public static int backSensorChannel = 0; // TODO: not set yet because intake is not built yet
+    public static double intakeSpeed = .2; // TODO: not set yet because intake is not built yet
+    public static double outtakeSpeed = .75;// TODO: not set yet because intake is not built yet
 
-      public static int intakeSpeed = 11; // TODO: not set yet because intake is not built yet
-      public static int outtakeSpeed = -5; // TODO: not set yet because intake is not built yet
-    }
+    public static double coraldeploySpeedL1 = 0.5; // TODO: not set yet because intake is not built yet
+    public static double coraldeploySpeedL2 = 0.5; // TODO: not set yet because intake is not built yet
+    public static double coraldeploySpeedL3 = 0.5; // TODO: not set yet because intake is not built yet
+    public static double coraldeploySpeedL4 = 0.5; // TODO: not set yet because intake is not built yet
   }
 
   public static class kElevator {
-    public static int elevatorMotorRCANID = 0; // TODO: not set yet because elevator is not built yet
-    public static int elevatorMotorLCANID = 0; // TODO: not set yet because elevator is not built yet
+    // elevator calculations https://www.desmos.com/calculator/suqtj7vxc7
+    public static int elevatorMotorRCANID = 10; // TODO: not set yet because elevator is not built yet
+    public static int elevatorMotorLCANID = 11; // TODO: not set yet because elevator is not built yet
+
+    public static int limitSwitchDIO = 3; // TODO: not set yet because elevator is not built yet
+    public static double gearRatio = 5;
 
     public enum ElevatorPosition {
-      HOME(0), // TODO: SET WITH ACTUAL VALUES
-      L1(10), // TODO: SET WITH ACTUAL VALUES
-      L2(20), // TODO: SET WITH ACTUAL VALUES
-      L3(30), // TODO: SET WITH ACTUAL VALUES
-      L4(50), // TODO: SET WITH ACTUAL VALUES
-      A2(25), // TODO: SET WITH ACTUAL VALUES
-      A3(35); // TODO: SET WITH ACTUAL VALUES
+      L1(0.3848), // TODO: SET WITH ACTUAL VALUES
+      L2(7.23663),// TODO: SET WITH ACTUAL VALUES
+      L3(19.43877), // TODO: SET WITH ACTUAL VALUES
+      L4(40.03888), // TODO: SET WITH ACTUAL VALUES
+      A2(13.3377), // TODO: SET WITH ACTUAL VALUES
+      A3(29.06465); // TODO: SET WITH ACTUAL VALUES
     
       private final double rotations;
       
@@ -354,7 +400,7 @@ public final class Constants {
         this.rotations = rotations;
       }
 
-      public double getRotations() {
+      public double getOutputRotations() {
         return rotations;
       }
     }

@@ -3,6 +3,7 @@ package frc.robot.utilities;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
@@ -15,6 +16,7 @@ import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilderImpl;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,6 +47,9 @@ public class NetworkTableLogger {
   // Pose 3d logging objects
   StructPublisher<Pose3d> pose3dPublisher;
   StructArrayPublisher<Pose3d> pose3dArrayPublisher;
+
+  // ChassisSpeeds logging objects
+  StructPublisher<ChassisSpeeds> chassisSpeedsPublisher;
 
   // Swerve Module States logging objects
   StructArrayPublisher<SwerveModuleState> swerveModuleStatePublisher;
@@ -161,6 +166,19 @@ public class NetworkTableLogger {
   }
 
   /**
+   * Log method for logging a ChassisSpeeds to the network table (can be seen using AdvantageScope, Glass,
+   * Elastic, etc.)
+   *
+   * @param key the key, a string, that will represent the value
+   * @param chassisSpeeds the value (ChassisSpeeds) that will be logged
+   */
+  public void logChassisSpeeds(String key, ChassisSpeeds chassisSpeeds) {
+    if (!table.containsKey(key))
+      chassisSpeedsPublisher = table.getStructTopic(key, ChassisSpeeds.struct).publish();
+    chassisSpeedsPublisher.set(chassisSpeeds);
+  }
+
+  /**
    * Logs a Sendable to the network table. This is useful for logging certain functions and also for
    * logging Field2d objects.
    *
@@ -169,7 +187,7 @@ public class NetworkTableLogger {
    * @param key the key, a string, that will represent the value
    * @param field2d the value (Field2d) that will be logged
    */
-  @SuppressWarnings("PMD.CompareObjectsWithEquals") // TODO: Might need to get rid of <if
+  @SuppressWarnings("PMD.CompareObjectsWithEquals")
   // (!table.containsKey(key))> AND <for (Sendable data :
   // tablesToData.values())> depending on if it updates
   public void logField2d(String key, Field2d field2d) {

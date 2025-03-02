@@ -62,11 +62,10 @@ public class SparkConfigurator {
     // NEW 2025 CREATION OF SPARKMAX, CANSPARKMAX was removed
     SparkMax spark = new SparkMax(id, motorType);
     SparkMaxConfig config = new SparkMaxConfig();
-    spark.configure(
-        config,
-        ResetMode.kResetSafeParameters,
-        PersistMode
-            .kPersistParameters); // TODO: this line might need to be removed. It wasn't there
+    // spark.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters); 
+    // TODO: this line might need to be removed. It wasn't there
+    // TODO: i think it needs to be removed too
+
     // before, but I added it to set the spark to an empty config
     // (factory reset)
     // spark.restoreFactoryDefaults();

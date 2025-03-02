@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.kVision;
 import frc.robot.utilities.NetworkTableLogger;
+
+import java.util.List;
 import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
@@ -65,12 +67,6 @@ public class PoseEstimatior extends SubsystemBase {
           PoseStrategy.CLOSEST_TO_REFERENCE_POSE,
           kVision.camera4Position);
 
-  // // Choreo Translation and Rotation Controllers
-  // private final PIDController xController = new PIDController(10.0, 0.0, 0.0); //TODO: Tune?
-  // (These are fake values currently)
-  // private final PIDController yController = new PIDController(10.0, 0.0, 0.0);
-  // private final PIDController headingController = new PIDController(7.5, 0.0, 0.0);
-
   // get starting pos with cam1
   public Pose3d getPose3d() {
     // vars
@@ -124,53 +120,102 @@ public class PoseEstimatior extends SubsystemBase {
     return PoseEstimator.update(cameraResult);
   }
 
+  private void addVisionMeasurement(PhotonCamera camera, PhotonPoseEstimator poseEstimator) {
+    try {
+      // camera 4 pose estimation
+      List<PhotonPipelineResult> cameraRes = camera.getAllUnreadResults();
+      PhotonPipelineResult cameraLatestRes = cameraRes.get(cameraRes.size() - 1);
+
+      List<PhotonTrackedTarget> targets = cameraLatestRes.getTargets();
+      for (PhotonTrackedTarget target : targets) {
+        double ambiguity = target.getPoseAmbiguity();
+
+        if (ambiguity <= 0.2) {
+          Optional<EstimatedRobotPose> cameraPose =
+            getEstimatedGlobalPose(
+                m_SwervePoseEstimator.getEstimatedPosition(),
+                cameraLatestRes, 
+                poseEstimator);
+        
+          m_SwervePoseEstimator.addVisionMeasurement(
+              cameraPose.get().estimatedPose, cameraPose.get().timestampSeconds);
+        }
+      }
+    } catch (Exception e) {
+    }
+  }
+
   @Override
   public void periodic() {
     // camera 1 pose estimation
-    PhotonPipelineResult camera1res = camera1.getLatestResult();
-    Optional<EstimatedRobotPose> camera1pose =
-        getEstimatedGlobalPose(
-            m_SwervePoseEstimator.getEstimatedPosition(), camera1res, PoseEstimator1);
-    try {
-      m_SwervePoseEstimator.addVisionMeasurement(
-          camera1pose.get().estimatedPose, camera1pose.get().timestampSeconds);
-      // System.out.println("not error");
-    } catch (Exception e) {
-      // System.out.println("error");
-    }
-
+    addVisionMeasurement(camera1, PoseEstimator1);
     // camera 2 pose estimation
-    PhotonPipelineResult camera2res = camera2.getLatestResult();
-    Optional<EstimatedRobotPose> camera2pose =
-        getEstimatedGlobalPose(
-            m_SwervePoseEstimator.getEstimatedPosition(), camera2res, PoseEstimator2);
-    try {
-      m_SwervePoseEstimator.addVisionMeasurement(
-          camera2pose.get().estimatedPose, camera2pose.get().timestampSeconds);
-    } catch (Exception e) {
-    }
-
+    addVisionMeasurement(camera2, PoseEstimator2);
     // camera 3 pose estimation
-    PhotonPipelineResult camera3res = camera3.getLatestResult();
-    Optional<EstimatedRobotPose> camera3pose =
-        getEstimatedGlobalPose(
-            m_SwervePoseEstimator.getEstimatedPosition(), camera3res, PoseEstimator3);
-    try {
-      m_SwervePoseEstimator.addVisionMeasurement(
-          camera3pose.get().estimatedPose, camera3pose.get().timestampSeconds);
-    } catch (Exception e) {
-    }
-
+    addVisionMeasurement(camera3, PoseEstimator3);
     // camera 4 pose estimation
-    PhotonPipelineResult camera4res = camera4.getLatestResult();
-    Optional<EstimatedRobotPose> camera4pose =
-        getEstimatedGlobalPose(
-            m_SwervePoseEstimator.getEstimatedPosition(), camera4res, PoseEstimator4);
-    try {
-      m_SwervePoseEstimator.addVisionMeasurement(
-          camera4pose.get().estimatedPose, camera4pose.get().timestampSeconds);
-    } catch (Exception e) {
-    }
+    addVisionMeasurement(camera4, PoseEstimator4);
+
+    // try {
+    //   // camera 1 pose estimation
+    //   List<PhotonPipelineResult> camera1res = camera1.getAllUnreadResults();
+    //   PhotonPipelineResult camera1LatestRes = camera1res.get(camera1res.size() - 1);
+    //   Optional<EstimatedRobotPose> camera1pose =
+    //     getEstimatedGlobalPose(
+    //         m_SwervePoseEstimator.getEstimatedPosition(), camera1LatestRes, PoseEstimator1);
+    //   m_SwervePoseEstimator.addVisionMeasurement(
+    //       camera1pose.get().estimatedPose, camera1pose.get().timestampSeconds);
+    //   // System.out.println("not error");
+    // } catch (Exception e) {
+    //   // System.out.println("error");
+    // }
+
+    // try {
+    //   // camera 2 pose estimation
+    //   List<PhotonPipelineResult> camera2res = camera2.getAllUnreadResults();
+    //   PhotonPipelineResult camera2LatestRes = camera2res.get(camera2res.size() - 1);
+    //   Optional<EstimatedRobotPose> camera2pose =
+    //     getEstimatedGlobalPose(
+    //         m_SwervePoseEstimator.getEstimatedPosition(), camera2LatestRes, PoseEstimator2);
+    //   m_SwervePoseEstimator.addVisionMeasurement(
+    //       camera2pose.get().estimatedPose, camera2pose.get().timestampSeconds);
+    // } catch (Exception e) {
+    // }
+
+    // try {
+    //   // camera 3 pose estimation
+    //   List<PhotonPipelineResult> camera3res = camera3.getAllUnreadResults();
+    //   PhotonPipelineResult camera3LatestRes = camera3res.get(camera3res.size() - 1);
+    //   Optional<EstimatedRobotPose> camera3pose =
+    //     getEstimatedGlobalPose(
+    //         m_SwervePoseEstimator.getEstimatedPosition(), camera3LatestRes, PoseEstimator3);
+    //   m_SwervePoseEstimator.addVisionMeasurement(
+    //       camera3pose.get().estimatedPose, camera3pose.get().timestampSeconds);
+    // } catch (Exception e) {
+    // }
+
+    // try {
+    //   // camera 4 pose estimation
+    //   List<PhotonPipelineResult> camera4res = camera4.getAllUnreadResults();
+    //   PhotonPipelineResult camera4LatestRes = camera4res.get(camera4res.size() - 1);
+
+    //   List<PhotonTrackedTarget> targets = camera4LatestRes.getTargets();
+    //   for (PhotonTrackedTarget target : targets) {
+    //     double ambiguity = target.getPoseAmbiguity();
+
+    //     if (ambiguity <= 0.2) {
+    //       Optional<EstimatedRobotPose> camera4pose =
+    //         getEstimatedGlobalPose(
+    //             m_SwervePoseEstimator.getEstimatedPosition(),
+    //             camera4LatestRes, 
+    //             PoseEstimator4);
+        
+    //       m_SwervePoseEstimator.addVisionMeasurement(
+    //           camera4pose.get().estimatedPose, camera4pose.get().timestampSeconds);
+    //     }
+    //   }
+    // } catch (Exception e) {
+    // }
 
     // gyro update
     m_SwervePoseEstimator.update(

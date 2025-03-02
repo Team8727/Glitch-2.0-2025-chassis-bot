@@ -16,7 +16,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.kRemover;
+import frc.robot.Constants.kAlgaeRemover;
 import frc.robot.utilities.SparkConfigurator.LogData;
 import java.util.Set;
 
@@ -29,7 +29,7 @@ public class AlgaeRemoverRollers extends SubsystemBase {
   public AlgaeRemoverRollers() {
     removerRollerMotor =
         getSparkMax(
-            kRemover.kRollers.removerRollerMotorCANID,
+            kAlgaeRemover.kRollers.removerRollerMotorCANID,
             SparkLowLevel.MotorType.kBrushless,
             false,
             Set.of(),
@@ -45,7 +45,7 @@ public class AlgaeRemoverRollers extends SubsystemBase {
         .idleMode(IdleMode.kCoast)
         .closedLoop
         .velocityFF(0) // TODO: tune
-        .pid(0, 0, 0)
+        .pidf(0, 0, 0, 0)
         .maxMotion
         .maxAcceleration(0)
         .maxAcceleration(0)

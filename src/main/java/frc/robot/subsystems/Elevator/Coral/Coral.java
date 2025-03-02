@@ -9,31 +9,32 @@ import static frc.robot.utilities.SparkConfigurator.getSparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkLimitSwitch;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.kCoralIntake;
+import frc.robot.Constants.kCoral;
+import frc.robot.utilities.NetworkTableLogger;
 import frc.robot.utilities.SparkConfigurator.LogData;
 import java.util.Set;
 
 public class Coral extends SubsystemBase {
-  private final SparkMax coralIntake;
-  private final SparkMaxConfig intakeConfig;
-  private final SparkMax coralOuttake;
-  private final SparkMaxConfig outtakeConfig;
-  public final DigitalInput frontCoralSensor;
-  public final DigitalInput backCoralSensor;
+  public final SparkMax backMotor;
+  private final SparkMaxConfig backConfig;
+  public final SparkMax frontMotor;
+  private final SparkMaxConfig frontConfig;
+  public final SparkLimitSwitch frontCoralSensor;
+  public final SparkLimitSwitch backCoralSensor;
+
+  private final NetworkTableLogger logger = new NetworkTableLogger(this.getSubsystem().toString());
 
   /** Creates a new Coral. */
   public Coral() {
-    coralIntake =
+    backMotor =
         getSparkMax(
-            kCoralIntake.kRollers.intakeRollerMotorCANID,
+            kCoral.intakeRollerMotorCANID,
             SparkLowLevel.MotorType.kBrushless,
             false,
             Set.of(),
@@ -41,28 +42,25 @@ public class Coral extends SubsystemBase {
                 LogData.POSITION,
                 LogData.VELOCITY,
                 LogData.VOLTAGE,
-                LogData.CURRENT)); // TODO: logging everything for now
-
-    intakeConfig = new SparkMaxConfig();
-    intakeConfig
-        .smartCurrentLimit(25) // TODO: figure out what this should be
+                LogData.CURRENT));
+    backConfig = new SparkMaxConfig();
+    backConfig // TODO: tune configs
+        .smartCurrentLimit(25)
         .idleMode(IdleMode.kBrake)
         .closedLoop
-        .velocityFF(0) // TODO: tune
-        .pid(0, 0, 0)
-        .maxMotion
-        .maxAcceleration(0)
-        .maxAcceleration(0)
-        .allowedClosedLoopError(0);
+        .velocityFF(0)
+        .pid(0.5, 0, 0);
+        // .maxMotion
+        // .maxAcceleration(0)          // Disabling max motion for these rollers (no need to be very precise). 
+        // .maxAcceleration(0)
+        // .allowedClosedLoopError(0);
 
-    coralIntake.configure(
-        intakeConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+    backMotor.configure(
+      backConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
-    frontCoralSensor = new DigitalInput(kCoralIntake.kRollers.frontSensorChannel);
-
-    coralOuttake =
+    frontMotor =
         getSparkMax(
-            kCoralIntake.kRollers.outtakeRollerMotorCANID,
+            kCoral.outtakeRollerMotorCANID,
             SparkLowLevel.MotorType.kBrushless,
             false,
             Set.of(),
@@ -70,55 +68,61 @@ public class Coral extends SubsystemBase {
                 LogData.POSITION,
                 LogData.VELOCITY,
                 LogData.VOLTAGE,
-                LogData.CURRENT)); // TODO: logging everything for now
+                LogData.CURRENT));
 
-    outtakeConfig = new SparkMaxConfig();
-    outtakeConfig
-        .smartCurrentLimit(25) // TODO: figure out what this should be
+    frontConfig = new SparkMaxConfig();
+    frontConfig// TODO: tune configs
+        .smartCurrentLimit(25) 
         .idleMode(IdleMode.kBrake)
+        .inverted(true)
         .closedLoop
-        .velocityFF(0) // TODO: tune
-        .pid(0, 0, 0)
-        .maxMotion
-        .maxAcceleration(0)
-        .maxAcceleration(0)
-        .allowedClosedLoopError(0);
+        .velocityFF(0) 
+        .pid(0.5, 0, 0)
+;
+        // .maxMotion
+        // .maxAcceleration(0)          // Disabling max motion for these rollers (no need to be very precise). 
+        // .maxAcceleration(0)
+        // .allowedClosedLoopError(0);
 
-    coralOuttake.configure(
-        outtakeConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+    frontMotor.configure(
+        frontConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
-    backCoralSensor = new DigitalInput(kCoralIntake.kRollers.backSensorChannel);
+    frontCoralSensor = frontMotor.getForwardLimitSwitch();
+    backCoralSensor = frontMotor.getReverseLimitSwitch();
   }
 
-  public void setIntakeSpeed(double speed) {
-    coralIntake.getClosedLoopController().setReference(speed, ControlType.kVelocity);
+  public void setIntakeSpeedDuty(double speed) {
+    backMotor.getClosedLoopController().setReference(speed, ControlType.kDutyCycle);
   }
 
-  public void setOuttakeSpeed(double speed) {
-    coralOuttake.getClosedLoopController().setReference(speed, ControlType.kVelocity);
+  public void setOuttakeSpeedDuty(double speed) {
+    frontMotor.getClosedLoopController().setReference(speed, ControlType.kDutyCycle);
+  }
+
+  public void setOutakePos(double position) {
+    frontMotor.getClosedLoopController().setReference(position, ControlType.kPosition);
   }
 
   public void stopDeployer() {
-    setIntakeSpeed(0);
-    setOuttakeSpeed(0);
-  }
-  public Command coralOuttake(double speed) {
-    return new RunCommand(() -> setOuttakeSpeed(kCoralIntake.kRollers.outtakeSpeed))
-        .until(() -> !frontCoralSensor.get())
-        .andThen(() -> setOuttakeSpeed(0));
+    backMotor.getClosedLoopController().setReference(0, ControlType.kDutyCycle);
+    frontMotor.getClosedLoopController().setReference(0, ControlType.kDutyCycle);
   }
 
-  public Command coralIntake(double speed) {
-    return new RunCommand(() -> setIntakeSpeed(kCoralIntake.kRollers.intakeSpeed))
-        .until(() -> backCoralSensor.get())
-          .andThen(() -> setIntakeSpeed(speed))
-          .andThen(() -> setOuttakeSpeed(speed))
-        .until(() -> !backCoralSensor.get())
-          .andThen(() -> stopDeployer());
+  public void holdPosition() {
+    frontMotor.getClosedLoopController().setReference(
+      frontMotor.getEncoder().getPosition(), 
+      ControlType.kPosition);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    logger.logBoolean(
+      "Front Coral Sensor", 
+      frontCoralSensor.isPressed());
+
+    logger.logBoolean(
+      "Back Coral Sensor", 
+      backCoralSensor.isPressed());;
   }
 }
