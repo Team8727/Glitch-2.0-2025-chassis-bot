@@ -6,7 +6,6 @@ package frc.robot.commands.Coral;
 
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.kElevator;
 import frc.robot.Constants.kElevator.ElevatorPosition;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.Coral.Coral;
