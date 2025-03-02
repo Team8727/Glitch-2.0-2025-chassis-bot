@@ -4,22 +4,24 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.Constants.kElevator;
+import frc.robot.Constants.kElevator.ElevatorPosition;
 
 
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class SetElevatorHeightCmd extends Command {
   private final Elevator m_elevator;
-  private double m_scoreLevel;
+  private ElevatorPosition m_scoreLevel;
   private final LEDSubsystem m_ledSubsytem;
 
 
   /** Creates a new SetEvevatorHeightCmd. */
-  public SetElevatorHeightCmd(double scoreLevel, Elevator elevator, LEDSubsystem ledSubsystem) {
+  public SetElevatorHeightCmd(ElevatorPosition scoreLevel, Elevator elevator, LEDSubsystem ledSubsystem) {
     m_scoreLevel = scoreLevel;
     m_elevator = elevator;
     m_ledSubsytem = ledSubsystem;
@@ -29,15 +31,7 @@ public class SetElevatorHeightCmd extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (m_scoreLevel == 1) {
-      m_elevator.setElevatorHeightMotionProfile(kElevator.ElevatorPosition.L1);
-    } else if (m_scoreLevel == 2) {
-      m_elevator.setElevatorHeightMotionProfile(kElevator.ElevatorPosition.L2);
-    } else if (m_scoreLevel == 3) {
-      m_elevator.setElevatorHeightMotionProfile(kElevator.ElevatorPosition.L3);
-    } else if (m_scoreLevel == 4) {
-      m_elevator.setElevatorHeightMotionProfile(kElevator.ElevatorPosition.L4);
-    }
+      m_elevator.setElevatorHeightMotionProfile(m_scoreLevel);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
