@@ -1,10 +1,12 @@
 package frc.robot.utilities;
 
+import edu.wpi.first.hal.can.CANStatus;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.networktables.BooleanPublisher;
+import edu.wpi.first.networktables.DoubleArrayPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -54,6 +56,9 @@ public class NetworkTableLogger {
   // Swerve Module States logging objects
   StructArrayPublisher<SwerveModuleState> swerveModuleStatePublisher;
 
+  // Can status logging objects
+  DoubleArrayPublisher doubleArrayPublisher;
+
   // -=-=- Stuff for log(key, value) =-=-=
   @SuppressWarnings("PMD.UseConcurrentHashMap")
   private static final Map<String, Sendable> tablesToData = new HashMap<>();
@@ -85,6 +90,26 @@ public class NetworkTableLogger {
   public void logDouble(String key, double value) {
     if (!table.containsKey(key)) doublePublisher = table.getDoubleTopic(key).publish();
     doublePublisher.set(value);
+  }
+
+  /**
+   * Log method for logging a can status to the network table (can be seen using AdvantageScope, Glass,
+   * Elastic, etc.)
+   *
+   * @param key the key, a string, that will represent the value
+   * @param value the value (double) that will be logged
+   */
+  public void logCan(String key, CANStatus value) {
+    double[] canStatusArray = new double[] {
+      value.percentBusUtilization,
+      value.busOffCount,
+      value.txFullCount,
+      value.receiveErrorCount,
+      value.transmitErrorCount
+    };
+
+    if (!table.containsKey(key)) doubleArrayPublisher = table.getDoubleArrayTopic(key).publish();
+    doubleArrayPublisher.set(canStatusArray);
   }
 
   /**

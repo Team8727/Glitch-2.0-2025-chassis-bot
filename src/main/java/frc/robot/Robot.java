@@ -12,6 +12,8 @@ import com.pathplanner.lib.commands.PathfindingCommand;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -124,6 +126,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    logger.logDouble("voltage", RobotController.getInputVoltage());
+    logger.logDouble("current", RobotController.getInputCurrent());
+    logger.logCan("can status", RobotController.getCANStatus());
     // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
