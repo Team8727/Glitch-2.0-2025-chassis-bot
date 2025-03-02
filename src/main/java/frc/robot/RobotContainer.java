@@ -118,7 +118,7 @@ public class RobotContainer {
 
     //               coral commands
     // intake coral
-    m_driverController.leftTrigger().onTrue(new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsytem));
+    m_driverController.leftTrigger().toggleOnTrue(new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsytem));
     // reindex coral
     m_driverController.povUp().onTrue(new ReindexCoralCmd(m_coral, m_elevator, m_ledSubsytem));
     //deploy coral
@@ -143,7 +143,7 @@ public class RobotContainer {
     
     //                algae commands
     // Intake algae
-    m_driverController.rightTrigger().onTrue(new IntakeAlgaeCmd(m_AlgaeIntakePivot, m_AlgaeIntakeRollers, m_ledSubsytem));
+    m_driverController.rightTrigger().whileTrue(new IntakeAlgaeCmd(m_AlgaeIntakePivot, m_AlgaeIntakeRollers, m_ledSubsytem));
     // deploy algae
     m_driverController.leftBumper().onTrue(new ScoreAlgaeCmd(m_AlgaeIntakePivot, m_AlgaeIntakeRollers, m_ledSubsytem));
     // m_driverController.rightBumper().onTrue(new ScoreAlgaeProcessorCmd(m_AlgaeIntakePivot, m_AlgaeIntakeRollers, m_ledSubsytem));

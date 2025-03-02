@@ -35,7 +35,8 @@ public class DeployCoralCmd extends Command {
     m_ledSubsytem.setPatternForDuration(m_ledSubsytem.coralPickup.reversed(), 2);
 
     if (!m_coral.frontCoralSensor.isPressed()) {
-      m_coral.setOutakePos(m_coral.frontMotor.getEncoder().getPosition()+1);
+      m_coral.stopDeployer();
+      // m_coral.setOutakePos(m_coral.frontMotor.getEncoder().getPosition()+1);
     }
   }
 

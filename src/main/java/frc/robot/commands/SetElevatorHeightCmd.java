@@ -30,6 +30,7 @@ public class SetElevatorHeightCmd extends Command {
   @Override
   public void initialize() {
       m_elevator.setElevatorHeightMotionProfile(m_scoreLevel);
+      this.cancel();
   }
 
   // Called every time the scheduler runs while the command is scheduled.

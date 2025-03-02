@@ -45,7 +45,7 @@ public class Coral extends SubsystemBase {
                 LogData.CURRENT));
     backConfig = new SparkMaxConfig();
     backConfig // TODO: tune configs
-        .smartCurrentLimit(25)
+        .smartCurrentLimit(40)
         .idleMode(IdleMode.kBrake)
         .inverted(true)
         .closedLoop
@@ -73,7 +73,7 @@ public class Coral extends SubsystemBase {
 
     frontConfig = new SparkMaxConfig();
     frontConfig// TODO: tune configs
-        .smartCurrentLimit(25) 
+        .smartCurrentLimit(40) 
         .idleMode(IdleMode.kBrake)
         .inverted(true)
         .closedLoop

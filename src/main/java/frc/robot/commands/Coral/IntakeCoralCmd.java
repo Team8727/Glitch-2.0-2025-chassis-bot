@@ -30,8 +30,9 @@ public class IntakeCoralCmd extends Command {
     if (m_elevator.getElevatorSetPosition() != kElevator.ElevatorPosition.L1) {
       System.out.println("go to L1");
       this.cancel();
+    } else {
+      m_coral.setIntakeSpeedDuty(.5);
     }
-    m_coral.setIntakeSpeedDuty(.5);
   }
 
   boolean sensedCoral = false;
@@ -47,6 +48,7 @@ public class IntakeCoralCmd extends Command {
     } 
 
     if (!m_coral.backCoralSensor.isPressed() && sensedCoral == true) {
+      m_coral.setIntakeSpeedDuty(0);
       m_coral.holdPosition();
       sensedCoral = false;
       this.cancel();
@@ -56,7 +58,11 @@ public class IntakeCoralCmd extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_coral.setIntakeSpeedDuty(0);
+    m_coral.setOuttakeSpeedDuty(0);
+
+  }
 
   // Returns true when the command should end.
   @Override
