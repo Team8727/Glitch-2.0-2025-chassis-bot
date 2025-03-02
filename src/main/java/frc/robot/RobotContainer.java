@@ -4,7 +4,10 @@
 
 package frc.robot;
 
+import java.io.IOException;
 import java.nio.file.Path;
+
+import org.json.simple.parser.ParseException;
 
 import com.pathplanner.lib.path.PathPlannerPath;
 
@@ -196,8 +199,33 @@ public class RobotContainer {
    * 
    * @return the command to run in autonomous
    */
-  public Command getAutonomousCommand() {
+  public Command getAutonomousCommand() { // TODO: This is where our autonomous commands will be run, check to see if it works
     // An example command will be run in autonomous
-    return null; //m_Autos.alignToPath(PathPlannerPath.fromChoreoTrajectory("ML-L4-FE"));
+    try { // This is the Middle to Reef H Level 4 to Coral Refill Path
+      return m_Autos.alignToPath(
+        PathPlannerPath.fromChoreoTrajectory(
+          "M-L4-H"))
+        .andThen(
+          new DeployCoralCmd(
+            m_coral, 
+            ElevatorPosition.L4, 
+            m_elevator, 
+            m_ledSubsytem))
+        .andThen(
+          m_Autos.alignToPath(
+            PathPlannerPath.fromChoreoTrajectory(
+              "H-Refill")))
+        .andThen(
+          new IntakeCoralCmd(
+            m_coral, 
+            m_elevator, 
+            m_ledSubsytem));
+    } catch (IOException e) {
+      e.printStackTrace();
+      return null;
+    } catch (ParseException e) {
+      e.printStackTrace();
+      return null;
+    }
   }
 }
