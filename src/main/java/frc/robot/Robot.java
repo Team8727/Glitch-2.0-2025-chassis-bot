@@ -12,7 +12,6 @@ import com.pathplanner.lib.commands.PathfindingCommand;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -53,6 +52,7 @@ public class Robot extends TimedRobot {
   private final Elevator m_elevator = new Elevator();
   private final AlgaeIntakePivot m_AlgaeIntakePivot = new AlgaeIntakePivot();
   private final AlgaeIntakeRollers m_AlgaeIntakeRollers = new AlgaeIntakeRollers();
+  private boolean m_elevatorSpeedControl = true;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -100,7 +100,8 @@ public class Robot extends TimedRobot {
             m_elevator,
             m_driverController,
             m_ledSubsytem,
-            m_Autos
+            m_Autos,
+            m_elevatorSpeedControl
             );
 
     // Set Up PathPlanner to "warm up" the pathplanning system
@@ -127,6 +128,9 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     logger.logDouble("voltage", RobotController.getInputVoltage());
+
+    // m_elevatorSpeedControl = logger.getBoolean("Limit Speed", true);
+
     // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic

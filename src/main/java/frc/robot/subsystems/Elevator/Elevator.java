@@ -21,6 +21,7 @@ import static frc.robot.utilities.SparkConfigurator.getSparkMax;
 import java.util.Set;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotController;
@@ -78,7 +79,6 @@ public class Elevator extends SubsystemBase {
   private final SparkMaxSim m_SparkMaxSim;
 
   private final Timer m_timer = new Timer();
-  private final XboxController m_driverController = new XboxController(0);
 
   /** Creates a new Elevator. */
   public Elevator() {
@@ -166,6 +166,7 @@ public class Elevator extends SubsystemBase {
 
   public void setElevatorHeightMotionProfile(kElevator.ElevatorPosition height_chosen) {
     // get double from enum
+    targetHeight = height_chosen;
     targetRotations = height_chosen.getOutputRotations();
     m_goal = new TrapezoidProfile.State(targetRotations, 0);
   }
@@ -212,7 +213,7 @@ public class Elevator extends SubsystemBase {
     logger.logDouble("simPosition", elevatorSim.getPositionMeters());
     logger.logDouble("actualPos", elevatorMotorR.getEncoder().getPosition());
     logger.logString("elevator level", targetHeight.toString());
-    
+        
     //-=-=-=-=-=-=-=- Trapezoid Profile -=-=-=-=-=-=-=-
 
     // Retrieve the profiled setpoint for the next timestep. This setpoint moves toward the goal while obeying the constraints.

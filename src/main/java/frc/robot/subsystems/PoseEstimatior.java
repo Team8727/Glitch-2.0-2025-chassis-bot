@@ -36,10 +36,10 @@ public class PoseEstimatior extends SubsystemBase {
   }
 
   // setup cameras
-  PhotonCamera camera1 = new PhotonCamera("frontCamera");
-  PhotonCamera camera2 = new PhotonCamera("backCamera");
-  PhotonCamera camera3 = new PhotonCamera("leftCamera");
-  PhotonCamera camera4 = new PhotonCamera("rightCamera");
+  PhotonCamera camera1 = new PhotonCamera("backRight");
+  PhotonCamera camera2 = new PhotonCamera("backLeft");
+  PhotonCamera camera3 = new PhotonCamera("front");
+  PhotonCamera camera4 = new PhotonCamera("backUp");
 
   // Field2d for logging the robot's 2d position on the field to the dashboard like AdvantageScope,
   // Elastic or Glass.
@@ -223,7 +223,7 @@ public class PoseEstimatior extends SubsystemBase {
 
     // Update Field2d with pose to display the robot's visual position on the field to the dashboard
     field2d.setRobotPose(get2dPose());
-    
+
     // field.setRobotPose(m_swervePoseEstimator.getEstimatedPosition().toPose2d());//pose 3d as 2d
     // pose
 

@@ -47,6 +47,7 @@ public class Coral extends SubsystemBase {
     backConfig // TODO: tune configs
         .smartCurrentLimit(25)
         .idleMode(IdleMode.kBrake)
+        .inverted(true)
         .closedLoop
         .velocityFF(0)
         .pid(0.5, 0, 0);
@@ -117,12 +118,10 @@ public class Coral extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    logger.logBoolean(
-      "Front Coral Sensor", 
-      frontCoralSensor.isPressed());
+    logger.logBoolean("Front Coral Sensor", frontCoralSensor.isPressed());
+    System.out.println("Front Coral Sensor: " + frontCoralSensor.isPressed());
 
-    logger.logBoolean(
-      "Back Coral Sensor", 
-      backCoralSensor.isPressed());
+    logger.logBoolean("Back Coral Sensor", backCoralSensor.isPressed());
+    System.out.println("Back Coral Sensor: " + backCoralSensor.isPressed());
   }
 }

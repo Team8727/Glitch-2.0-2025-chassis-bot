@@ -4,20 +4,14 @@
 
 package frc.robot;
 
-import java.nio.file.Path;
-
-import com.pathplanner.lib.path.PathPlannerPath;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants.kAlgaeIntake.kAlgaeIntakePivot.IntakePosition;
 import frc.robot.Constants.kElevator.ElevatorPosition;
 import frc.robot.commands.SetElevatorHeightCmd;
 import frc.robot.commands.AlgaeIntake.IntakeAlgaeCmd;
 import frc.robot.commands.AlgaeIntake.ScoreAlgaeCmd;
-// import frc.robot.commands.AlgaeIntake.ScoreAlgaeProcessorCmd;
 import frc.robot.commands.Coral.DeployCoralCmd;
 import frc.robot.commands.Coral.IntakeCoralCmd;
 import frc.robot.commands.DriveCommands.SwerveJoystickCmd;
@@ -49,6 +43,7 @@ public class RobotContainer {
   private final CommandXboxController m_driverController;
   private final LEDSubsystem m_ledSubsytem;
   private final Autos m_Autos;
+  private boolean m_elevatorSpeedControl;
 
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -62,7 +57,8 @@ public class RobotContainer {
       Elevator elevator,
       CommandXboxController driverController,
       LEDSubsystem ledSubsystem,
-      Autos autos
+      Autos autos,
+      boolean elevatorSpeedControl
       ) {
     m_SwerveSubsystem = swerveSubsystem;
     m_AlgaeIntakePivot = AlgaeIntakePivot;
@@ -74,6 +70,7 @@ public class RobotContainer {
     m_driverController = driverController;
     m_ledSubsytem = ledSubsystem;
     m_Autos = autos;
+    m_elevatorSpeedControl = elevatorSpeedControl;
 
     // Configure the trigger bindings
     configureBindings();
@@ -88,7 +85,7 @@ public class RobotContainer {
             () -> -m_driverController.getLeftX(),
             () -> m_driverController.getRightX(),
             () -> true,
-            () -> true));
+            () -> m_elevatorSpeedControl));
   }
 
   /**
@@ -132,7 +129,7 @@ public class RobotContainer {
     m_driverController.b().onTrue(new SetElevatorHeightCmd(ElevatorPosition.L3, m_elevator, m_ledSubsytem));
     // elevator L4
     m_driverController.a().onTrue(new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_ledSubsytem));
-    
+
     // zero elevator
     m_driverController.povDown().onTrue(new InstantCommand(() -> m_elevator.resetElevatorEncoders()));
 

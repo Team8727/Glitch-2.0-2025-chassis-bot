@@ -10,6 +10,7 @@ import edu.wpi.first.networktables.DoubleArrayPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.PubSubOption;
 import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
@@ -127,7 +128,16 @@ public class NetworkTableLogger {
     if (!table.containsKey(key)) booleanPublisher = table.getBooleanTopic(key).publish();
     booleanPublisher.set(value);
   }
-
+  /**
+   * Get method for retrieving a boolean from the network table (can be seen using AdvantageScope, Glass,
+   * Elastic, etc.)
+   *
+   * @param key the key, a string, that represents the value
+   * @return the boolean value associated with the key
+   */
+  public boolean getBoolean(String key, boolean defaultValue) {
+    return table.getBooleanTopic(key).getEntry(defaultValue).get();
+  }
   /**
    * Log method for logging a string to the network table (can be seen using AdvantageScope, Glass,
    * Elastic, etc.)
