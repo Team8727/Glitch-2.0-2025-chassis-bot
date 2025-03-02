@@ -42,7 +42,7 @@ public class IntakeAlgaeCmd extends Command {
 
     if (m_algaeIntakeRollers.getAlgaeCheck()) {
       m_algaeIntakeRollers.isMoving = false;
-      m_algaeIntakePivot.setPositionTrapazoidal(kAlgaeIntakePivot.IntakePosition.SCORE);
+      m_algaeIntakePivot.setPositionTrapazoidal(kAlgaeIntakePivot.IntakePosition.HOME);
       
       this.cancel();
     }
