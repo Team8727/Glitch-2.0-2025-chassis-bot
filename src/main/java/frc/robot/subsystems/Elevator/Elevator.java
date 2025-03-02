@@ -21,13 +21,11 @@ import static frc.robot.utilities.SparkConfigurator.getSparkMax;
 import java.util.Set;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -167,6 +165,7 @@ public class Elevator extends SubsystemBase {
   public void setElevatorHeightMotionProfile(kElevator.ElevatorPosition height_chosen) {
     // get double from enum
     targetHeight = height_chosen;
+    logger.logString("elevator level", targetHeight.toString());
     targetRotations = height_chosen.getOutputRotations();
     m_goal = new TrapezoidProfile.State(targetRotations, 0);
   }
@@ -212,7 +211,6 @@ public class Elevator extends SubsystemBase {
     logger.logDouble("TrapezoidProfile", m_setpoint.position);
     logger.logDouble("simPosition", elevatorSim.getPositionMeters());
     logger.logDouble("actualPos", elevatorMotorR.getEncoder().getPosition());
-    logger.logString("elevator level", targetHeight.toString());
         
     //-=-=-=-=-=-=-=- Trapezoid Profile -=-=-=-=-=-=-=-
 

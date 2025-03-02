@@ -14,6 +14,7 @@ import frc.robot.commands.AlgaeIntake.IntakeAlgaeCmd;
 import frc.robot.commands.AlgaeIntake.ScoreAlgaeCmd;
 import frc.robot.commands.Coral.DeployCoralCmd;
 import frc.robot.commands.Coral.IntakeCoralCmd;
+import frc.robot.commands.Coral.ReindexCoralCmd;
 import frc.robot.commands.DriveCommands.SwerveJoystickCmd;
 import frc.robot.subsystems.Autos;
 import frc.robot.subsystems.LEDSubsystem;
@@ -118,6 +119,8 @@ public class RobotContainer {
     //               coral commands
     // intake coral
     m_driverController.leftTrigger().onTrue(new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsytem));
+    // reindex coral
+    m_driverController.povUp().onTrue(new ReindexCoralCmd(m_coral, m_elevator, m_ledSubsytem));
     //deploy coral
     m_driverController.rightBumper().onTrue(new DeployCoralCmd(m_coral, m_ledSubsytem));
 
@@ -132,6 +135,7 @@ public class RobotContainer {
 
     // zero elevator
     m_driverController.povDown().onTrue(new InstantCommand(() -> m_elevator.resetElevatorEncoders()));
+
 
     // Align to pose
     // m_driverController.povLeft().onTrue(m_Autos.align(kPoses.blueFrontLeft).andThen(() -> System.out.println("aligginginsdaod")));

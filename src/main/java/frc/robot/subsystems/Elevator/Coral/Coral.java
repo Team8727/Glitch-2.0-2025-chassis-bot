@@ -28,7 +28,7 @@ public class Coral extends SubsystemBase {
   public final SparkLimitSwitch frontCoralSensor;
   public final SparkLimitSwitch backCoralSensor;
 
-  private final NetworkTableLogger logger = new NetworkTableLogger(this.getSubsystem().toString());
+  private NetworkTableLogger logger = new NetworkTableLogger(this.getSubsystem().toString());
 
   /** Creates a new Coral. */
   public Coral() {
@@ -92,6 +92,14 @@ public class Coral extends SubsystemBase {
     backCoralSensor = frontMotor.getReverseLimitSwitch();
   }
 
+  public boolean getFrontCoralSensor() {
+    return frontCoralSensor.isPressed();
+  }
+
+  public boolean getBackCoralSensor() {
+    return backCoralSensor.isPressed();
+  }
+
   public void setIntakeSpeedDuty(double speed) {
     backMotor.getClosedLoopController().setReference(speed, ControlType.kDutyCycle);
   }
@@ -118,10 +126,10 @@ public class Coral extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    logger.logBoolean("Front Coral Sensor", frontCoralSensor.isPressed());
-    System.out.println("Front Coral Sensor: " + frontCoralSensor.isPressed());
+    logger.logBoolean("Front Coral Sensor", getFrontCoralSensor());
+    System.out.println(getFrontCoralSensor());
 
-    logger.logBoolean("Back Coral Sensor", backCoralSensor.isPressed());
-    System.out.println("Back Coral Sensor: " + backCoralSensor.isPressed());
+    logger.logBoolean("Back Coral Sensor", getBackCoralSensor());
+    System.out.println(getBackCoralSensor());
   }
 }
