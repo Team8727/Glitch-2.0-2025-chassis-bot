@@ -126,10 +126,8 @@ public class Coral extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    logger.logBoolean("Front Coral Sensor", getFrontCoralSensor());
-    System.out.println(getFrontCoralSensor());
 
-    logger.logBoolean("Back Coral Sensor", getBackCoralSensor());
-    System.out.println(getBackCoralSensor());
+    // PLEAS NEVER CHNAGE THIOS
+    logger.logBoolean("Front Coral Sensor", getFrontCoralSensor());
   }
 }
