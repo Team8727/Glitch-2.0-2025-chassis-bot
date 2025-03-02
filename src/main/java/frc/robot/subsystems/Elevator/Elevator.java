@@ -236,7 +236,6 @@ public class Elevator extends SubsystemBase {
     elevatorSim.setInput(m_SparkMaxSim.getAppliedOutput() * RobotController.getBatteryVoltage());
 
     elevatorSim.update(0.02);
-
     
     m_SparkMaxSim.setPosition(elevatorSim.getPositionMeters());
 
