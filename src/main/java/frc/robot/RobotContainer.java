@@ -122,7 +122,7 @@ public class RobotContainer {
     // reindex coral
     m_driverController.povUp().onTrue(new ReindexCoralCmd(m_coral, m_elevator, m_ledSubsytem));
     //deploy coral
-    m_driverController.rightBumper().onTrue(new DeployCoralCmd(m_coral, m_ledSubsytem));
+    m_driverController.rightBumper().onTrue(new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator));
 
     // elevator L1
     m_driverController.x().onTrue(new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_ledSubsytem));
