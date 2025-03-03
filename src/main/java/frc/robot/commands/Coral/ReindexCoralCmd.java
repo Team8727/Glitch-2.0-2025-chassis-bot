@@ -4,6 +4,8 @@
 
 package frc.robot.commands.Coral;
 
+import static edu.wpi.first.units.Units.Rotation;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.Elevator.Elevator;
@@ -27,15 +29,27 @@ public class ReindexCoralCmd extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_coral.setIntakeSpeedDuty(.5);
-    m_coral.setIntakeSpeedDuty(-.5);
-    m_coral.setIntakeSpeedDuty(.5);
-    m_coral.setIntakeSpeedDuty(-.5);
-    m_coral.setIntakeSpeedDuty(.5);
-    m_coral.setIntakeSpeedDuty(-.5);
-    m_coral.setIntakeSpeedDuty(0);
+    moveRotation(1);
+    moveRotation(-1);
+    moveRotation(1);
+    moveRotation(-1);
+    moveRotation(1);
+    moveRotation(-1);
     new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsystem);
     this.cancel();
+  }
+
+  private void moveRotation(double rotations) {
+    double currentRotations = m_coral.getOuttakeRotations();
+    m_coral.setIntakePos(m_coral.getOuttakeRotations() + rotations);
+    if (rotations > 0) {
+      while (currentRotations+rotations <= m_coral.getOuttakeRotations()) {
+      } 
+    } else {
+      while (currentRotations+rotations >= m_coral.getOuttakeRotations()) {
+      } 
+    }
+    m_coral.setIntakePos(m_coral.getOuttakeRotations());
   }
 
   // Called every time the scheduler runs while the command is scheduled.

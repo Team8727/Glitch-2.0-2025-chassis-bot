@@ -112,6 +112,14 @@ public class Coral extends SubsystemBase {
     frontMotor.getClosedLoopController().setReference(position, ControlType.kPosition);
   }
 
+  public void setIntakePos(double position) {
+    backMotor.getClosedLoopController().setReference(position, ControlType.kPosition);
+  }
+
+  public double getOuttakeRotations() {
+    return frontMotor.getEncoder().getPosition();
+  }
+  
   public void stopDeployer() {
     backMotor.getClosedLoopController().setReference(0, ControlType.kDutyCycle);
     frontMotor.getClosedLoopController().setReference(0, ControlType.kDutyCycle);

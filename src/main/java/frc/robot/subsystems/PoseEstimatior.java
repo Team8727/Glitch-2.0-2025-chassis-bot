@@ -147,14 +147,14 @@ public class PoseEstimatior extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // // camera 1 pose estimation
-    // addVisionMeasurement(camera1, PoseEstimator1);
-    // // camera 2 pose estimation
-    // addVisionMeasurement(camera2, PoseEstimator2);
-    // // camera 3 pose estimation
-    // addVisionMeasurement(camera3, PoseEstimator3);
-    // // camera 4 pose estimation
-    // addVisionMeasurement(camera4, PoseEstimator4);
+    // camera 1 pose estimation
+    addVisionMeasurement(camera1, PoseEstimator1);
+    // camera 2 pose estimation
+    addVisionMeasurement(camera2, PoseEstimator2);
+    // camera 3 pose estimation
+    addVisionMeasurement(camera3, PoseEstimator3);
+    // camera 4 pose estimation
+    addVisionMeasurement(camera4, PoseEstimator4);
 
     // try {
     //   // camera 1 pose estimation
