@@ -33,6 +33,8 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.SPI.Port;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -403,6 +405,22 @@ public final class Constants {
       public double getOutputRotations() {
         return rotations;
       }
+    }
+  }
+  public static class CustomCommands {
+    public static Command waitCommand(double seconds, Command command) {
+      return Commands.runOnce(() -> {
+        new Thread(() -> {
+          try {
+            Thread.sleep((long) (seconds * 1000));
+            command.schedule();
+          } catch (InterruptedException e) {
+            e.printStackTrace();
+          } finally {
+            Thread.currentThread().interrupt();
+          }
+        }).start();
+      });
     }
   }
 }
