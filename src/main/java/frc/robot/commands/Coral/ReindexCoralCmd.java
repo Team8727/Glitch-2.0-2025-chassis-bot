@@ -4,19 +4,21 @@
 
 package frc.robot.commands.Coral;
 
+import static edu.wpi.first.units.Units.Rotation;
+
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.kElevator;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.Coral.Coral;
-import frc.robot.subsystems.LEDSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class IntakeCoralCmd extends Command {
+public class ReindexCoralCmd extends Command {
   private final Coral m_coral;
   private final Elevator m_elevator;
   private final LEDSubsystem m_ledSubsystem;
-  /** Creates a new IntakeCoral. */
-  public IntakeCoralCmd(Coral coral, Elevator elevator, LEDSubsystem ledSubsystem) {
+
+  /** Creates a new ReindexCoralCmd. */
+  public ReindexCoralCmd(Coral coral, Elevator elevator, LEDSubsystem ledSubsystem) {
     m_coral = coral;
     m_elevator = elevator;
     m_ledSubsystem = ledSubsystem;
@@ -27,42 +29,36 @@ public class IntakeCoralCmd extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (m_elevator.getElevatorSetPosition() != kElevator.ElevatorPosition.L1) {
-      System.out.println("go to L1");
-      this.cancel();
-    } else {
-      m_coral.setIntakeSpeedDuty(.5);
-    }
+    moveRotation(1);
+    moveRotation(-1);
+    moveRotation(1);
+    moveRotation(-1);
+    moveRotation(1);
+    moveRotation(-1);
+    new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsystem);
+    this.cancel();
   }
 
-  boolean sensedCoral = false;
+  private void moveRotation(double rotations) {
+    double currentRotations = m_coral.getOuttakeRotations();
+    m_coral.setIntakePos(m_coral.getOuttakeRotations() + rotations);
+    if (rotations > 0) {
+      while (currentRotations+rotations <= m_coral.getOuttakeRotations()) {
+      } 
+    } else {
+      while (currentRotations+rotations >= m_coral.getOuttakeRotations()) {
+      } 
+    }
+    m_coral.setIntakePos(m_coral.getOuttakeRotations());
+  }
+
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    m_ledSubsystem.setPatternForDuration(m_ledSubsystem.coralPickup, 2);
-
-    if (m_coral.backCoralSensor.isPressed() && sensedCoral == false) {
-      m_coral.setIntakeSpeedDuty(.1);
-      m_coral.setOuttakeSpeedDuty(.1);
-      sensedCoral = true;
-    } 
-
-    if (!m_coral.backCoralSensor.isPressed() && sensedCoral == true) {
-      m_coral.setIntakeSpeedDuty(0);
-      m_coral.holdPosition();
-      sensedCoral = false;
-      this.cancel();
-    }
-
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    m_coral.setIntakeSpeedDuty(0);
-    m_coral.setOuttakeSpeedDuty(0);
-
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
