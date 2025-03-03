@@ -96,6 +96,69 @@ public class NetworkTableLogger {
     doublePublisher.set(value);
   }
 
+    /**
+   * Log method for logging an integer to the network table (can be seen using AdvantageScope, Glass,
+   * Elastic, etc.)
+   *
+   * @param key the key, a string, that will represent the value
+   * @param value the value (int) that will be logged
+   */
+  public void logInt(String key, int value) {
+    if (!table.containsKey(key)) doublePublisher = table.getDoubleTopic(key).publish();
+    doublePublisher.set((double) value);
+  }
+
+  /**
+   * Log method for logging a boolean to the network table (can be seen using AdvantageScope, Glass,
+   * Elastic, etc.)
+   *
+   * @param key the key, a string, that will represent the value
+   * @param value the value (boolean) that will be logged
+   */
+  public void logBoolean(String key, boolean value) {
+    if (!table.containsKey(key)) booleanPublisher = table.getBooleanTopic(key).publish();
+    booleanPublisher.set(value);
+  }
+
+  /**
+   * Get method for retrieving a boolean from the network table (can be seen using AdvantageScope, Glass,
+   * Elastic, etc.)
+   *
+   * @param key the key, a string, that represents the value
+   * @return the boolean value associated with the key
+   */
+  public boolean getBoolean(String key, boolean defaultValue) {
+    return table.getBooleanTopic(key).getEntry(defaultValue).get();
+  }
+
+  /**
+   * Log method for logging a string to the network table (can be seen using AdvantageScope, Glass,
+   * Elastic, etc.)
+   *
+   * @param key the key, a string, that will represent the value
+   * @param string the value (string) that will be logged
+   */
+  public void logString(String key, String string) {
+    if (!table.containsKey(key)) stringPublisher = table.getStringTopic(key).publish();
+    stringPublisher.set(string);
+  }
+
+  /**
+   * Logs any object that is able to be sent over NetworkTables (Sendable) to the SmartDashboard (use for debug). Avoid using this if possible;
+   * make a new method in NetworkTableLogger to log specific data type. (Can be seen using
+   * AdvantageScope, Glass, Elastic, etc.)
+   *
+   * @apiNote Sendable: a wrapper of certain objects, fields, and methods that can be sent to NetworkTables (ex: double, int, string, their array varieties).
+   * 
+   * @param key the key, a string, that will represent the value in the SmartDashboard Network Table
+   * @param value the NT accepted value (Sendable) to log. (This parameter can just be the bare object, field
+   *     or method if it is applicable as a sendable)
+   */
+  public void logFn_SmartDash(String key, Sendable value) {
+    if (!table.containsKey(key)) SmartDashboard.putData(key, value);
+    SmartDashboard.updateValues();
+  }
+
   /**
    * Log method for logging a can status to the network table (can be seen using AdvantageScope, Glass,
    * Elastic, etc.)
@@ -117,53 +180,6 @@ public class NetworkTableLogger {
   }
 
   /**
-   * Log method for logging a boolean to the network table (can be seen using AdvantageScope, Glass,
-   * Elastic, etc.)
-   *
-   * @param key the key, a string, that will represent the value
-   * @param value the value (boolean) that will be logged
-   */
-  public void logBoolean(String key, boolean value) {
-    if (!table.containsKey(key)) booleanPublisher = table.getBooleanTopic(key).publish();
-    booleanPublisher.set(value);
-  }
-  /**
-   * Get method for retrieving a boolean from the network table (can be seen using AdvantageScope, Glass,
-   * Elastic, etc.)
-   *
-   * @param key the key, a string, that represents the value
-   * @return the boolean value associated with the key
-   */
-  public boolean getBoolean(String key, boolean defaultValue) {
-    return table.getBooleanTopic(key).getEntry(defaultValue).get();
-  }
-  /**
-   * Log method for logging a string to the network table (can be seen using AdvantageScope, Glass,
-   * Elastic, etc.)
-   *
-   * @param key the key, a string, that will represent the value
-   * @param string the value (string) that will be logged
-   */
-  public void logString(String key, String string) {
-    if (!table.containsKey(key)) stringPublisher = table.getStringTopic(key).publish();
-    stringPublisher.set(string);
-  }
-
-  /**
-   * Logs a function (Sendable) to the SmartDashboard (use for debug). Avoid using this if possible;
-   * make a new method in NetworkTableLogger to log specific data type. (Can be seen using
-   * AdvantageScope, Glass, Elastic, etc.)
-   *
-   * @param key the key, a string, that will represent the value in the SmartDashboard Network Table
-   * @param value the function (Sendable) to log. (This parameter can just be the bare object, field
-   *     or method if it is applicable as a sendable)
-   */
-  public void logFn_SmartDash(String key, Sendable value) {
-    if (!table.containsKey(key)) SmartDashboard.putData(key, value);
-    SmartDashboard.updateValues();
-  }
-
-  /**
    * Log method for logging a Pose2d to the network table (can be seen using AdvantageScope, Glass,
    * Elastic, etc.)
    *
@@ -175,17 +191,7 @@ public class NetworkTableLogger {
       pose2dPublisher = table.getStructTopic(key, Pose2d.struct).publish();
     pose2dPublisher.set(pose2d);
   }
-  /**
-   * Log method for logging an integer to the network table (can be seen using AdvantageScope, Glass,
-   * Elastic, etc.)
-   *
-   * @param key the key, a string, that will represent the value
-   * @param value the value (int) that will be logged
-   */
-  public void logInt(String key, int value) {
-    if (!table.containsKey(key)) doublePublisher = table.getDoubleTopic(key).publish();
-    doublePublisher.set((double) value);
-  }
+
   /**
    * Log method for logging a Pose3d to the network table (can be seen using AdvantageScope, Glass,
    * Elastic, etc.)
