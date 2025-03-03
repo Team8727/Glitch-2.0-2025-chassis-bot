@@ -273,19 +273,19 @@ public final class Constants {
     public static final Transform3d camera1Position =
         new Transform3d(
             new Translation3d(-0.2032, -0.0508, 0.7862), 
-            new Rotation3d(0, Math.toRadians(216.6), Math.toRadians(30)));
+            new Rotation3d(0, Math.toRadians(-216.6), Math.toRadians(30)));
     public static final Transform3d camera2Position =
         new Transform3d(
             new Translation3d(0.2032, -0.0508, .7862),
-            new Rotation3d(0, Math.toRadians(143.4), Math.toRadians(30)));
+            new Rotation3d(0, Math.toRadians(-143.4), Math.toRadians(30)));
     public static final Transform3d camera3Position =
         new Transform3d(
             new Translation3d(-0.11176, 0.3048, 0.225425),
-            new Rotation3d(0, Math.toRadians(141), Math.toRadians(145)));
+            new Rotation3d(0, Math.toRadians(-141), Math.toRadians(145)));
     public static final Transform3d camera4Position =
         new Transform3d(
             new Translation3d(-0.1905, -0.155575, 1.016),
-            new Rotation3d(0, Math.toRadians(34.95), Math.toRadians(20)));
+            new Rotation3d(0, Math.toRadians(-34.95), Math.toRadians(20)));
 
     public static final Matrix<N3, N1> stateStdDevs =
         MatBuilder.fill(Nat.N3(), Nat.N1(), 0.02, 0.02, 0.01);
