@@ -154,7 +154,7 @@ public class NetworkTableLogger {
    * @param value the NT accepted value (Sendable) to log. (This parameter can just be the bare object, field
    *     or method if it is applicable as a sendable)
    */
-  public void logFn_SmartDash(String key, Sendable value) {
+  public void logToSmartDash(String key, Sendable value) {
     if (!table.containsKey(key)) SmartDashboard.putData(key, value);
     SmartDashboard.updateValues();
   }
