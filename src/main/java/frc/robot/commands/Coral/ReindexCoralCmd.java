@@ -7,7 +7,9 @@ package frc.robot.commands.Coral;
 import static edu.wpi.first.units.Units.Rotation;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.Coral.Coral;
@@ -27,18 +29,20 @@ public class ReindexCoralCmd extends Command {
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
-  public SequentialCommandGroup reIndex() {
-    return new SequentialCommandGroup(null);
+  public SequentialCommandGroup reIndex(double rotations) {
+    return new SequentialCommandGroup(
+      new RunCommand(() -> m_coral.setIntakePos(m_coral.getOuttakeRotations() +rotations)), 
+      new WaitCommand(.1));
   }
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    moveRotation(1);
-    moveRotation(-1);
-    moveRotation(1);
-    moveRotation(-1);
-    moveRotation(1);
-    moveRotation(-1);
+    reIndex(1);
+    reIndex(-1);
+    reIndex(1);
+    reIndex(-1);
+    reIndex(1);
+    reIndex(-1);
     new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsystem);
     this.cancel();
   }

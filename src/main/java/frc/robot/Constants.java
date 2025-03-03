@@ -395,7 +395,7 @@ public final class Constants {
       L3(20.43877), // TODO: SET WITH ACTUAL VALUES
       L4(39.53888), // TODO: SET WITH ACTUAL VALUES
       A2(13.3377), // TODO: SET WITH ACTUAL VALUES
-      A3(29.06465); // TODO: SET WITH ACTUAL VALUES
+      A3(28.5); // TODO: SET WITH ACTUAL VALUES
     
       private final double rotations;
       

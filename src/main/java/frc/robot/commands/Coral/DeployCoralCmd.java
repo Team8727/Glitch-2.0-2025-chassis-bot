@@ -30,7 +30,7 @@ public class DeployCoralCmd extends Command {
   @Override
   public void initialize() {
     if (m_elevatorPosition == ElevatorPosition.L4 || m_elevatorPosition == ElevatorPosition.L1) {
-      m_coral.setOuttakeSpeedDuty(.3);
+      m_coral.setOuttakeSpeedDuty(.25);
     } else {
       m_coral.setOuttakeSpeedDuty(.5);
     }
