@@ -109,16 +109,124 @@ public class Autos extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
+  public Command CL_IJ() {
+    return 
+    alignToPath(
+      paths.get("CL-L4-I"))
+    .andThen(
+      new SetElevatorHeightCmd(
+        ElevatorPosition.L4, 
+        m_elevator, 
+        m_ledSubsytem))
+    .andThen(
+      new DeployCoralCmd(
+        m_coral, 
+        m_ledSubsytem,
+        m_elevator))
+    .andThen(
+      new SetElevatorHeightCmd(
+        ElevatorPosition.L1, 
+        m_elevator, 
+        m_ledSubsytem))
+    .andThen(
+      alignToPath(
+        paths.get(
+          "I-Refill")))
+    .andThen(
+      new IntakeCoralCmd(
+        m_coral, 
+        m_elevator, 
+        m_ledSubsytem))
+    .andThen(
+      alignToPath(
+        paths.get(
+          "Refill-J")))
+    .andThen(
+      new SetElevatorHeightCmd(
+        ElevatorPosition.L4, 
+        m_elevator, 
+        m_ledSubsytem))
+    .andThen(
+      new DeployCoralCmd(
+        m_coral, 
+        m_ledSubsytem,
+        m_elevator))
+    .andThen(
+      new SetElevatorHeightCmd(
+        ElevatorPosition.L1, 
+        m_elevator, 
+        m_ledSubsytem));
+  }
+
+  public Command CR_FE() {
+    return 
+    alignToPath(
+      paths.get("CR-L4-F"))
+    .andThen(
+      new SetElevatorHeightCmd(
+        ElevatorPosition.L4, 
+        m_elevator, 
+        m_ledSubsytem))
+    .andThen(
+      new DeployCoralCmd(
+        m_coral, 
+        m_ledSubsytem,
+        m_elevator))
+    .andThen(
+      new SetElevatorHeightCmd(
+        ElevatorPosition.L1, 
+        m_elevator, 
+        m_ledSubsytem))
+    .andThen(
+      alignToPath(
+        paths.get(
+          "F-Refill")))
+    .andThen(
+      new IntakeCoralCmd(
+        m_coral, 
+        m_elevator, 
+        m_ledSubsytem))
+    .andThen(
+      alignToPath(
+        paths.get(
+          "Refill-E")))
+    .andThen(
+      new SetElevatorHeightCmd(
+        ElevatorPosition.L4, 
+        m_elevator, 
+        m_ledSubsytem))
+    .andThen(
+      new DeployCoralCmd(
+        m_coral, 
+        m_ledSubsytem,
+        m_elevator))
+    .andThen(
+      new SetElevatorHeightCmd(
+        ElevatorPosition.L1, 
+        m_elevator, 
+        m_ledSubsytem));
+  }
+
   public Command M_H() { // TODO: This is where our autonomous commands will be run, check to see if it works
     // An example command will be run in autonomous
     return 
     alignToPath(
       paths.get("M-L4-H"))
     .andThen(
+      new SetElevatorHeightCmd(
+        ElevatorPosition.L4, 
+        m_elevator, 
+        m_ledSubsytem))
+    .andThen(
       new DeployCoralCmd(
         m_coral, 
         m_ledSubsytem,
         m_elevator))
+    .andThen(
+      new SetElevatorHeightCmd(
+        ElevatorPosition.L1, 
+        m_elevator, 
+        m_ledSubsytem))
     .andThen(
       alignToPath(
         paths.get(

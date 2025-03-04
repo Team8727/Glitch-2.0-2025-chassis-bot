@@ -46,6 +46,6 @@ public class SetElevatorHeightCmd extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return Math.abs(m_scoreLevel.getOutputRotations() - m_elevator.getElevatorHeight()) < 0.1;
   }
 }
