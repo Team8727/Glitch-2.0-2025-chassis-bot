@@ -34,13 +34,12 @@ public class ScoreAlgaeCmd extends Command {
     m_algaeIntakePivot.setPositionTrapazoidal(kAlgaeIntakePivot.IntakePosition.SCORE);
     m_algaeIntakeRollers.isMoving = true;
     m_algaeIntakeRollers.setRollerSpeedDuty(-1);
+    m_ledSubsystem.setPatternForDuration(m_ledSubsystem.algaePickup.reversed(), 2);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_ledSubsystem.setPatternForDuration(m_ledSubsystem.algaePickup.reversed(), 2);
-
     if (!m_algaeIntakeRollers.getAlgaeCheck()) {
       m_algaeIntakeRollers.setRollerSpeedDuty(0);
       m_algaeIntakePivot.setPositionTrapazoidal(kAlgaeIntakePivot.IntakePosition.SCORE);
