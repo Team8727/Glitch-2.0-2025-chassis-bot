@@ -162,7 +162,6 @@ public class DefaultTeleopControllerBindings implements ControllerBindings {
     @Override
     public void unbind(CommandXboxController controller) {
         m_SwerveSubsystem.removeDefaultCommand();
-        // TODO: unbind the controller
     }
     
 }
