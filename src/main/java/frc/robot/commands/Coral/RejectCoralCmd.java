@@ -8,11 +8,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Elevator.Coral.Coral;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ReindexCoralCmd extends Command {
+public class RejectCoralCmd extends Command {
   private final Coral m_coral;
 
   /** Creates a new ReindexCoralCmd. */
-  public ReindexCoralCmd(Coral coral) {
+  public RejectCoralCmd(Coral coral) {
     m_coral = coral;
     addRequirements(coral);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -22,21 +22,12 @@ public class ReindexCoralCmd extends Command {
   @Override
   public void initialize() {
     new Thread(() -> {
-      for (int n = 1; n<= 3; n++){
-        m_coral.setIntakeSpeedDuty(.15);
-        try {
-          Thread.sleep(150);
-        } catch (InterruptedException e) {
-          Thread.currentThread().interrupt();
-          e.printStackTrace();
-        }
-        m_coral.setIntakeSpeedDuty(-.15);
-        try {
-          Thread.sleep(150);
-        } catch (InterruptedException e) {
-          Thread.currentThread().interrupt();
-          e.printStackTrace();
-        }
+      m_coral.setIntakeSpeedDuty(-.2);
+      try {
+        Thread.sleep(300);
+      } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+        e.printStackTrace();
       }
       m_coral.setIntakeSpeedDuty(0);
       this.cancel();

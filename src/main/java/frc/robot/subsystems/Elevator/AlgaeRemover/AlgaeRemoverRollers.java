@@ -14,7 +14,6 @@ import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.kAlgaeRemover;
 import frc.robot.utilities.SparkConfigurator.LogData;
@@ -59,12 +58,12 @@ public class AlgaeRemoverRollers extends SubsystemBase {
     removerRollerPID = removerRollerMotor.getClosedLoopController();
   }
 
-  public Command setRemoverRollerSpeed(double speed) {
-    return run(() -> removerRollerPID.setReference(speed, ControlType.kVelocity));
+  public void setRemoverRollerSpeed(double speed) {
+    removerRollerPID.setReference(speed, ControlType.kVelocity);
   }
 
   public void spinnnnnnn() {
-    setRemoverRollerSpeed(1000).withTimeout(1).andThen(() -> setRemoverRollerSpeed(0));
+    setRemoverRollerSpeed(1000);
   }
 
   @Override

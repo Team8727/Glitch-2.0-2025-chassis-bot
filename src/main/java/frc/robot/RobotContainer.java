@@ -15,6 +15,7 @@ import frc.robot.commands.AlgaeIntake.ScoreAlgaeCmd;
 import frc.robot.commands.Coral.DeployCoralCmd;
 import frc.robot.commands.Coral.IntakeCoralCmd;
 import frc.robot.commands.Coral.ReindexCoralCmd;
+import frc.robot.commands.Coral.RejectCoralCmd;
 import frc.robot.commands.DriveCommands.SwerveJoystickCmd;
 import frc.robot.subsystems.Autos;
 import frc.robot.subsystems.LEDSubsystem;
@@ -120,9 +121,10 @@ public class RobotContainer {
     // intake coral
     m_driverController.leftTrigger().toggleOnTrue(new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsytem));
     // reindex coral
-    m_driverController.povUp().onTrue(new ReindexCoralCmd(m_coral, m_elevator, m_ledSubsytem));
+    m_driverController.povUp().onTrue(new ReindexCoralCmd(m_coral));
+    m_driverController.povDown().onTrue(new RejectCoralCmd(m_coral));
     //deploy coral
-    m_driverController.rightBumper().onTrue(new DeployCoralCmd(m_coral, m_ledSubsytem));
+    m_driverController.rightBumper().onTrue(new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator));
 
     // elevator L1
     m_driverController.x().onTrue(new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_ledSubsytem));
