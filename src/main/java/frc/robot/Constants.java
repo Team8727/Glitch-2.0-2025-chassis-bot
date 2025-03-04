@@ -354,6 +354,7 @@ public final class Constants {
 
       public static double idleAlgaeIntakeVoltage = 0; // TODO: set as needed when testing
 
+      public static final int motorCurrentLimit = 60;
     }
 
     public static class kAlgaeIntakeRollers {
