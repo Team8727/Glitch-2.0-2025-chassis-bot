@@ -24,6 +24,8 @@ import frc.robot.commands.Coral.IntakeCoralCmd;
 import frc.robot.commands.Coral.ReindexCoralCmd;
 import frc.robot.commands.Coral.RejectCoralCmd;
 import frc.robot.commands.DriveCommands.SwerveJoystickCmd;
+import frc.robot.controller.Controller;
+import frc.robot.controller.DefaultTeleopControllerBindings;
 import frc.robot.subsystems.Autos;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -49,11 +51,10 @@ public class RobotContainer {
   private final AlgaeRemoverRollers m_AlgaeRemoverRollers;
   private final Coral m_coral;
   private final Elevator m_elevator;
-  private final CommandXboxController m_driverController;
   private final LEDSubsystem m_ledSubsytem;
   private final Autos m_Autos;
   private boolean m_elevatorSpeedControl;
-
+  private final Controller m_controller = new Controller();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer(
@@ -64,7 +65,6 @@ public class RobotContainer {
       AlgaeRemoverRollers AlgaeRemoverRollers,
       Coral coral,
       Elevator elevator,
-      CommandXboxController driverController,
       LEDSubsystem ledSubsystem,
       Autos autos,
       boolean elevatorSpeedControl
@@ -76,136 +76,24 @@ public class RobotContainer {
     m_AlgaeRemoverRollers = AlgaeRemoverRollers;
     m_coral = coral;
     m_elevator = elevator;
-    m_driverController = driverController;
     m_ledSubsytem = ledSubsystem;
     m_Autos = autos;
     m_elevatorSpeedControl = elevatorSpeedControl;
-
-    // Configure the trigger bindings
-    configureBindings();
   }
 
-  public void initiateJoystickOperated() {
-    m_SwerveSubsystem.setDefaultCommand(
-        new SwerveJoystickCmd(
-            m_SwerveSubsystem,
-            m_elevator,
-            () -> -m_driverController.getLeftY(),
-            () -> -m_driverController.getLeftX(),
-            () -> m_driverController.getRightX(),
-            () -> true,
-            () -> m_elevatorSpeedControl));
+  public void teleopInit() {
+    m_controller.applyBindings(new DefaultTeleopControllerBindings(
+      m_SwerveSubsystem,
+      m_AlgaeIntakePivot,
+      m_AlgaeIntakeRollers,
+      m_coral,
+      m_elevator,
+      m_ledSubsytem,
+      m_elevatorSpeedControl
+    ));
   }
 
-  /**
-   * Use this method to define your trigger->command mappings. Triggers can be created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
-   * predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
-   * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-   * joysticks}.
-   */
-  private void configureBindings() {
-
-    /* To Test ChassisSpeeds */
-    // m_driverController.a()
-    //   .toggleOnTrue(new RunCommand(
-    //     () -> 
-    //       m_SwerveSubsystem.setModuleStates(
-    //         kSwerve.kinematics.toSwerveModuleStates(
-    //           new ChassisSpeeds(1,1,1)))));
-
-    // Zero heading
-    m_driverController.start().onTrue(new InstantCommand(() -> m_SwerveSubsystem.zeroHeading()));
-
-    // // Remove algae L3
-    // m_driverController.povUp().onTrue(new removeAlgae(m_AlgaeRemoverPivot, m_AlgeaRemoverRollers, 3, m_elevator));
-    // // Remove algae L2
-    // m_driverController.povDown().onTrue(new removeAlgae(m_AlgaeRemoverPivot, m_AlgeaRemoverRollers, 2, m_elevator));
-
-    //               coral commands
-    // intake coral
-    m_driverController.leftTrigger().toggleOnTrue(new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsytem));
-    // reindex coral
-    m_driverController.povUp().onTrue(new ReindexCoralCmd(m_coral));
-    m_driverController.povDown().onTrue(new RejectCoralCmd(m_coral));
-    //deploy coral
-    m_driverController.rightBumper().onTrue(new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator));
-
-    // elevator L1
-    m_driverController.x().onTrue(new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_ledSubsytem));
-    // elevator L2
-    m_driverController.y().onTrue(new SetElevatorHeightCmd(ElevatorPosition.L2, m_elevator, m_ledSubsytem));
-    // elevator L3
-    m_driverController.b().onTrue(new SetElevatorHeightCmd(ElevatorPosition.L3, m_elevator, m_ledSubsytem));
-    // elevator L4
-    m_driverController.a().onTrue(new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_ledSubsytem));
-
-    // zero elevator
-    m_driverController.povDown().onTrue(new InstantCommand(() -> m_elevator.resetElevatorEncoders()));
-
-
-    // Align to pose
-    // m_driverController.povLeft().onTrue(m_Autos.align(kPoses.blueFrontLeft).andThen(() -> System.out.println("aligginginsdaod")));
-
-    
-    //                algae commands
-    // Intake algae
-    m_driverController.rightTrigger().whileTrue(new IntakeAlgaeCmd(m_AlgaeIntakePivot, m_AlgaeIntakeRollers, m_ledSubsytem));
-    // deploy algae
-    m_driverController.leftBumper().onTrue(new ScoreAlgaeCmd(m_AlgaeIntakePivot, m_AlgaeIntakeRollers, m_ledSubsytem));
-    // m_driverController.rightBumper().onTrue(new ScoreAlgaeProcessorCmd(m_AlgaeIntakePivot, m_AlgaeIntakeRollers, m_ledSubsytem));
-
-    // // Intake algae
-    // m_driverController.rightBumper().onTrue(
-    //   new IntakeAlgaeCmd(m_AlgaeIntakePivot, m_AlgaeIntakeRollers)
-    //   .andThen(() -> 
-    //     m_ledSubsytem.setPatternForDuration(
-    //       m_ledSubsytem.solidRed, 1.5)
-    //   ));
-
-    // // Place algae in processor
-    // m_driverController.rightTrigger().onTrue(
-    //   new ScoreAlgaeProcessorCmd(m_AlgaeIntakePivot, m_AlgaeIntakeRollers)
-    //   .andThen(() -> 
-    //     m_ledSubsytem.setPatternForDuration(
-    //       m_ledSubsytem.solidGreen, 1.5)
-    //   ));
-
-    // X configuration
-    // m_driverController.x().toggleOnTrue(m_SwerveSubsystem.XPosition());
-    // Align to pose
-    // m_driverController.b().onTrue(m_Autos.align(kPoses.blueFrontLeft));
-    // Xbox Controller Bindings for LED Patterns
-    // m_driverController.y().onTrue(new InstantCommand(() -> m_ledSubsytem.setPattern(m_ledSubsytem.rainbow), m_ledSubsytem));
-    // m_driverController.b().onTrue(new InstantCommand(() -> m_ledSubsytem.setPattern(m_ledSubsytem.blue), m_ledSubsytem));
-
-    // m_driverController.leftBumper()
-    //     .onTrue(
-    //         new InstantCommand(() -> m_ledSubsytem.setPattern(m_ledSubsytem.red), m_ledSubsytem));
-    // // m_driverController.rightBumper().onTrue(new InstantCommand(() -> m_ledSubsytem.setPattern(m_ledSubsytem.green), m_ledSubsytem));
-    // m_driverController.a()
-    //     .onTrue(
-    //         new InstantCommand(() -> m_ledSubsytem.setPattern(m_ledSubsytem.ace), m_ledSubsytem));
-    // m_driverController.y()
-    //     .onTrue(
-    //         new InstantCommand(
-    //             () -> m_ledSubsytem.setPattern(m_ledSubsytem.colorCheck), m_ledSubsytem));
-
-    // .until(() ->
-    //     m_PoseEstimatior.get2dPose()
-    //       .getTranslation()
-    //     .getDistance(
-    //       kPoses.blueFrontLeft.getTranslation())
-    //     < 0.1
-    //   &&
-    //     m_PoseEstimatior.get2dPose()
-    //       .getRotation()
-    //     .minus(
-    //       kPoses.blueFrontLeft.getRotation())
-    //         .getDegrees()
-    //     < 0.1)
-    // .andThen(() -> joystickOperated())
+  public void autonomousInit() {
+    m_controller.clearBindings();
   }
 }
