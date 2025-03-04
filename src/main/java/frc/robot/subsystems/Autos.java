@@ -109,6 +109,24 @@ public class Autos extends SubsystemBase {
                     ;
   }
 
+  private Command path_M_L4_H() {
+    return 
+    alignToPath(
+      paths.get("M-L4-H"))
+    .andThen(
+      new DeployCoralCmd(
+        m_coral, 
+        m_ledSubsytem))
+    .andThen(
+      alignToPath(
+        paths.get("H-Refill")))
+    .andThen(
+      new IntakeCoralCmd(
+        m_coral, 
+        m_elevator, 
+        m_ledSubsytem));
+  }
+
   private Command path_M_L4_H_PC() {
     return 
     alignToPath(

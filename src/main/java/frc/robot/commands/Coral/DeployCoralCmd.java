@@ -26,14 +26,13 @@ public class DeployCoralCmd extends Command {
   @Override
   public void initialize() {
     m_coral.setOuttakeSpeedDuty(.5);
+    m_ledSubsytem.setPatternForDuration(m_ledSubsytem.coralPickup.reversed(), 2);
   }
 
   // Called every time the scheduler runs while the command is scheduled
 
   @Override
   public void execute() {
-    m_ledSubsytem.setPatternForDuration(m_ledSubsytem.coralPickup.reversed(), 2);
-
     if (!m_coral.frontCoralSensor.isPressed()) {
       m_coral.stopDeployer();
       // m_coral.setOutakePos(m_coral.frontMotor.getEncoder().getPosition()+1);

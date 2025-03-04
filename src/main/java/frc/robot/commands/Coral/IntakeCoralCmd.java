@@ -4,6 +4,7 @@
 
 package frc.robot.commands.Coral;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.kElevator;
 import frc.robot.subsystems.Elevator.Elevator;
@@ -32,6 +33,9 @@ public class IntakeCoralCmd extends Command {
       this.cancel();
     } else {
       m_coral.setIntakeSpeedDuty(.5);
+      m_ledSubsystem.setPatternForDuration(m_ledSubsystem.green, 2);
+      Timer.delay(2);
+      m_ledSubsystem.setPatternForDuration(m_ledSubsystem.coralPickup, 2);
     }
   }
 
@@ -39,7 +43,6 @@ public class IntakeCoralCmd extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_ledSubsystem.setPatternForDuration(m_ledSubsystem.coralPickup, 2);
 
     if (m_coral.backCoralSensor.isPressed() && sensedCoral == false) {
       m_coral.setIntakeSpeedDuty(.1);
