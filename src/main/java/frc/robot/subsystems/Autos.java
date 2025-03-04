@@ -20,23 +20,31 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.kSwerve;
 import frc.robot.Constants.kElevator.ElevatorPosition;
 import frc.robot.Robot;
+import frc.robot.commands.AlgaeIntake.ScoreAlgaeCmd;
 import frc.robot.commands.Coral.DeployCoralCmd;
 import frc.robot.commands.Coral.IntakeCoralCmd;
+import frc.robot.subsystems.AlgaeIntake.AlgaeIntakePivot;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.Coral.Coral;
 import frc.robot.commands.SetElevatorHeightCmd;
+import frc.robot.subsystems.AlgaeIntake.AlgaeIntakePivot;
+import frc.robot.subsystems.AlgaeIntake.AlgaeIntakeRollers;
 
 public class Autos extends SubsystemBase {
   private final LEDSubsystem m_ledSubsytem;
   private final Coral m_coral;
   private final Elevator m_elevator;
+  private final AlgaeIntakePivot m_algaeIntakePivot;
+  private final AlgaeIntakeRollers m_algaeIntakeRollers;
   private final LinkedHashMap<String, PathPlannerPath> paths = new LinkedHashMap<String, PathPlannerPath>();
 
   /** Creates a new Autos. */
-  public Autos(LEDSubsystem ledSubsystem, Coral coralSubsystem, Elevator elevatorSubsystem) {
+  public Autos(LEDSubsystem ledSubsystem, Coral coralSubsystem, Elevator elevatorSubsystem, AlgaeIntakePivot algaeIntakePivot, AlgaeIntakeRollers algaeIntakeRollers) {
     m_ledSubsytem = ledSubsystem;
     m_coral = coralSubsystem;
     m_elevator = elevatorSubsystem;
+    m_algaeIntakePivot = algaeIntakePivot;
+    m_algaeIntakeRollers = algaeIntakeRollers;
 
     loadPaths();
 
@@ -104,7 +112,7 @@ public class Autos extends SubsystemBase {
                     ;
   }
 
-  public Command CL_IJ() {
+  private Command path_M_L4_H_PC() {
     return 
     alignToPath(
       paths.get("CL-L4-I"))
@@ -251,8 +259,17 @@ public class Autos extends SubsystemBase {
         m_ledSubsytem))
     .andThen(
       alignToPath(
+        paths.get("H-PC")))
+    .andThen(
+      new ScoreAlgaeCmd(
+        m_algaeIntakePivot, 
+        m_algaeIntakeRollers, 
+        m_ledSubsytem)
+    )
+    .andThen(
+      alignToPath(
         paths.get(
-          "H-Refill")))
+          "PC-Refill")))
     .andThen(
       new IntakeCoralCmd(
         m_coral, 
