@@ -10,7 +10,6 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathfindingCommand;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
@@ -69,7 +68,7 @@ public class Robot extends TimedRobot {
         (chassisSpeeds, driveff) -> {
           System.out.println("aligning");
           logger.logChassisSpeeds("speeds", chassisSpeeds);
-          m_PoseEstimatior.field2d.getObject("Trajectory").setTrajectory(new Trajectory()); //TODO: get this from pathplanner somehow
+          // m_PoseEstimatior.field2d.getObject("Trajectory").setTrajectory(); //TODO: get this from pathplanner somehow
           m_SwerveSubsystem.setModuleStates(kSwerve.kinematics.toSwerveModuleStates(ChassisSpeeds.fromRobotRelativeSpeeds(chassisSpeeds, m_SwerveSubsystem.getRotation2d())));
           // new DriveCmd(m_SwerveSubsystem, () -> chassisSpeeds, () -> true).execute();
         },
@@ -151,7 +150,7 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    m_Autos.getAutonomousCommand(); // TODO: Only enable this if you want the robot to do stuff during autonomous
+    m_Autos.M_H(); // TODO: Only enable this if you want the robot to do stuff during autonomous
   }
 
   /** This function is called periodically during autonomous. */
