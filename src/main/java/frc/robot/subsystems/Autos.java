@@ -18,18 +18,30 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.kSwerve;
+import frc.robot.Robot;
+import frc.robot.commands.Coral.DeployCoralCmd;
+import frc.robot.commands.Coral.IntakeCoralCmd;
+import frc.robot.subsystems.Elevator.Elevator;
+import frc.robot.subsystems.Elevator.Coral.Coral;
 
 public class Autos extends SubsystemBase {
- private final LEDSubsystem m_ledSubsytem;
-private final LinkedHashMap<String, PathPlannerPath> paths = new LinkedHashMap<String, PathPlannerPath>();
-  /** Creates a new Autos. */
-  public Autos(LEDSubsystem ledSubsystem) {
-   m_ledSubsytem = ledSubsystem;
+  private final LEDSubsystem m_ledSubsytem;
+  private final Coral m_coral;
+  private final Elevator m_elevator;
+  private final LinkedHashMap<String, PathPlannerPath> paths = new LinkedHashMap<String, PathPlannerPath>();
 
-  // // Load a full Choreo trajectory as a PathPlannerPath
-  // PathPlannerPath exampleChoreoTraj = PathPlannerPath.fromChoreoTrajectory("Example Choreo Traj");
-  // // Load a split Choreo trajectory as a PathPlannerPath, using the split point with index 1
-  // PathPlannerPath exampleChoreoTrajSplit = PathPlannerPath.fromChoreoTrajectory("Example Choreo Traj", 1);
+  /** Creates a new Autos. */
+  public Autos(LEDSubsystem ledSubsystem, Coral coralSubsystem, Elevator elevatorSubsystem) {
+    m_ledSubsytem = ledSubsystem;
+    m_coral = coralSubsystem;
+    m_elevator = elevatorSubsystem;
+
+    loadPaths();
+
+    // // Load a full Choreo trajectory as a PathPlannerPath
+    // PathPlannerPath exampleChoreoTraj = PathPlannerPath.fromChoreoTrajectory("Example Choreo Traj");
+    // // Load a split Choreo trajectory as a PathPlannerPath, using the split point with index 1
+    // PathPlannerPath exampleChoreoTrajSplit = PathPlannerPath.fromChoreoTrajectory("Example Choreo Traj", 1);
 
     /* Add paths to the hashmap using this format:
       paths.put("<Name>", PathPlannerPath.fromPathFile("<path file name>"));
@@ -54,16 +66,10 @@ private final LinkedHashMap<String, PathPlannerPath> paths = new LinkedHashMap<S
     paths.put("Refill-E", PathPlannerPath.fromChoreoTrajectory("Refill-E"));
     paths.put("M-L4-G", PathPlannerPath.fromChoreoTrajectory("M-L4-G"));
     paths.put("G-Refill", PathPlannerPath.fromChoreoTrajectory("G-Refill"));
-    } catch (IOException e) {
-      e.printStackTrace();
-    } catch (ParseException e) {
+    } catch (IOException | ParseException e) {
       e.printStackTrace();
     }
   }
-
-
-
-
   public Command align(Pose2d goal) {
     return AutoBuilder.pathfindToPose(
         goal,
@@ -73,7 +79,7 @@ private final LinkedHashMap<String, PathPlannerPath> paths = new LinkedHashMap<S
             kSwerve.Auton.maxAngVel,
             kSwerve.Auton.maxAngAccel))
               .andThen(
-                 run(() -> m_ledSubsytem.setPatternForDuration(
+                run(() -> m_ledSubsytem.setPatternForDuration(
                     m_ledSubsytem.rainbow, 
                     2)))
                     ;
@@ -98,5 +104,25 @@ private final LinkedHashMap<String, PathPlannerPath> paths = new LinkedHashMap<S
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+  }
+
+  public Command getAutonomousCommand() { // TODO: This is where our autonomous commands will be run, check to see if it works
+    // An example command will be run in autonomous
+    return 
+    alignToPath(
+      paths.get("M-L4-H"))
+    .andThen(
+      new DeployCoralCmd(
+        m_coral, 
+        m_ledSubsytem))
+    .andThen(
+      alignToPath(
+        paths.get(
+          "H-Refill")))
+    .andThen(
+      new IntakeCoralCmd(
+        m_coral, 
+        m_elevator, 
+        m_ledSubsytem));
   }
 }

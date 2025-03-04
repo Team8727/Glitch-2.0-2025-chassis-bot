@@ -206,40 +206,4 @@ public class RobotContainer {
     //     < 0.1)
     // .andThen(() -> joystickOperated())
   }
-
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   * Call this method from the {@link Robot#autonomousInit} method in order to run the autonomous command.
-   * 
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() { // TODO: This is where our autonomous commands will be run, check to see if it works
-    // An example command will be run in autonomous
-    try { // This is the Middle to Reef H Level 4 to Coral Refill Path
-      return m_Autos.alignToPath(
-        PathPlannerPath.fromChoreoTrajectory(
-          "M-L4-H"))
-        .andThen(
-          new DeployCoralCmd(
-            m_coral, 
-            ElevatorPosition.L4, 
-            m_elevator, 
-            m_ledSubsytem))
-        .andThen(
-          m_Autos.alignToPath(
-            PathPlannerPath.fromChoreoTrajectory(
-              "H-Refill")))
-        .andThen(
-          new IntakeCoralCmd(
-            m_coral, 
-            m_elevator, 
-            m_ledSubsytem));
-    } catch (IOException e) {
-      e.printStackTrace();
-      return null;
-    } catch (ParseException e) {
-      e.printStackTrace();
-      return null;
-    }
-  }
 }
