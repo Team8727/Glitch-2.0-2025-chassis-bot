@@ -1,17 +1,12 @@
 package frc.robot.utilities;
 
-import edu.wpi.first.hal.can.CANStatus;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.networktables.BooleanPublisher;
-import edu.wpi.first.networktables.DoubleArrayPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.networktables.StructArrayPublisher;
@@ -21,7 +16,6 @@ import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilderImpl;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants.kElevator.ElevatorPosition;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -60,12 +54,6 @@ public class NetworkTableLogger {
   // Swerve Module States logging objects
   StructArrayPublisher<SwerveModuleState> swerveModuleStatePublisher;
 
-  // Can status logging objects
-  DoubleArrayPublisher doubleArrayPublisher;
-
-  // ElevatorPosition logging objects
-  StructPublisher<ElevatorPosition> elevatorPositionPublisher;
-
   // -=-=- Stuff for log(key, value) =-=-=
   @SuppressWarnings("PMD.UseConcurrentHashMap")
   private static final Map<String, Sendable> tablesToData = new HashMap<>();
@@ -99,18 +87,6 @@ public class NetworkTableLogger {
     doublePublisher.set(value);
   }
 
-    /**
-   * Log method for logging an integer to the network table (can be seen using AdvantageScope, Glass,
-   * Elastic, etc.)
-   *
-   * @param key the key, a string, that will represent the value
-   * @param value the value (int) that will be logged
-   */
-  public void logInt(String key, int value) {
-    if (!table.containsKey(key)) doublePublisher = table.getDoubleTopic(key).publish();
-    doublePublisher.set((double) value);
-  }
-
   /**
    * Log method for logging a boolean to the network table (can be seen using AdvantageScope, Glass,
    * Elastic, etc.)
@@ -121,46 +97,6 @@ public class NetworkTableLogger {
   public void logBoolean(String key, boolean value) {
     if (!table.containsKey(key)) booleanPublisher = table.getBooleanTopic(key).publish();
     booleanPublisher.set(value);
-  }
-
-  /**
-   * Get method for retrieving a Pose2d array from the network table.
-   * The underlying double array is expected to have a length that is a multiple of 3,
-   * where each group of three values represents x, y, and rotation (in radians) for a Pose2d.
-   *
-   * @param key the key representing the Pose2d array
-   * @param defaultValue the default Pose2d array to return if the retrieved array is invalid
-   * @return an array of Pose2d built from the flattened double array from the network table
-   */
-  public Pose2d[] getPose2dArray(String key) {
-      // Retrieve a flattened double array; default to empty array if not found.
-      double[] doubles = table.getDoubleArrayTopic(key).getEntry(new double[0]).get();
-
-      // Validate that the array has a length that is a multiple of 3.
-      if (doubles.length == 0 || doubles.length % 3 != 0) {
-          return new Pose2d[0];
-      }
-
-      int numPoses = doubles.length / 3;
-      Pose2d[] poses = new Pose2d[numPoses];
-      for (int i = 0; i < numPoses; i++) {
-          double x = doubles[i * 3];
-          double y = doubles[i * 3 + 1];
-          double rotation = doubles[i * 3 + 2];
-          poses[i] = new Pose2d(new Translation2d(x, y), new Rotation2d(rotation));
-      }
-      return poses;
-  }
-    
-  /**
-   * Get method for retrieving a boolean from the network table (can be seen using AdvantageScope, Glass,
-   * Elastic, etc.)
-   *
-   * @param key the key, a string, that represents the value
-   * @return the boolean value associated with the key
-   */
-  public boolean getBoolean(String key, boolean defaultValue) {
-    return table.getBooleanTopic(key).getEntry(defaultValue).get();
   }
 
   /**
@@ -176,39 +112,17 @@ public class NetworkTableLogger {
   }
 
   /**
-   * Logs any object that is able to be sent over NetworkTables (Sendable) to the SmartDashboard (use for debug). Avoid using this if possible;
+   * Logs a function (Sendable) to the SmartDashboard (use for debug). Avoid using this if possible;
    * make a new method in NetworkTableLogger to log specific data type. (Can be seen using
    * AdvantageScope, Glass, Elastic, etc.)
    *
-   * @apiNote Sendable: a wrapper of certain objects, fields, and methods that can be sent to NetworkTables (ex: double, int, string, their array varieties).
-   * 
    * @param key the key, a string, that will represent the value in the SmartDashboard Network Table
-   * @param value the NT accepted value (Sendable) to log. (This parameter can just be the bare object, field
+   * @param value the function (Sendable) to log. (This parameter can just be the bare object, field
    *     or method if it is applicable as a sendable)
    */
-  public void logToSmartDash(String key, Sendable value) {
+  public void logFn_SmartDash(String key, Sendable value) {
     if (!table.containsKey(key)) SmartDashboard.putData(key, value);
     SmartDashboard.updateValues();
-  }
-
-  /**
-   * Log method for logging a can status to the network table (can be seen using AdvantageScope, Glass,
-   * Elastic, etc.)
-   *
-   * @param key the key, a string, that will represent the value
-   * @param value the value (double) that will be logged
-   */
-  public void logCan(String key, CANStatus value) {
-    double[] canStatusArray = new double[] {
-      value.percentBusUtilization,
-      value.busOffCount,
-      value.txFullCount,
-      value.receiveErrorCount,
-      value.transmitErrorCount
-    };
-
-    if (!table.containsKey(key)) doubleArrayPublisher = table.getDoubleArrayTopic(key).publish();
-    doubleArrayPublisher.set(canStatusArray);
   }
 
   /**

@@ -5,6 +5,7 @@
 package frc.robot.commands.Coral;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.kCoral;
 import frc.robot.Constants.kElevator;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.Coral.Coral;
@@ -27,12 +28,9 @@ public class IntakeCoralCmd extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (m_elevator.getElevatorSetPosition() != kElevator.ElevatorPosition.L1) {
-      System.out.println("go to L1");
-      this.cancel();
-    } else {
-      m_coral.setIntakeSpeedDuty(.5);
-    }
+    m_elevator.setElevatorHeightMotionProfile(kElevator.ElevatorPosition.L1);
+    System.out.println("coralIntake");
+    m_coral.setIntakeSpeedDuty(.3);
   }
 
   boolean sensedCoral = false;
@@ -48,8 +46,8 @@ public class IntakeCoralCmd extends Command {
     } 
 
     if (!m_coral.backCoralSensor.isPressed() && sensedCoral == true) {
-      m_coral.setIntakeSpeedDuty(0);
       m_coral.holdPosition();
+      m_coral.setIntakeSpeedDuty(0);
       sensedCoral = false;
       this.cancel();
     }
@@ -58,11 +56,7 @@ public class IntakeCoralCmd extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    m_coral.setIntakeSpeedDuty(0);
-    m_coral.setOuttakeSpeedDuty(0);
-
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
