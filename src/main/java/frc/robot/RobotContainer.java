@@ -86,8 +86,6 @@ public class RobotContainer {
       m_SwerveSubsystem,
       m_AlgaeIntakePivot,
       m_AlgaeIntakeRollers,
-      m_AlgaeRemoverPivot,
-      m_AlgaeRemoverRollers,
       m_coral,
       m_elevator,
       m_ledSubsytem,

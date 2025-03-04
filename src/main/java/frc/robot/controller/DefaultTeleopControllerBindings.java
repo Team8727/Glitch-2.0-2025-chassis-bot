@@ -36,8 +36,6 @@ public class DefaultTeleopControllerBindings implements ControllerBindings {
         SwerveSubsystem swerveSubsystem,
         AlgaeIntakePivot AlgaeIntakePivot,
         AlgaeIntakeRollers AlgaeIntakeRollers,
-        AlgaeRemoverPivot AlgaeRemoverPivot,
-        AlgaeRemoverRollers AlgaeRemoverRollers,
         Coral coral,
         Elevator elevator,
         LEDSubsystem ledSubsystem,
