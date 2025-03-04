@@ -10,6 +10,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathfindingCommand;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
@@ -67,6 +68,7 @@ public class Robot extends TimedRobot {
         (chassisSpeeds, driveff) -> {
           System.out.println("aligning");
           logger.logChassisSpeeds("speeds", chassisSpeeds);
+          m_PoseEstimatior.field2d.getObject("Trajectory").setTrajectory(new Trajectory()); //TODO: get this from pathplanner somehow
           m_SwerveSubsystem.setModuleStates(kSwerve.kinematics.toSwerveModuleStates(ChassisSpeeds.fromRobotRelativeSpeeds(chassisSpeeds, m_SwerveSubsystem.getRotation2d())));
           // new DriveCmd(m_SwerveSubsystem, () -> chassisSpeeds, () -> true).execute();
         },
