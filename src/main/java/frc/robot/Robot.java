@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import frc.robot.Constants.kConfigs;
 import frc.robot.Constants.kSwerve;
@@ -41,7 +40,6 @@ public class Robot extends TimedRobot {
 
   private final RobotContainer m_robotContainer;
   private final SwerveSubsystem m_SwerveSubsystem = new SwerveSubsystem();
-  private final CommandXboxController m_driverController = new CommandXboxController(0);
   private final PoseEstimatior m_PoseEstimatior = new PoseEstimatior(m_SwerveSubsystem);
   private final LEDSubsystem m_ledSubsytem = new LEDSubsystem();
   private final NetworkTableLogger logger = new NetworkTableLogger("SHOW UPPPP");
@@ -100,7 +98,6 @@ public class Robot extends TimedRobot {
             m_AlgeaRemoverRollers,
             m_coral,
             m_elevator,
-            m_driverController,
             m_ledSubsytem,
             m_Autos,
             m_elevatorSpeedControl
@@ -151,6 +148,9 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     // m_Autos.M_H(); // TODO: Only enable this if you want the robot to do stuff during autonomous
+
+    CommandScheduler.getInstance().cancelAll();
+    m_robotContainer.autonomousInit();
   }
 
   /** This function is called periodically during autonomous. */
@@ -159,6 +159,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    CommandScheduler.getInstance().cancelAll();
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
@@ -166,7 +167,7 @@ public class Robot extends TimedRobot {
     
     // m_robotContainer.getAutonomousCommand().cancel();
 
-    m_robotContainer.initiateJoystickOperated();
+    m_robotContainer.teleopInit();
 }
 
   /** This function is called periodically during operator control. */
