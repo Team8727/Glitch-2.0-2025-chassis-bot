@@ -21,12 +21,12 @@ import frc.robot.utilities.SparkConfigurator.LogData;
 import java.util.Set;
 
 public class Coral extends SubsystemBase {
-  public final SparkMax backMotor;
+  private final SparkMax backMotor;
   private final SparkMaxConfig backConfig;
-  public final SparkMax frontMotor;
+  private final SparkMax frontMotor;
   private final SparkMaxConfig frontConfig;
-  public final SparkLimitSwitch frontCoralSensor;
-  public final SparkLimitSwitch backCoralSensor;
+  private final SparkLimitSwitch frontCoralSensor;
+  private final SparkLimitSwitch backCoralSensor;
 
   private NetworkTableLogger logger = new NetworkTableLogger(this.getSubsystem().toString());
 

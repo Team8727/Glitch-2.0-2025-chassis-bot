@@ -42,7 +42,7 @@ public class DeployCoralCmd extends Command {
   public void execute() {
     m_ledSubsytem.setPatternForDuration(m_ledSubsytem.coralPickup.reversed(), 2);
 
-    if (!m_coral.frontCoralSensor.isPressed()) {
+    if (!m_coral.getFrontCoralSensor()) {
       m_coral.stopDeployer();
       // m_coral.setOutakePos(m_coral.frontMotor.getEncoder().getPosition()+1);
     }
