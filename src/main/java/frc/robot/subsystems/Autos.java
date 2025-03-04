@@ -18,11 +18,13 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.kSwerve;
+import frc.robot.Constants.kElevator.ElevatorPosition;
 import frc.robot.Robot;
 import frc.robot.commands.Coral.DeployCoralCmd;
 import frc.robot.commands.Coral.IntakeCoralCmd;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.Coral.Coral;
+import frc.robot.commands.SetElevatorHeightCmd;
 
 public class Autos extends SubsystemBase {
   private final LEDSubsystem m_ledSubsytem;
@@ -66,6 +68,7 @@ public class Autos extends SubsystemBase {
     paths.put("Refill-E", PathPlannerPath.fromChoreoTrajectory("Refill-E"));
     paths.put("M-L4-G", PathPlannerPath.fromChoreoTrajectory("M-L4-G"));
     paths.put("G-Refill", PathPlannerPath.fromChoreoTrajectory("G-Refill"));
+    paths.put("J-Refill", PathPlannerPath.fromChoreoTrajectory("J-Refill"));
     } catch (IOException | ParseException e) {
       e.printStackTrace();
     }
@@ -106,7 +109,7 @@ public class Autos extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-  public Command getAutonomousCommand() { // TODO: This is where our autonomous commands will be run, check to see if it works
+  public Command M_H() { // TODO: This is where our autonomous commands will be run, check to see if it works
     // An example command will be run in autonomous
     return 
     alignToPath(
@@ -125,5 +128,91 @@ public class Autos extends SubsystemBase {
         m_coral, 
         m_elevator, 
         m_ledSubsytem));
+  }
+
+  public Command ML_I_R_J_R() {
+    return 
+      alignToPath(
+        paths.get("CL-L4-I"))
+      .andThen(
+        new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_ledSubsytem))
+      .andThen(
+        new DeployCoralCmd(
+          m_coral, 
+          m_ledSubsytem,
+          m_elevator))
+      .andThen(
+        new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_ledSubsytem))
+      .andThen(
+        alignToPath(
+          paths.get("I-Refill")))
+      .andThen(
+        new IntakeCoralCmd(
+          m_coral, 
+          m_elevator, 
+          m_ledSubsytem))
+      .andThen(
+        alignToPath(
+          paths.get("Refill-J")))
+      .andThen(
+        new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_ledSubsytem))
+      .andThen(
+        new DeployCoralCmd(
+          m_coral, 
+          m_ledSubsytem,
+          m_elevator))
+      .andThen(
+        new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_ledSubsytem))
+      .andThen(
+        alignToPath(
+          paths.get("J-Refill")))
+      .andThen(
+        new IntakeCoralCmd(
+          m_coral, 
+          m_elevator, 
+          m_ledSubsytem));
+  }
+
+  public Command MR_F_R_E_R() {
+    return 
+      alignToPath(
+        paths.get("CR-L4-F"))
+      .andThen(
+        new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_ledSubsytem))
+      .andThen(
+        new DeployCoralCmd(
+          m_coral, 
+          m_ledSubsytem,
+          m_elevator))
+      .andThen(
+        new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_ledSubsytem))
+      .andThen(
+        alignToPath(
+          paths.get("F-Refill")))
+      .andThen(
+        new IntakeCoralCmd(
+          m_coral, 
+          m_elevator, 
+          m_ledSubsytem))
+      .andThen(
+        alignToPath(
+          paths.get("Refill-E")))
+      .andThen(
+        new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_ledSubsytem))
+      .andThen(
+        new DeployCoralCmd(
+          m_coral, 
+          m_ledSubsytem,
+          m_elevator))
+      .andThen(
+        new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_ledSubsytem))
+      .andThen(
+        alignToPath(
+          paths.get("E-Refill")))
+      .andThen(
+        new IntakeCoralCmd(
+          m_coral, 
+          m_elevator, 
+          m_ledSubsytem));
   }
 }
