@@ -134,7 +134,7 @@ public class NetworkTableLogger {
    */
   public Pose2d[] getPose2dArray(String key) {
       // Retrieve a flattened double array; default to empty array if not found.
-      double[] doubles = table.getDoubleArrayTopic(key).getEntry(new double[0]).get();
+      double[] doubles = table.getEntry(key).getDoubleArray(new double[0]);
 
       // Validate that the array has a length that is a multiple of 3.
       if (doubles.length == 0 || doubles.length % 3 != 0) {
