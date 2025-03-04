@@ -45,6 +45,7 @@ public class Elevator extends SubsystemBase {
   private final SparkClosedLoopController elevatorPID;
   private final DigitalInput limitSwitch;
   private kElevator.ElevatorPosition targetHeight;
+  private kElevator.ElevatorPosition previousHeight;
   private double targetRotations;
   private NetworkTableLogger logger = new NetworkTableLogger("Elevator");
 
@@ -59,6 +60,7 @@ public class Elevator extends SubsystemBase {
   private TrapezoidProfile.State m_goal = new TrapezoidProfile.State();
   private TrapezoidProfile.State m_setpoint = new TrapezoidProfile.State();
 
+  private TrapezoidProfile.State m_intermediate = new TrapezoidProfile.State();
 
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- 
 
@@ -164,10 +166,17 @@ public class Elevator extends SubsystemBase {
 
   public void setElevatorHeightMotionProfile(kElevator.ElevatorPosition height_chosen) {
     // get double from enum
+    previousHeight = targetHeight;
     targetHeight = height_chosen;
     logger.logString("elevator level", targetHeight.toString());
     targetRotations = height_chosen.getOutputRotations();
     m_goal = new TrapezoidProfile.State(targetRotations, 0);
+    m_setpoint = new TrapezoidProfile.State(elevatorMotorR.getEncoder().getPosition(), elevatorMotorR.getEncoder().getVelocity());
+    if (height_chosen == kElevator.ElevatorPosition.L1 && previousHeight == kElevator.ElevatorPosition.L4) {
+      m_intermediate = new TrapezoidProfile.State(6, 20);
+    } else {
+      m_intermediate = new TrapezoidProfile.State(targetRotations, 0);
+    }
   }
 
   public kElevator.ElevatorPosition getElevatorSetPosition() {
@@ -215,7 +224,12 @@ public class Elevator extends SubsystemBase {
     //-=-=-=-=-=-=-=- Trapezoid Profile -=-=-=-=-=-=-=-
 
     // Retrieve the profiled setpoint for the next timestep. This setpoint moves toward the goal while obeying the constraints.
-    m_setpoint = m_profile.calculate(kDt, m_setpoint, m_goal);
+    if (getElevatorHeight() >= m_intermediate.position) {
+      m_setpoint = m_profile.calculate(kDt, m_setpoint, m_intermediate);
+    } else {
+      m_setpoint = m_profile.calculate(kDt, m_setpoint, m_goal);
+    }
+    m_setpoint = m_profile.calculate(kDt, m_setpoint, m_intermediate);
 
 
     // Send setpoint to offboard controller PID (I made this in periodic so when the setpositionTrapezoidProfile Method is updated it runs the elevator)
