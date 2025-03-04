@@ -28,7 +28,7 @@ public class Coral extends SubsystemBase {
   public final SparkLimitSwitch frontCoralSensor;
   public final SparkLimitSwitch backCoralSensor;
 
-  private NetworkTableLogger logger = new NetworkTableLogger(this.getSubsystem().toString());
+  private final NetworkTableLogger logger = new NetworkTableLogger(this.getSubsystem().toString());
 
   /** Creates a new Coral. */
   public Coral() {
@@ -45,9 +45,8 @@ public class Coral extends SubsystemBase {
                 LogData.CURRENT));
     backConfig = new SparkMaxConfig();
     backConfig // TODO: tune configs
-        .smartCurrentLimit(40)
+        .smartCurrentLimit(25)
         .idleMode(IdleMode.kBrake)
-        .inverted(true)
         .closedLoop
         .velocityFF(0)
         .pid(0.5, 0, 0);
@@ -73,7 +72,7 @@ public class Coral extends SubsystemBase {
 
     frontConfig = new SparkMaxConfig();
     frontConfig// TODO: tune configs
-        .smartCurrentLimit(40) 
+        .smartCurrentLimit(25) 
         .idleMode(IdleMode.kBrake)
         .inverted(true)
         .closedLoop
@@ -92,14 +91,6 @@ public class Coral extends SubsystemBase {
     backCoralSensor = frontMotor.getReverseLimitSwitch();
   }
 
-  public boolean getFrontCoralSensor() {
-    return frontCoralSensor.isPressed();
-  }
-
-  public boolean getBackCoralSensor() {
-    return backCoralSensor.isPressed();
-  }
-
   public void setIntakeSpeedDuty(double speed) {
     backMotor.getClosedLoopController().setReference(speed, ControlType.kDutyCycle);
   }
@@ -112,14 +103,6 @@ public class Coral extends SubsystemBase {
     frontMotor.getClosedLoopController().setReference(position, ControlType.kPosition);
   }
 
-  public void setIntakePos(double position) {
-    backMotor.getClosedLoopController().setReference(position, ControlType.kPosition);
-  }
-
-  public double getOuttakeRotations() {
-    return frontMotor.getEncoder().getPosition();
-  }
-  
   public void stopDeployer() {
     backMotor.getClosedLoopController().setReference(0, ControlType.kDutyCycle);
     frontMotor.getClosedLoopController().setReference(0, ControlType.kDutyCycle);
@@ -134,8 +117,12 @@ public class Coral extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    logger.logBoolean(
+      "Front Coral Sensor", 
+      frontCoralSensor.isPressed());
 
-    // PLEAS NEVER CHNAGE THIOS
-    logger.logBoolean("Front Coral Sensor", getFrontCoralSensor());
+    logger.logBoolean(
+      "Back Coral Sensor", 
+      backCoralSensor.isPressed());;
   }
 }

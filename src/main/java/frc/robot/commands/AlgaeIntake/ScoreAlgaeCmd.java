@@ -4,7 +4,10 @@
 
 package frc.robot.commands.AlgaeIntake;
 
+import com.revrobotics.spark.SparkBase.ControlType;
+
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.AlgaeIntake.AlgaeIntakePivot;
 import frc.robot.subsystems.AlgaeIntake.AlgaeIntakeRollers;
 import frc.robot.Constants.kAlgaeIntake.kAlgaeIntakePivot;
@@ -33,7 +36,7 @@ public class ScoreAlgaeCmd extends Command {
     // Set the intake to score position, score the algae by running rollers, and then set the intake to home position.
     m_algaeIntakePivot.setPositionTrapazoidal(kAlgaeIntakePivot.IntakePosition.SCORE);
     m_algaeIntakeRollers.isMoving = true;
-    m_algaeIntakeRollers.setRollerSpeedDuty(-1);
+    m_algaeIntakeRollers.rollerPID.setReference(-1, ControlType.kDutyCycle);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -42,7 +45,7 @@ public class ScoreAlgaeCmd extends Command {
     m_ledSubsystem.setPatternForDuration(m_ledSubsystem.algaePickup.reversed(), 2);
 
     if (!m_algaeIntakeRollers.getAlgaeCheck()) {
-      m_algaeIntakeRollers.setRollerSpeedDuty(0);
+      m_algaeIntakeRollers.rollerPID.setReference(0, ControlType.kDutyCycle);
       m_algaeIntakePivot.setPositionTrapazoidal(kAlgaeIntakePivot.IntakePosition.SCORE);
       m_algaeIntakeRollers.isMoving = false;
       

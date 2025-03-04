@@ -42,7 +42,7 @@ public class IntakeAlgaeCmd extends Command {
 
     if (m_algaeIntakeRollers.getAlgaeCheck()) {
       m_algaeIntakeRollers.isMoving = false;
-      m_algaeIntakePivot.setPositionTrapazoidal(kAlgaeIntakePivot.IntakePosition.HOME);
+      m_algaeIntakePivot.setPositionTrapazoidal(kAlgaeIntakePivot.IntakePosition.SCORE);
       
       this.cancel();
     }
@@ -51,8 +51,7 @@ public class IntakeAlgaeCmd extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_algaeIntakePivot.setPositionTrapazoidal(kAlgaeIntakePivot.IntakePosition.HOME);
-    m_algaeIntakeRollers.setRollerSpeedDuty(0);
+
     // Set the intake rollers to idle pull in voltage
     // Go back to home position
     // m_algaeIntakePivot.setIntakePivotPosition(kAlgaeIntakePivot.IntakePosition.HOME);
