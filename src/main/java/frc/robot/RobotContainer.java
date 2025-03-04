@@ -4,6 +4,13 @@
 
 package frc.robot;
 
+import java.io.IOException;
+import java.nio.file.Path;
+
+import org.json.simple.parser.ParseException;
+
+import com.pathplanner.lib.path.PathPlannerPath;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -200,16 +207,5 @@ public class RobotContainer {
     //         .getDegrees()
     //     < 0.1)
     // .andThen(() -> joystickOperated())
-  }
-
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   * Call this method from the {@link Robot#autonomousInit} method in order to run the autonomous command.
-   * 
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    return null; //m_Autos.alignToPath(PathPlannerPath.fromChoreoTrajectory("ML-L4-FE"));
   }
 }

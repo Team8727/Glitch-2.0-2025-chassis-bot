@@ -45,7 +45,6 @@ public class Robot extends TimedRobot {
   private final CommandXboxController m_driverController = new CommandXboxController(0);
   private final PoseEstimatior m_PoseEstimatior = new PoseEstimatior(m_SwerveSubsystem);
   private final LEDSubsystem m_ledSubsytem = new LEDSubsystem();
-  private final Autos m_Autos = new Autos(m_ledSubsytem);
   private final NetworkTableLogger logger = new NetworkTableLogger("SHOW UPPPP");
   private final AlgaeRemoverRollers m_AlgeaRemoverRollers = new AlgaeRemoverRollers();
   private final AlgaeRemoverPivot m_AlgaeRemoverPivot = new AlgaeRemoverPivot();
@@ -53,6 +52,7 @@ public class Robot extends TimedRobot {
   private final Elevator m_elevator = new Elevator();
   private final AlgaeIntakePivot m_AlgaeIntakePivot = new AlgaeIntakePivot();
   private final AlgaeIntakeRollers m_AlgaeIntakeRollers = new AlgaeIntakeRollers();
+  private final Autos m_Autos = new Autos(m_ledSubsytem, m_coral, m_elevator);
   private boolean m_elevatorSpeedControl = true;
 
   /**
@@ -150,7 +150,7 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    // m_robotContainer.getAutonomousCommand();
+    m_Autos.getAutonomousCommand(); // TODO: Only enable this if you want the robot to do stuff during autonomous
   }
 
   /** This function is called periodically during autonomous. */

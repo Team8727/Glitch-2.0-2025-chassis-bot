@@ -3,12 +3,15 @@ package frc.robot.utilities;
 import edu.wpi.first.hal.can.CANStatus;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.DoubleArrayPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.networktables.StructArrayPublisher;
@@ -120,6 +123,35 @@ public class NetworkTableLogger {
     booleanPublisher.set(value);
   }
 
+  /**
+   * Get method for retrieving a Pose2d array from the network table.
+   * The underlying double array is expected to have a length that is a multiple of 3,
+   * where each group of three values represents x, y, and rotation (in radians) for a Pose2d.
+   *
+   * @param key the key representing the Pose2d array
+   * @param defaultValue the default Pose2d array to return if the retrieved array is invalid
+   * @return an array of Pose2d built from the flattened double array from the network table
+   */
+  public Pose2d[] getPose2dArray(String key) {
+      // Retrieve a flattened double array; default to empty array if not found.
+      double[] doubles = table.getDoubleArrayTopic(key).getEntry(new double[0]).get();
+
+      // Validate that the array has a length that is a multiple of 3.
+      if (doubles.length == 0 || doubles.length % 3 != 0) {
+          return new Pose2d[0];
+      }
+
+      int numPoses = doubles.length / 3;
+      Pose2d[] poses = new Pose2d[numPoses];
+      for (int i = 0; i < numPoses; i++) {
+          double x = doubles[i * 3];
+          double y = doubles[i * 3 + 1];
+          double rotation = doubles[i * 3 + 2];
+          poses[i] = new Pose2d(new Translation2d(x, y), new Rotation2d(rotation));
+      }
+      return poses;
+  }
+    
   /**
    * Get method for retrieving a boolean from the network table (can be seen using AdvantageScope, Glass,
    * Elastic, etc.)

@@ -252,8 +252,8 @@ public class Elevator extends SubsystemBase {
   }
 
   public void teleopPeriodic() {
-    if (Robot.isSimulation()) {
-      setElevatorHeightMotionProfile(ElevatorPosition.L4);
-    }
+    // if (Robot.isSimulation()) {
+    //   setElevatorHeightMotionProfile(ElevatorPosition.L4);
+    // }
   }
 }

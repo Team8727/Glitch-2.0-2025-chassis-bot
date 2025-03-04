@@ -53,6 +53,7 @@ public class RemoveAlgaeCmd extends Command {
   @Override
   public void end(boolean interrupted) {
     m_rollers.setRemoverRollerSpeed(0);
+    m_pivot.setPositionTrapazoidal(RemoverPositions.Stowed);
   }
 
   // Returns true when the command should end.
