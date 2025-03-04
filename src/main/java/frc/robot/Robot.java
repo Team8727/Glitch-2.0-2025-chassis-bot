@@ -150,7 +150,7 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    m_Autos.M_H(); // TODO: Only enable this if you want the robot to do stuff during autonomous
+    // m_Autos.M_H(); // TODO: Only enable this if you want the robot to do stuff during autonomous
   }
 
   /** This function is called periodically during autonomous. */
