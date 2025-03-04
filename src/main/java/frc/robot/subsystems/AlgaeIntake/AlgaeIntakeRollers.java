@@ -27,8 +27,10 @@ public class AlgaeIntakeRollers extends SubsystemBase {
   private final SparkMax intakeRollerMotor;
   private final SparkMaxConfig config;
   private final DigitalInput algaeCheck;
-  public final SparkClosedLoopController rollerPID;
+  private final SparkClosedLoopController rollerPID;
   public boolean isMoving = false;
+  private NetworkTableLogger logger = new NetworkTableLogger(this.getSubsystem().toString());
+
 
   /** Creates a new AlgaeIntakeRollers. */
   public AlgaeIntakeRollers() {
@@ -142,6 +144,7 @@ boolean m_shouldLog = false;
   @Override
   public void periodic() {
     holdAlgae();
+    logger.logBoolean("Algae Sensor", getAlgaeCheck());
     // This method will be called once per scheduler run
     if (m_shouldLog) {
       startLogging();

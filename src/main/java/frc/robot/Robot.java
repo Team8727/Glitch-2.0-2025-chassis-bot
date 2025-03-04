@@ -12,6 +12,7 @@ import com.pathplanner.lib.commands.PathfindingCommand;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -43,7 +44,6 @@ public class Robot extends TimedRobot {
   private final CommandXboxController m_driverController = new CommandXboxController(0);
   private final PoseEstimatior m_PoseEstimatior = new PoseEstimatior(m_SwerveSubsystem);
   private final LEDSubsystem m_ledSubsytem = new LEDSubsystem();
-  private final Autos m_Autos = new Autos(m_ledSubsytem);
   private final NetworkTableLogger logger = new NetworkTableLogger("SHOW UPPPP");
   private final AlgaeRemoverRollers m_AlgeaRemoverRollers = new AlgaeRemoverRollers();
   private final AlgaeRemoverPivot m_AlgaeRemoverPivot = new AlgaeRemoverPivot();
@@ -51,6 +51,8 @@ public class Robot extends TimedRobot {
   private final Elevator m_elevator = new Elevator();
   private final AlgaeIntakePivot m_AlgaeIntakePivot = new AlgaeIntakePivot();
   private final AlgaeIntakeRollers m_AlgaeIntakeRollers = new AlgaeIntakeRollers();
+  private final Autos m_Autos = new Autos(m_ledSubsytem, m_coral, m_elevator);
+  private boolean m_elevatorSpeedControl = true;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -98,7 +100,8 @@ public class Robot extends TimedRobot {
             m_elevator,
             m_driverController,
             m_ledSubsytem,
-            m_Autos
+            m_Autos,
+            m_elevatorSpeedControl
             );
 
     // Set Up PathPlanner to "warm up" the pathplanning system
@@ -124,6 +127,10 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    logger.logDouble("voltage", RobotController.getInputVoltage());
+
+    // m_elevatorSpeedControl = logger.getBoolean("Limit Speed", true);
+
     // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
@@ -141,7 +148,7 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    // m_robotContainer.getAutonomousCommand();
+    m_Autos.getAutonomousCommand(); // TODO: Only enable this if you want the robot to do stuff during autonomous
   }
 
   /** This function is called periodically during autonomous. */

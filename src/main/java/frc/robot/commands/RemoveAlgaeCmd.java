@@ -5,7 +5,9 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.kElevator;
+import frc.robot.Constants.kAlgaeRemover.kPivot.RemoverPositions;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.AlgaeRemover.AlgaeRemoverPivot;
 import frc.robot.subsystems.Elevator.AlgaeRemover.AlgaeRemoverRollers;
@@ -33,17 +35,13 @@ public class RemoveAlgaeCmd extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
+  public void initialize() {
     if (m_setPos == 2) {
       m_elevator.setElevatorHeightMotionProfile(kElevator.ElevatorPosition.A2); // TODO: set positions
-      m_pivot.setRemoverPos(0); // TODO: set positions
+      m_pivot.setRemoverPos(RemoverPositions.Raised.getOutputRotations()); // TODO: set positions
     } else if (m_setPos == 3) {
       m_elevator.setElevatorHeightMotionProfile(kElevator.ElevatorPosition.A3); // TODO: set positions
-      m_pivot.setRemoverPos(0); // TODO: set positions
+      m_pivot.setRemoverPos(RemoverPositions.Raised.getOutputRotations()); // TODO: set positions
     }
     m_rollers.spinnnnnnn(); // TODO: set speed
 
@@ -52,6 +50,12 @@ public class RemoveAlgaeCmd extends Command {
     } else if (m_setPos == 3){
       m_ledSubsystem.setPatternForDuration(m_ledSubsystem.ace, 2);
     }
+  }
+
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {
+    
   }
 
   // Called once the command ends or is interrupted.

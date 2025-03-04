@@ -4,11 +4,8 @@
 
 package frc.robot.subsystems.Elevator;
 
-import com.pathplanner.lib.config.RobotConfig;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.sim.SparkMaxSim;
 import com.revrobotics.spark.ClosedLoopSlot;
-import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
@@ -25,29 +22,21 @@ import java.util.Set;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
-import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
-import edu.wpi.first.wpilibj.simulation.EncoderSim;
-import edu.wpi.first.wpilibj.simulation.PWMSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Robot;
-import frc.robot.Constants;
 import frc.robot.Constants.kConfigs;
 import frc.robot.Constants.kElevator;
 import frc.robot.Constants.kElevator.ElevatorPosition;
 import frc.robot.utilities.NetworkTableLogger;
 import frc.robot.utilities.SparkConfigurator.LogData;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.SparkBase;
 public class Elevator extends SubsystemBase {
 
   private final SparkMax elevatorMotorR;
@@ -70,6 +59,7 @@ public class Elevator extends SubsystemBase {
   private TrapezoidProfile.State m_goal = new TrapezoidProfile.State();
   private TrapezoidProfile.State m_setpoint = new TrapezoidProfile.State();
 
+
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- 
 
   private final ElevatorFeedforward elevatorFeedforward = new ElevatorFeedforward(0, 1.28, 3.71, 0.23);
@@ -87,7 +77,6 @@ public class Elevator extends SubsystemBase {
   private final SparkMaxSim m_SparkMaxSim;
 
   private final Timer m_timer = new Timer();
-  private final XboxController m_driverController = new XboxController(0);
 
   /** Creates a new Elevator. */
   public Elevator() {
@@ -175,6 +164,8 @@ public class Elevator extends SubsystemBase {
 
   public void setElevatorHeightMotionProfile(kElevator.ElevatorPosition height_chosen) {
     // get double from enum
+    targetHeight = height_chosen;
+    logger.logString("elevator level", targetHeight.toString());
     targetRotations = height_chosen.getOutputRotations();
     m_goal = new TrapezoidProfile.State(targetRotations, 0);
   }
@@ -219,7 +210,8 @@ public class Elevator extends SubsystemBase {
     logger.logDouble("setpos", targetRotations);
     logger.logDouble("TrapezoidProfile", m_setpoint.position);
     logger.logDouble("simPosition", elevatorSim.getPositionMeters());
-    
+    logger.logDouble("actualPos", elevatorMotorR.getEncoder().getPosition());
+        
     //-=-=-=-=-=-=-=- Trapezoid Profile -=-=-=-=-=-=-=-
 
     // Retrieve the profiled setpoint for the next timestep. This setpoint moves toward the goal while obeying the constraints.
@@ -246,8 +238,8 @@ public class Elevator extends SubsystemBase {
   }
 
   public void teleopPeriodic() {
-    if (Robot.isSimulation()) {
-      setElevatorHeightMotionProfile(ElevatorPosition.L4);
-    }
+    // if (Robot.isSimulation()) {
+    //   setElevatorHeightMotionProfile(ElevatorPosition.L4);
+    // }
   }
 }

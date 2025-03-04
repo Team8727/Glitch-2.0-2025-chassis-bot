@@ -33,6 +33,8 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.SPI.Port;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -96,11 +98,11 @@ public final class Constants {
     // public static double maxAngAccel = 10 * 2 * Math.PI;//10
 
     // test speeds
-    public static final double maxTransSpeed = 0.5; // 5
-    public static final double maxAngSpeed = 0.3 * Math.PI; // 3
+    public static final double maxTransSpeed = 5; // 5
+    public static final double maxAngSpeed = 3 * Math.PI; // 3
 
-    public static final double maxTransAccel = .135 * 9.81; // 1.35
-    public static final  double maxAngAccel = 1 * 2 * Math.PI; // 10
+    public static final double maxTransAccel = 1.35 * 9.81; // 1.35
+    public static final  double maxAngAccel = 10 * 2 * Math.PI; // 10
 
     public static class DriveSpeedScaling {
       public static final double minDriveSpeed = 0.5; // TODO: Set this for scaling
@@ -270,19 +272,20 @@ public final class Constants {
         AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
     public static final Transform3d camera1Position =
         new Transform3d(
-            new Translation3d(0.2921, 0.0381, 0.24765), new Rotation3d(0, Math.toRadians(25), 0));
+            new Translation3d(-0.2032, -0.0508, 0.7862), 
+            new Rotation3d(0, Math.toRadians(216.6), Math.toRadians(30)));
     public static final Transform3d camera2Position =
         new Transform3d(
-            new Translation3d(-0.2921, 0.0381, 0.18),
-            new Rotation3d(0, Math.toRadians(10), Math.toRadians(180)));
+            new Translation3d(0.2032, -0.0508, .7862),
+            new Rotation3d(0, Math.toRadians(143.4), Math.toRadians(30)));
     public static final Transform3d camera3Position =
         new Transform3d(
-            new Translation3d(-0.0381, 0.2921, 0.18),
-            new Rotation3d(0, Math.toRadians(10), Math.toRadians(270)));
+            new Translation3d(-0.11176, 0.3048, 0.225425),
+            new Rotation3d(0, Math.toRadians(141), Math.toRadians(145)));
     public static final Transform3d camera4Position =
         new Transform3d(
-            new Translation3d(0.0381, -0.2921, .18),
-            new Rotation3d(0, Math.toRadians(10), Math.toRadians(90)));
+            new Translation3d(-0.1905, -0.155575, 1.016),
+            new Rotation3d(0, Math.toRadians(34.95), Math.toRadians(20)));
 
     public static final Matrix<N3, N1> stateStdDevs =
         MatBuilder.fill(Nat.N3(), Nat.N1(), 0.02, 0.02, 0.01);
@@ -388,9 +391,9 @@ public final class Constants {
 
     public enum ElevatorPosition {
       L1(0.3848), // TODO: SET WITH ACTUAL VALUES
-      L2(7.23663),// TODO: SET WITH ACTUAL VALUES
-      L3(19.43877), // TODO: SET WITH ACTUAL VALUES
-      L4(40.03888), // TODO: SET WITH ACTUAL VALUES
+      L2(8.23663),// TODO: SET WITH ACTUAL VALUES
+      L3(20.43877), // TODO: SET WITH ACTUAL VALUES
+      L4(39.53888), // TODO: SET WITH ACTUAL VALUES
       A2(13.3377), // TODO: SET WITH ACTUAL VALUES
       A3(29.06465); // TODO: SET WITH ACTUAL VALUES
     
@@ -403,6 +406,22 @@ public final class Constants {
       public double getOutputRotations() {
         return rotations;
       }
+    }
+  }
+  public static class CustomCommands {
+    public static Command waitCommand(double seconds, Command command) {
+      return Commands.runOnce(() -> {
+        new Thread(() -> {
+          try {
+            Thread.sleep((long) (seconds * 1000));
+            command.schedule();
+          } catch (InterruptedException e) {
+            e.printStackTrace();
+          } finally {
+            Thread.currentThread().interrupt();
+          }
+        }).start();
+      });
     }
   }
 }
