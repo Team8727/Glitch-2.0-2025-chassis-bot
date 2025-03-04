@@ -114,7 +114,8 @@ public class Autos extends SubsystemBase {
     .andThen(
       new DeployCoralCmd(
         m_coral, 
-        m_ledSubsytem))
+        m_ledSubsytem,
+        m_elevator))
     .andThen(
       alignToPath(
         paths.get(

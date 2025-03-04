@@ -53,6 +53,7 @@ public class Robot extends TimedRobot {
   private final AlgaeIntakePivot m_AlgaeIntakePivot = new AlgaeIntakePivot();
   private final AlgaeIntakeRollers m_AlgaeIntakeRollers = new AlgaeIntakeRollers();
   private final Autos m_Autos = new Autos(m_ledSubsytem, m_coral, m_elevator);
+
   private boolean m_elevatorSpeedControl = true;
 
   /**
