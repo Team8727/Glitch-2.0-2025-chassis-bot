@@ -35,6 +35,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -301,8 +302,8 @@ public final class Constants {
       public static int removerPivotMotorCANID =12; // TODO: not set yet because remover is not built yet
 
       public enum RemoverPositions {
-        Raised(15.6), // TODO: SET WITH ACTUAL VALUES
-        Stowed(-105); // TODO: SET WITH ACTUAL VALUES
+        Raised(90), // TODO: SET WITH ACTUAL VALUES
+        Stowed(0); // TODO: SET WITH ACTUAL VALUES
       
         private final double degrees;
         
@@ -310,8 +311,8 @@ public final class Constants {
           this.degrees = degrees;
         }
   
-        public double getOutputRotations() {
-          return degrees * (75.0 / 2.0) / 360;
+        public double getDegrees() {
+          return degrees;
         }
       }
 }
@@ -409,12 +410,12 @@ public final class Constants {
     }
   }
   public static class CustomCommands {
-    public static Command waitCommand(double seconds, Command command) {
+    public static Command waitCommand(double seconds, Runnable command) {
       return Commands.runOnce(() -> {
         new Thread(() -> {
           try {
             Thread.sleep((long) (seconds * 1000));
-            command.schedule();
+            new InstantCommand(command).schedule();
           } catch (InterruptedException e) {
             e.printStackTrace();
           } finally {

@@ -75,9 +75,10 @@ public class AlgaeRemoverPivot extends SubsystemBase {
   }
 
   // set pivot position
-  public void setRemoverPos(double angle) {
+  public void setRemoverPos(RemoverPositions angle) {
+    double degrees = angle.getDegrees();
     // double rotations = angle * 75.0 / 2.0 / 360;
-    removerPivotPID.setReference(angle, ControlType.kPosition);
+    removerPivotPID.setReference(degrees, ControlType.kPosition);
   }
 
   private void setMotorFFandPIDPosition(double removerPosition, double velocitySetpoint) {
@@ -91,7 +92,7 @@ public class AlgaeRemoverPivot extends SubsystemBase {
   }
 
   public void setPositionTrapazoidal(RemoverPositions removerPosition) {
-    double rotation = removerPosition.getOutputRotations() / 360;
+    double rotation = removerPosition.getDegrees() / 360;
     m_goal = new TrapezoidProfile.State(rotation, 0);
   }
 
