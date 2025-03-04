@@ -101,13 +101,7 @@ public class Autos extends SubsystemBase {
                     ;
   }
 
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-  }
-
-  public Command getAutonomousCommand() { // TODO: This is where our autonomous commands will be run, check to see if it works
-    // An example command will be run in autonomous
+  private Command path_M_L4_H() {
     return 
     alignToPath(
       paths.get("M-L4-H"))
@@ -124,5 +118,116 @@ public class Autos extends SubsystemBase {
         m_coral, 
         m_elevator, 
         m_ledSubsytem));
+  }
+
+  private Command path_CL_L4_I_J() {
+    return 
+    alignToPath(
+      paths.get("CL-L4-I"))
+    .andThen(
+      new DeployCoralCmd(
+        m_coral, 
+        m_ledSubsytem))
+    .andThen(
+      alignToPath(
+        paths.get("I-Refill")))
+    .andThen(
+      new IntakeCoralCmd(
+        m_coral, 
+        m_elevator, 
+        m_ledSubsytem))
+    .andThen(
+      alignToPath(
+        paths.get("Refill-J")))
+    .andThen(
+      new DeployCoralCmd(
+        m_coral, 
+        m_ledSubsytem));
+  }
+
+  private Command path_CR_L4_F_E() {
+    return 
+    alignToPath(
+      paths.get("CR-L4-F"))
+    .andThen(
+      new DeployCoralCmd(
+        m_coral, 
+        m_ledSubsytem))
+    .andThen(
+      alignToPath(
+        paths.get("F-Refill")))
+    .andThen(
+      new IntakeCoralCmd(
+        m_coral, 
+        m_elevator, 
+        m_ledSubsytem))
+    .andThen(
+      alignToPath(
+        paths.get("Refill-E")))
+    .andThen(
+      new DeployCoralCmd(
+        m_coral, 
+        m_ledSubsytem));
+  }
+
+  private Command path_ML_L4_I_J() {
+    return
+    alignToPath(
+      paths.get("M-L4-I"))
+    .andThen(
+      new DeployCoralCmd(
+        m_coral, 
+        m_ledSubsytem))
+    .andThen(
+      alignToPath(
+        paths.get("I-Refill")))
+    .andThen(
+      new IntakeCoralCmd(
+        m_coral, 
+        m_elevator, 
+        m_ledSubsytem))
+    .andThen(
+      alignToPath(
+        paths.get("Refill-J")))
+    .andThen(
+      new DeployCoralCmd(
+        m_coral, 
+        m_ledSubsytem));
+  }
+
+  private Command path_MR_L4_F() {
+    return 
+    alignToPath(
+      paths.get("M-L4-F"))
+    .andThen(
+      new DeployCoralCmd(
+        m_coral, 
+        m_ledSubsytem))
+    .andThen(
+      alignToPath(
+        paths.get("F-Refill")))
+    .andThen(
+      new IntakeCoralCmd(
+        m_coral, 
+        m_elevator, 
+        m_ledSubsytem))
+    .andThen(
+      alignToPath(
+        paths.get("Refill-E")))
+    .andThen(
+      new DeployCoralCmd(
+        m_coral, 
+        m_ledSubsytem));
+  }
+
+  @Override
+  public void periodic() {
+    // This method will be called once per scheduler run
+  }
+
+  public Command getAutonomousCommand() { // TODO: This is where our autonomous commands will be run, check to see if it works
+    // An example command will be run in autonomous
+    return 
+    path_M_L4_H();
   }
 }

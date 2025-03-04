@@ -64,7 +64,7 @@ public class AlgaeRemoverRollers extends SubsystemBase {
   }
 
   public void spinnnnnnn() {
-    setRemoverRollerSpeed(1000).withTimeout(1).andThen(() -> setRemoverRollerSpeed(0));
+    setRemoverRollerSpeed(1000);
   }
 
   @Override
