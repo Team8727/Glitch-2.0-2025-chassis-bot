@@ -10,6 +10,8 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
@@ -68,13 +70,13 @@ public class Robot extends TimedRobot {
         m_SwerveSubsystem::getChassisSpeeds,
         (chassisSpeeds, driveff) -> {
           System.out.println("aligning");
-          PathPlannerLogging.setLogActivePathCallback((poselist) -> {
-            m_PoseEstimatior.field2d.getObject("Trajectory")
-              .setTrajectory(
-                TrajectoryGenerator.generateTrajectory(
-                  poselist, 
-                  new TrajectoryConfig(10, 5))); //TODO: get this from pathplanner somehow
-          });
+          // PathPlannerLogging.setLogActivePathCallback((poselist) -> {
+          //   m_PoseEstimatior.field2d.getObject("Trajectory")
+          //     .setTrajectory(
+          //       TrajectoryGenerator.generateTrajectory(
+          //         poselist, 
+          //         new TrajectoryConfig(10, 5))); //TODO: get this from pathplanner somehow
+          // });
           logger.logChassisSpeeds("speeds", chassisSpeeds);
           m_SwerveSubsystem.setModuleStates(kSwerve.kinematics.toSwerveModuleStates(ChassisSpeeds.fromRobotRelativeSpeeds(chassisSpeeds, m_SwerveSubsystem.getRotation2d())));
           // new DriveCmd(m_SwerveSubsystem, () -> chassisSpeeds, () -> true).execute();
@@ -159,7 +161,7 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().cancelAll();
     m_robotContainer.autonomousInit();
 
-    m_Autos.ML_I_R_J_R().schedule();; // TODO: Only enable this if you want the robot to do stuff during autonomous
+    m_Autos.align(new Pose2d(6.1,4.1,new Rotation2d(120))).schedule(); // TODO: Only enable this if you want the robot to do stuff during autonomous
 
   }
 
