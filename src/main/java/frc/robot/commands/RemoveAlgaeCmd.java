@@ -44,12 +44,12 @@ public class RemoveAlgaeCmd extends Command {
             Thread.sleep(500);
             m_pivot.setPositionTrapazoidal(RemoverPositions.Stowed);
             m_rollers.setRemoverRollerSpeed(0);
-            this.cancel();
-            Thread.currentThread().interrupt();    
           } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             e.printStackTrace();
           }
+          this.cancel();
+          Thread.currentThread().interrupt();    
         }).start();
       } else {
       m_elevator.setElevatorHeightMotionProfile(m_setPos);
