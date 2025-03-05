@@ -84,13 +84,13 @@ public class DefaultTeleopControllerBindings implements ControllerBindings {
         controller.rightBumper().onTrue(new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator));
 
         // elevator L1
-        controller.x().onTrue(new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_ledSubsytem));
+        controller.x().onTrue(new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_coral, m_ledSubsytem));
         // elevator L2
-        controller.y().onTrue(new SetElevatorHeightCmd(ElevatorPosition.L2, m_elevator, m_ledSubsytem));
+        controller.y().onTrue(new SetElevatorHeightCmd(ElevatorPosition.L2, m_elevator, m_coral, m_ledSubsytem));
         // elevator L3
-        controller.b().onTrue(new SetElevatorHeightCmd(ElevatorPosition.L3, m_elevator, m_ledSubsytem));
+        controller.b().onTrue(new SetElevatorHeightCmd(ElevatorPosition.L3, m_elevator, m_coral, m_ledSubsytem));
         // elevator L4
-        controller.a().onTrue(new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_ledSubsytem));
+        controller.a().onTrue(new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem));
 
         // zero elevator
         controller.povDown().onTrue(new InstantCommand(() -> m_elevator.resetElevatorEncoders()));

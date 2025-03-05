@@ -41,13 +41,19 @@ public class SetElevatorHeightCmd extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-      m_elevator.setElevatorHeightMotionProfile(m_scoreLevel);
+      m_coral.setIntakeSpeedDuty(.5);
       this.cancel();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    if (!m_coral.getFrontCoralSensor()) {
+      m_coral.setIntakeSpeedDuty(0);
+      m_coral.holdPosition();
+      m_elevator.setElevatorHeightMotionProfile(m_scoreLevel);
+      this.cancel();
+    }
     m_ledSubsystem.setPatternForDuration(m_ledSubsystem.coralPickup.reversed(), 2);
   }
 
