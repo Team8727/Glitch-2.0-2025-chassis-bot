@@ -113,22 +113,13 @@ public class Autos extends SubsystemBase {
   }
 
   private Command path_M_L4_H() {
-    return 
-    alignToPath(
-      paths.get("M-L4-H"))
-    .andThen(
-      new DeployCoralCmd(
-        m_coral, 
-        m_ledSubsytem,
-        m_elevator))
-    .andThen(
-      alignToPath(
-        paths.get("H-Refill")))
-    .andThen(
-      new IntakeCoralCmd(
-        m_coral, 
-        m_elevator, 
-        m_ledSubsytem));
+    return new SequentialCommandGroup(
+      alignToPath(paths.get("M-L4-H")),
+      new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_ledSubsytem),
+      new DeployCoralCmd(m_coral, m_ledSubsytem,m_elevator),
+      new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_ledSubsytem),
+      alignToPath(paths.get("H-Refill")),
+      new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsytem));
   }
 
   public Command CR_FE() {
@@ -147,223 +138,86 @@ public class Autos extends SubsystemBase {
   }
 
   private Command path_ML_L4_I_J() {
-    return
-    alignToPath(
-      paths.get("M-L4-I"))
-    .andThen(
-      new SetElevatorHeightCmd(
-        ElevatorPosition.L4, 
-        m_elevator, 
-        m_ledSubsytem))
-    .andThen(
-      new DeployCoralCmd(
-        m_coral, 
-        m_ledSubsytem,
-        m_elevator))
-    .andThen(
-      new SetElevatorHeightCmd(
-        ElevatorPosition.L1, 
-        m_elevator, 
-        m_ledSubsytem))
-    .andThen(
-      alignToPath(
-        paths.get(
-          "I-Refill")))
-    .andThen(
-      new IntakeCoralCmd(
-        m_coral, 
-        m_elevator, 
-        m_ledSubsytem));
+    return new SequentialCommandGroup(
+      alignToPath(paths.get("M-L4-I")),
+      new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_ledSubsytem),
+      new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator),
+      new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_ledSubsytem),
+      alignToPath(paths.get("I-Refill")),
+      new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsytem));
   }
 
   public Command ML_I_R_J_R() {
-    return 
-      alignToPath(
-        paths.get("ML-L4-I"))
-      .andThen(
-        new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_ledSubsytem))
-      .andThen(
-        new DeployCoralCmd(
-          m_coral, 
-          m_ledSubsytem,
-          m_elevator))
-      .andThen(
-        new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_ledSubsytem))
-      .andThen(
-        alignToPath(
-          paths.get("I-Refill")))
-      .andThen(
-        new IntakeCoralCmd(
-          m_coral, 
-          m_elevator, 
-          m_ledSubsytem))
-      .andThen(
-        alignToPath(
-          paths.get("Refill-J")))
-      .andThen(
-        new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_ledSubsytem))
-      .andThen(
-        new DeployCoralCmd(
-          m_coral, 
-          m_ledSubsytem,
-          m_elevator))
-      .andThen(
-        new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_ledSubsytem))
-      .andThen(
-        alignToPath(
-          paths.get("J-Refill")))
-      .andThen(
-        new IntakeCoralCmd(
-          m_coral, 
-          m_elevator, 
-          m_ledSubsytem));
+    return new SequentialCommandGroup(
+      alignToPath(paths.get("ML-L4-I")),
+      new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_ledSubsytem),
+      new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator),
+      new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_ledSubsytem),
+      alignToPath(paths.get("I-Refill")),
+      new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsytem),
+      alignToPath(paths.get("Refill-J")),
+      new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_ledSubsytem),
+      new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator),
+      new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_ledSubsytem),
+      alignToPath(paths.get("J-Refill")),
+      new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsytem));
   }
 
   public Command MR_F_R_E_R() {
-    return 
-      alignToPath(
-        paths.get("MR-L4-F"))
-      .andThen(
-        new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_ledSubsytem))
-      .andThen(
-        new DeployCoralCmd(
-          m_coral, 
-          m_ledSubsytem,
-          m_elevator))
-      .andThen(
-        new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_ledSubsytem))
-      .andThen(
-        alignToPath(
-          paths.get("F-Refill")))
-      .andThen(
-        new IntakeCoralCmd(
-          m_coral, 
-          m_elevator, 
-          m_ledSubsytem))
-      .andThen(
-        alignToPath(
-          paths.get("Refill-E")))
-      .andThen(
-        new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_ledSubsytem))
-      .andThen(
-        new DeployCoralCmd(
-          m_coral, 
-          m_ledSubsytem,
-          m_elevator))
-      .andThen(
-        new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_ledSubsytem))
-      .andThen(
-        alignToPath(
-          paths.get("E-Refill")))
-      .andThen(
-        new IntakeCoralCmd(
-          m_coral, 
-          m_elevator, 
-          m_ledSubsytem));
+    return new SequentialCommandGroup(
+      alignToPath(paths.get("MR-L4-F")),
+      new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_ledSubsytem),
+      new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator),
+      new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_ledSubsytem),
+      alignToPath(paths.get("F-Refill")),
+      new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsytem),
+      alignToPath(paths.get("Refill-E")),
+      new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_ledSubsytem),
+      new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator),
+      new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_ledSubsytem),
+      alignToPath(paths.get("E-Refill")),
+      new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsytem));
   }
 
   private Command path_CL_L4_I_J() {
-    return 
-    alignToPath(
-      paths.get("CL-L4-I"))
-    .andThen(
-      new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_ledSubsytem))
-    .andThen(
-      new DeployCoralCmd(
-        m_coral, 
-        m_ledSubsytem,
-        m_elevator))
-    .andThen(
-      new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_ledSubsytem))
-    .andThen(
-      alignToPath(
-        paths.get("I-Refill")))
-    .andThen(
-      new IntakeCoralCmd(
-        m_coral, 
-        m_elevator, 
-        m_ledSubsytem))
-    .andThen(
-      alignToPath(
-        paths.get("Refill-J")))
-    .andThen(
-      new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_ledSubsytem))
-    .andThen(
-      new DeployCoralCmd(
-        m_coral, 
-        m_ledSubsytem,
-        m_elevator))
-    .andThen(
+    return new SequentialCommandGroup(
+      alignToPath(paths.get("CL-L4-I")),
+      new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_ledSubsytem),
+      new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator),
+      new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_ledSubsytem),
+      alignToPath(paths.get("I-Refill")),
+      new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsytem),
+      alignToPath(paths.get("Refill-J")),
+      new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_ledSubsytem),
+      new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator),
       new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_ledSubsytem));
   }
 
   private Command path_CR_L4_F_E() {
-    return 
-    alignToPath(
-      paths.get("CR-L4-F"))
-    .andThen(
-      new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_ledSubsytem))
-    .andThen(
-      new DeployCoralCmd(
-        m_coral, 
-        m_ledSubsytem,
-        m_elevator))
-    .andThen(
-      new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_ledSubsytem))
-    .andThen(
-      alignToPath(
-        paths.get("F-Refill")))
-    .andThen(
-      new IntakeCoralCmd(
-        m_coral, 
-        m_elevator, 
-        m_ledSubsytem))
-    .andThen(
-      alignToPath(
-        paths.get("Refill-E")))
-    .andThen(
-      new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_ledSubsytem))
-    .andThen(
-      new DeployCoralCmd(
-        m_coral, 
-        m_ledSubsytem,
-        m_elevator))
-    .andThen(
+    return new SequentialCommandGroup(
+      alignToPath(paths.get("CR-L4-F")),
+      new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_ledSubsytem),
+      new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator),
+      new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_ledSubsytem),
+      alignToPath(paths.get("F-Refill")),
+      new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsytem),
+      alignToPath(paths.get("Refill-E")),
+      new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_ledSubsytem),
+      new DeployCoralCmd(m_coral, m_ledSubsytem,m_elevator),
       new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_ledSubsytem));
   }
 
   private Command path_MR_L4_F() {
-    return 
-    alignToPath(
-      paths.get("M-L4-F"))
-    .andThen(
-      new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_ledSubsytem))
-    .andThen(
-      new DeployCoralCmd(
-        m_coral, 
-        m_ledSubsytem,
-        m_elevator))
-    .andThen(
-      new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_ledSubsytem))
-    .andThen(
-      alignToPath(
-        paths.get("F-Refill")))
-    .andThen(
-      new IntakeCoralCmd(
-        m_coral, 
-        m_elevator, 
-        m_ledSubsytem))
-    .andThen(
-      alignToPath(
-        paths.get("Refill-E")))
-    .andThen(
-      new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_ledSubsytem))
-    .andThen(
-      new DeployCoralCmd(
-        m_coral, 
-        m_ledSubsytem,
-        m_elevator))
-    .andThen(
+    return new SequentialCommandGroup(
+      alignToPath(paths.get("M-L4-F")),
+      new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_ledSubsytem),
+      new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator),
+      new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_ledSubsytem),
+      alignToPath(paths.get("F-Refill")),
+      new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsytem),
+      alignToPath(paths.get("Refill-E")),
+      new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_ledSubsytem),
+      new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator),
       new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_ledSubsytem));
   }
 
