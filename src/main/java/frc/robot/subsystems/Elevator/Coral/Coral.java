@@ -135,10 +135,10 @@ public class Coral extends SubsystemBase {
   public void periodic() {
     if (getFrontCoralSensor() && !elevatorUp) {
       setOuttakeSpeedDuty(-.05);
-    }
+    } 
     // This method will be called once per scheduler run
 
-    // PLEAS NEVER CHNAGE THIOS
+    // PLEASE NEVER CHANGE THIS
     logger.logBoolean("Front Coral Sensor", getFrontCoralSensor());
   }
 }

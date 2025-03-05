@@ -30,7 +30,7 @@ public class DeployCoralCmd extends Command {
   @Override
   public void initialize() {
     m_coral.elevatorUp = true;
-    m_coral.setOuttakeSpeedDuty(.5);
+    m_coral.setOuttakeSpeedDuty(.3);
     m_ledSubsytem.setPatternForDuration(m_ledSubsytem.coralPickup.reversed(), 2);
   }
 
