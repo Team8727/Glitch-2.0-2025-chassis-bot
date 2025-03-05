@@ -16,8 +16,10 @@ import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.kSwerve;
 import frc.robot.Constants.kElevator.ElevatorPosition;
 import frc.robot.commands.AlgaeIntake.ScoreAlgaeCmd;
@@ -103,13 +105,7 @@ public class Autos extends SubsystemBase {
             kSwerve.Auton.maxOnTheFlyVel,
             kSwerve.Auton.maxOnTheFlyAcc,
             kSwerve.Auton.maxAngVel,
-            kSwerve.Auton.maxAngAccel))
-              .andThen(
-                run(
-                  () -> m_ledSubsytem.setPatternForDuration(
-                    m_ledSubsytem.rainbow, 
-                    2)))
-                    ;
+            kSwerve.Auton.maxAngAccel)).andThen(new WaitCommand(0.0001));
   }
 
   private Command path_M_L4_H() {
@@ -137,14 +133,13 @@ public class Autos extends SubsystemBase {
     );
   }
 
-  private Command path_ML_L4_I_J() {
-    return new SequentialCommandGroup(
-      alignToPath(paths.get("M-L4-I")),
-      new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem),
-      new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator),
-      new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_coral, m_ledSubsytem),
-      alignToPath(paths.get("I-Refill")),
-      new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsytem));
+  public Command path_ML_L4_I_J() {
+    return alignToPath(paths.get("M-L4-H"))
+      .andThen(new SetElevatorHeightCmd(ElevatorPosition.L2, m_elevator, m_coral, m_ledSubsytem)).andThen(new WaitCommand(0.0001))
+      .andThen(new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator));
+      // new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_coral, m_ledSubsytem),
+      // alignToPath(paths.get("I-Refill")),
+      // new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsytem));
   }
 
   public Command ML_I_R_J_R() {

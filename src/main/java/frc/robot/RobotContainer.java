@@ -69,7 +69,9 @@ public class RobotContainer {
       m_coral,
       m_elevator,
       m_ledSubsytem,
-      m_elevatorSpeedControl
+      m_elevatorSpeedControl,
+      m_AlgaeRemoverPivot,
+      m_AlgaeRemoverRollers
     ));
   }
 

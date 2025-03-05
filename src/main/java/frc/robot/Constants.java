@@ -130,6 +130,13 @@ public final class Constants {
             new Translation2d(length / 2, -width / 2), // back left
             new Translation2d(length / 2, width / 2)); // back right
 
+    public static SwerveDriveKinematics autoKinematics =
+    new SwerveDriveKinematics(
+        new Translation2d(length / 2, width / 2), // front left
+        new Translation2d(length / 2, -width / 2), // front right
+        new Translation2d(-length / 2, width / 2), // back left
+        new Translation2d(-length / 2, -width / 2)); // back right
+
     // Module angular offsets (rad)
     public static class Offsets {
       public static double frontLeft = Math.PI / 2;
@@ -271,22 +278,22 @@ public final class Constants {
 
     public static final AprilTagFieldLayout aprilTagFieldLayout =
         AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
-    public static final Transform3d camera1Position = //back right
-        new Transform3d(
-            new Translation3d(-0.2032, -0.0508, 0.7862), 
-            new Rotation3d(0, Math.toRadians(-216.6), Math.toRadians(30)));
-    public static final Transform3d camera2Position =
-        new Transform3d(
-            new Translation3d(0.2032, -0.0508, .7862),
-            new Rotation3d(0, Math.toRadians(-143.4), Math.toRadians(30)));
-    public static final Transform3d camera3Position =
-        new Transform3d(
-            new Translation3d(-0.11176, 0.3048, 0.225425),
-            new Rotation3d(0, Math.toRadians(-141), Math.toRadians(145)));
-    public static final Transform3d camera4Position =
-        new Transform3d(
-            new Translation3d(-0.1905, -0.155575, 1.016),
-            new Rotation3d(0, Math.toRadians(-34.95), Math.toRadians(20)));
+    public static final Transform3d camera1Position = // Right Rear
+      new Transform3d(
+        new Translation3d(Units.inchesToMeters(1.633), Units.inchesToMeters(8.555), Units.inchesToMeters(28.120)), 
+        new Rotation3d(0, Math.toRadians(10), Math.toRadians(216.6)));
+    public static final Transform3d camera2Position = // Upper
+      new Transform3d(
+        new Translation3d(Units.inchesToMeters(-6.057), Units.inchesToMeters(-7.503218), Units.inchesToMeters(39.952)),
+        new Rotation3d(0, Math.toRadians(-40), Math.toRadians(135)));
+    public static final Transform3d camera3Position = // Left Rear
+      new Transform3d(
+        new Translation3d(Units.inchesToMeters(1.633), Units.inchesToMeters(-8.555), Units.inchesToMeters(28.120)),
+        new Rotation3d(0, Math.toRadians(10), Math.toRadians(-216.6)));
+    public static final Transform3d camera4Position = // Front
+      new Transform3d(
+        new Translation3d(Units.inchesToMeters(11.828), Units.inchesToMeters(-4.586), Units.inchesToMeters(7.825)),
+        new Rotation3d(0, Math.toRadians(35), Math.toRadians(45)));
 
     public static final Matrix<N3, N1> stateStdDevs =
         MatBuilder.fill(Nat.N3(), Nat.N1(), 0.02, 0.02, 0.01);
