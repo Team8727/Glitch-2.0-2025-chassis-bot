@@ -87,10 +87,10 @@ public class AlgaeRemoverPivot extends SubsystemBase {
     removerPivotPID.setReference(
       removerPosition,
       ControlType.kPosition,
-      ClosedLoopSlot.kSlot0,
-      pivotFeedforward.calculate(
-        removerPosition, 
-        velocitySetpoint));
+      ClosedLoopSlot.kSlot0);
+      // pivotFeedforward.calculate(
+      //   removerPosition, 
+      //   velocitySetpoint));
   }
 
   public void setPositionTrapazoidal(RemoverPositions removerPosition) {

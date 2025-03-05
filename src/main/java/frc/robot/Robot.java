@@ -156,10 +156,11 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    // m_Autos.M_H(); // TODO: Only enable this if you want the robot to do stuff during autonomous
-
     CommandScheduler.getInstance().cancelAll();
     m_robotContainer.autonomousInit();
+
+    m_Autos.ML_I_R_J_R().schedule();; // TODO: Only enable this if you want the robot to do stuff during autonomous
+
   }
 
   /** This function is called periodically during autonomous. */
