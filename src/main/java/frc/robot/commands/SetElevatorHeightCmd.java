@@ -31,16 +31,17 @@ public class SetElevatorHeightCmd extends Command {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(elevator, coral, ledSubsystem);
 
-    this.beforeStarting(() -> {
-      m_coral.elevatorUp = true;
-      new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsystem);
-    }, m_coral);
+    // this.beforeStarting(() -> {
+    //   m_coral.elevatorUp = true;
+    //   new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsystem);
+    // }, m_coral);
 
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+      System.out.println("Setting elevator height to " + m_scoreLevel);
       m_elevator.setElevatorHeightMotionProfile(m_scoreLevel);
       this.cancel();
   }
@@ -48,7 +49,6 @@ public class SetElevatorHeightCmd extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_ledSubsystem.setPatternForDuration(m_ledSubsystem.coralPickup.reversed(), 2);
   }
 
   // Called once the command ends or is interrupted.
@@ -58,6 +58,7 @@ public class SetElevatorHeightCmd extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(m_scoreLevel.getOutputRotations() - m_elevator.getElevatorHeight()) < 0.1;
+    return false;
+    // return Math.abs(m_scoreLevel.getOutputRotations() - m_elevator.getElevatorHeight()) < 0.1;
   }
 }

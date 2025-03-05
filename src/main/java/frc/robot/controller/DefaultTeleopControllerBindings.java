@@ -3,6 +3,7 @@ package frc.robot.controller;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.kElevator.ElevatorPosition;
+import frc.robot.commands.RemoveAlgaeCmd;
 import frc.robot.commands.SetElevatorHeightCmd;
 import frc.robot.commands.AlgaeIntake.IntakeAlgaeCmd;
 import frc.robot.commands.AlgaeIntake.ScoreAlgaeCmd;
@@ -16,6 +17,8 @@ import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.AlgaeIntake.AlgaeIntakePivot;
 import frc.robot.subsystems.AlgaeIntake.AlgaeIntakeRollers;
 import frc.robot.subsystems.Elevator.Elevator;
+import frc.robot.subsystems.Elevator.AlgaeRemover.AlgaeRemoverPivot;
+import frc.robot.subsystems.Elevator.AlgaeRemover.AlgaeRemoverRollers;
 import frc.robot.subsystems.Elevator.Coral.Coral;
 
 /**
@@ -29,6 +32,8 @@ public class DefaultTeleopControllerBindings implements ControllerBindings {
     private final Elevator m_elevator;
     private final LEDSubsystem m_ledSubsytem;
     private final boolean m_elevatorSpeedControl;
+    private final AlgaeRemoverPivot m_AlgaeRemoverPivot;
+    private final AlgaeRemoverRollers m_AlgaeRemoverRollers;
 
     public DefaultTeleopControllerBindings(
         SwerveSubsystem swerveSubsystem,
@@ -37,7 +42,9 @@ public class DefaultTeleopControllerBindings implements ControllerBindings {
         Coral coral,
         Elevator elevator,
         LEDSubsystem ledSubsystem,
-        boolean elevatorSpeedControl) {
+        boolean elevatorSpeedControl,
+        AlgaeRemoverPivot algaeRemoverPivot,
+        AlgaeRemoverRollers algaeRemoverRollers) {
         m_SwerveSubsystem = swerveSubsystem;
         m_AlgaeIntakePivot = AlgaeIntakePivot;
         m_AlgaeIntakeRollers = AlgaeIntakeRollers;
@@ -45,6 +52,8 @@ public class DefaultTeleopControllerBindings implements ControllerBindings {
         m_elevator = elevator;
         m_ledSubsytem = ledSubsystem;
         m_elevatorSpeedControl = elevatorSpeedControl;
+        m_AlgaeRemoverPivot = algaeRemoverPivot;
+        m_AlgaeRemoverRollers = algaeRemoverRollers;
     }
 
     @Override
@@ -78,7 +87,7 @@ public class DefaultTeleopControllerBindings implements ControllerBindings {
         // intake coral
         controller.leftTrigger().toggleOnTrue(new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsytem));
         // reindex coral
-        controller.povUp().onTrue(new ReindexCoralCmd(m_coral));
+        // controller.povUp().onTrue(new ReindexCoralCmd(m_coral));
         controller.povDown().onTrue(new RejectCoralCmd(m_coral));
         //deploy coral
         controller.rightBumper().onTrue(new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator));
@@ -94,6 +103,8 @@ public class DefaultTeleopControllerBindings implements ControllerBindings {
 
         // zero elevator
         controller.povDown().onTrue(new InstantCommand(() -> m_elevator.resetElevatorEncoders()));
+
+        controller.povUp().onTrue(new RemoveAlgaeCmd(m_AlgaeRemoverPivot, m_AlgaeRemoverRollers, ElevatorPosition.A2, m_elevator, m_ledSubsytem));
 
 
         // Align to pose

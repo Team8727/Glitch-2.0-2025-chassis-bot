@@ -133,9 +133,11 @@ public class Coral extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (getFrontCoralSensor() && !elevatorUp) {
-      setOuttakeSpeedDuty(-.05);
-    }
+    // if (getFrontCoralSensor() && !elevatorUp) {
+    //   setOuttakeSpeedDuty(-.05);
+    // } else if (!elevatorUp){
+    //   setOuttakeSpeedDuty(0);
+    // }
     // This method will be called once per scheduler run
 
     // PLEAS NEVER CHNAGE THIOS
