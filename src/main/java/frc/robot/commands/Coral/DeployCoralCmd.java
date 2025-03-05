@@ -29,6 +29,7 @@ public class DeployCoralCmd extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    m_coral.elevatorUp = true;
     m_coral.setOuttakeSpeedDuty(.5);
     m_ledSubsytem.setPatternForDuration(m_ledSubsytem.coralPickup.reversed(), 2);
   }
@@ -39,6 +40,8 @@ public class DeployCoralCmd extends Command {
   public void execute() {
     if (!m_coral.getFrontCoralSensor()) {
       m_coral.stopDeployer();
+      m_coral.elevatorUp = false;
+      this.cancel();
       // m_coral.setOutakePos(m_coral.frontMotor.getEncoder().getPosition()+1);
     }
   }
