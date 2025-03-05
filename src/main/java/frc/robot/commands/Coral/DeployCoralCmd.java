@@ -23,7 +23,7 @@ public class DeployCoralCmd extends Command {
     m_coral = coral;
     m_ledSubsytem = ledSubsystem;
     m_elevatorPosition = elevator.getElevatorSetPosition();
-    addRequirements(coral);
+    addRequirements(coral, elevator);
   }
 
   // Called when the command is initially scheduled.
