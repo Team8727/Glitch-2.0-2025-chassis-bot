@@ -271,7 +271,7 @@ public final class Constants {
 
     public static final AprilTagFieldLayout aprilTagFieldLayout =
         AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
-    public static final Transform3d camera1Position =
+    public static final Transform3d camera1Position = //back right
         new Transform3d(
             new Translation3d(-0.2032, -0.0508, 0.7862), 
             new Rotation3d(0, Math.toRadians(-216.6), Math.toRadians(30)));
@@ -302,8 +302,8 @@ public final class Constants {
       public static int removerPivotMotorCANID =12; // TODO: not set yet because remover is not built yet
 
       public enum RemoverPositions {
-        Raised(90), // TODO: SET WITH ACTUAL VALUES
-        Stowed(0); // TODO: SET WITH ACTUAL VALUES
+        Raised(50), // TODO: SET WITH ACTUAL VALUES
+        Stowed(10); // TODO: SET WITH ACTUAL VALUES
       
         private final double degrees;
         

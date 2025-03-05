@@ -57,11 +57,11 @@ public class AlgaeRemoverPivot extends SubsystemBase {
     config // TODO: config everything
         .smartCurrentLimit(25) 
         .idleMode(IdleMode.kBrake)
+        .inverted(false)
         .closedLoop
           .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
           .outputRange(-1, 1) 
-          .pid(0, 0, 0) 
-          .positionWrappingEnabled(false);
+          .pid(.1, 0.0, 0) ;
         // .maxMotion
         //   .maxAcceleration(0)
         //   .maxVelocity(0)
@@ -72,6 +72,8 @@ public class AlgaeRemoverPivot extends SubsystemBase {
         PersistMode.kNoPersistParameters);
 
     removerPivotPID = removerPivotMotor.getClosedLoopController();
+
+    setPositionTrapazoidal(RemoverPositions.Stowed);
   }
 
   // set pivot position

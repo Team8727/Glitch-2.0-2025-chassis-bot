@@ -224,12 +224,12 @@ public class Elevator extends SubsystemBase {
     //-=-=-=-=-=-=-=- Trapezoid Profile -=-=-=-=-=-=-=-
 
     // Retrieve the profiled setpoint for the next timestep. This setpoint moves toward the goal while obeying the constraints.
-    if (getElevatorHeight() >= m_intermediate.position) {
-      m_setpoint = m_profile.calculate(kDt, m_setpoint, m_intermediate);
-    } else {
-      m_setpoint = m_profile.calculate(kDt, m_setpoint, m_goal);
-    }
-    m_setpoint = m_profile.calculate(kDt, m_setpoint, m_intermediate);
+    // if (getElevatorHeight() >= m_intermediate.position) {
+    //   m_setpoint = m_profile.calculate(kDt, m_setpoint, m_intermediate);
+    // } else {
+    //   m_setpoint = m_profile.calculate(kDt, m_setpoint, m_goal);
+    // }
+    m_setpoint = m_profile.calculate(kDt, m_setpoint, m_goal);
 
 
     // Send setpoint to offboard controller PID (I made this in periodic so when the setpositionTrapezoidProfile Method is updated it runs the elevator)

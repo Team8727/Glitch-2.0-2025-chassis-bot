@@ -36,10 +36,24 @@ public class RemoveAlgaeCmd extends Command {
   @Override
   public void initialize() {
     if (m_elevator.getElevatorSetPosition() == ElevatorPosition.A2 || m_elevator.getElevatorSetPosition() == ElevatorPosition.A3) {
+      System.out.println("test");
       m_pivot.setPositionTrapazoidal(RemoverPositions.Raised); // TODO: set positions
       m_rollers.spinnnnnnn(); // TODO: set speed
-    } else {
+      new Thread(() -> {
+          try {
+            Thread.sleep(500);
+            m_pivot.setPositionTrapazoidal(RemoverPositions.Stowed);
+            m_rollers.setRemoverRollerSpeed(0);
+            this.cancel();
+            Thread.currentThread().interrupt();    
+          } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            e.printStackTrace();
+          }
+        }).start();
+      } else {
       m_elevator.setElevatorHeightMotionProfile(m_setPos);
+      this.cancel();
     }
   }
 
@@ -52,8 +66,6 @@ public class RemoveAlgaeCmd extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_rollers.setRemoverRollerSpeed(0);
-    m_pivot.setPositionTrapazoidal(RemoverPositions.Stowed);
   }
 
   // Returns true when the command should end.
