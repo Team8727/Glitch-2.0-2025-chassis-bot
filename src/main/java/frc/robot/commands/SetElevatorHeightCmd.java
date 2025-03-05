@@ -52,7 +52,6 @@ public class SetElevatorHeightCmd extends Command {
       m_coral.setIntakeSpeedDuty(0);
       m_coral.holdPosition();
       m_elevator.setElevatorHeightMotionProfile(m_scoreLevel);
-      this.cancel();
     }
     m_ledSubsystem.setPatternForDuration(m_ledSubsystem.coralPickup.reversed(), 2);
   }
