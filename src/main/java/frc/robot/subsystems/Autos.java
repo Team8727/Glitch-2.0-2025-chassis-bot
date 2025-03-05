@@ -16,6 +16,7 @@ import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.kSwerve;
 import frc.robot.Constants.kElevator.ElevatorPosition;
@@ -180,52 +181,18 @@ public class Autos extends SubsystemBase {
   }
 
   public Command CR_FE() {
-    return 
-    alignToPath(
-      paths.get("CR-L4-F"))
-    .andThen(
-      new SetElevatorHeightCmd(
-        ElevatorPosition.L4, 
-        m_elevator, 
-        m_ledSubsytem))
-    .andThen(
-      new DeployCoralCmd(
-        m_coral, 
-        m_ledSubsytem,
-        m_elevator))
-    .andThen(
-      new SetElevatorHeightCmd(
-        ElevatorPosition.L1, 
-        m_elevator, 
-        m_ledSubsytem))
-    .andThen(
-      alignToPath(
-        paths.get(
-          "F-Refill")))
-    .andThen(
-      new IntakeCoralCmd(
-        m_coral, 
-        m_elevator, 
-        m_ledSubsytem))
-    .andThen(
-      alignToPath(
-        paths.get(
-          "Refill-E")))
-    .andThen(
-      new SetElevatorHeightCmd(
-        ElevatorPosition.L4, 
-        m_elevator, 
-        m_ledSubsytem))
-    .andThen(
-      new DeployCoralCmd(
-        m_coral, 
-        m_ledSubsytem,
-        m_elevator))
-    .andThen(
-      new SetElevatorHeightCmd(
-        ElevatorPosition.L1, 
-        m_elevator, 
-        m_ledSubsytem));
+    return new SequentialCommandGroup(
+      alignToPath(paths.get("CR-L4-F")),
+      new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_ledSubsytem),
+      new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator),
+      new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_ledSubsytem),
+      alignToPath(paths.get("F-Refill")),
+      new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsytem),
+      alignToPath(paths.get("Refill-E")),
+      new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_ledSubsytem),
+      new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator),
+      new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_ledSubsytem)
+    );
   }
 
   public Command M_H() { // TODO: This is where our autonomous commands will be run, check to see if it works
