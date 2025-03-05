@@ -131,55 +131,6 @@ public class Autos extends SubsystemBase {
         m_ledSubsytem));
   }
 
-  private Command path_M_L4_H_PC() {
-    return 
-    alignToPath(
-      paths.get("CL-L4-I"))
-    .andThen(
-      new SetElevatorHeightCmd(
-        ElevatorPosition.L4, 
-        m_elevator, 
-        m_ledSubsytem))
-    .andThen(
-      new DeployCoralCmd(
-        m_coral, 
-        m_ledSubsytem,
-        m_elevator))
-    .andThen(
-      new SetElevatorHeightCmd(
-        ElevatorPosition.L1, 
-        m_elevator, 
-        m_ledSubsytem))
-    .andThen(
-      alignToPath(
-        paths.get(
-          "I-Refill")))
-    .andThen(
-      new IntakeCoralCmd(
-        m_coral, 
-        m_elevator, 
-        m_ledSubsytem))
-    .andThen(
-      alignToPath(
-        paths.get(
-          "Refill-J")))
-    .andThen(
-      new SetElevatorHeightCmd(
-        ElevatorPosition.L4, 
-        m_elevator, 
-        m_ledSubsytem))
-    .andThen(
-      new DeployCoralCmd(
-        m_coral, 
-        m_ledSubsytem,
-        m_elevator))
-    .andThen(
-      new SetElevatorHeightCmd(
-        ElevatorPosition.L1, 
-        m_elevator, 
-        m_ledSubsytem));
-  }
-
   public Command CR_FE() {
     return new SequentialCommandGroup(
       alignToPath(paths.get("CR-L4-F")),
@@ -193,34 +144,6 @@ public class Autos extends SubsystemBase {
       new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator),
       new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_ledSubsytem)
     );
-  }
-
-  public Command M_H() { // TODO: This is where our autonomous commands will be run, check to see if it works
-    // An example command will be run in autonomous
-    return 
-    alignToPath(
-      paths.get("CR-L4-F"))
-    .andThen(
-      new DeployCoralCmd(
-        m_coral, 
-        m_ledSubsytem,
-        m_elevator))
-    .andThen(
-      alignToPath(
-        paths.get("F-Refill")))
-    .andThen(
-      new IntakeCoralCmd(
-        m_coral, 
-        m_elevator, 
-        m_ledSubsytem))
-    .andThen(
-      alignToPath(
-        paths.get("Refill-E")))
-    .andThen(
-      new DeployCoralCmd(
-        m_coral, 
-        m_ledSubsytem,
-        m_elevator));
   }
 
   private Command path_ML_L4_I_J() {
@@ -244,17 +167,8 @@ public class Autos extends SubsystemBase {
         m_ledSubsytem))
     .andThen(
       alignToPath(
-        paths.get("H-PC")))
-    .andThen(
-      new ScoreAlgaeCmd(
-        m_algaeIntakePivot, 
-        m_algaeIntakeRollers, 
-        m_ledSubsytem)
-    )
-    .andThen(
-      alignToPath(
         paths.get(
-          "PC-Refill")))
+          "I-Refill")))
     .andThen(
       new IntakeCoralCmd(
         m_coral, 
@@ -265,7 +179,7 @@ public class Autos extends SubsystemBase {
   public Command ML_I_R_J_R() {
     return 
       alignToPath(
-        paths.get("CL-L4-I"))
+        paths.get("ML-L4-I"))
       .andThen(
         new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_ledSubsytem))
       .andThen(
@@ -308,7 +222,7 @@ public class Autos extends SubsystemBase {
   public Command MR_F_R_E_R() {
     return 
       alignToPath(
-        paths.get("CR-L4-F"))
+        paths.get("MR-L4-F"))
       .andThen(
         new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_ledSubsytem))
       .andThen(
@@ -353,10 +267,14 @@ public class Autos extends SubsystemBase {
     alignToPath(
       paths.get("CL-L4-I"))
     .andThen(
+      new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_ledSubsytem))
+    .andThen(
       new DeployCoralCmd(
         m_coral, 
         m_ledSubsytem,
         m_elevator))
+    .andThen(
+      new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_ledSubsytem))
     .andThen(
       alignToPath(
         paths.get("I-Refill")))
@@ -369,10 +287,14 @@ public class Autos extends SubsystemBase {
       alignToPath(
         paths.get("Refill-J")))
     .andThen(
+      new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_ledSubsytem))
+    .andThen(
       new DeployCoralCmd(
         m_coral, 
         m_ledSubsytem,
-        m_elevator));
+        m_elevator))
+    .andThen(
+      new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_ledSubsytem));
   }
 
   private Command path_CR_L4_F_E() {
@@ -380,10 +302,14 @@ public class Autos extends SubsystemBase {
     alignToPath(
       paths.get("CR-L4-F"))
     .andThen(
+      new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_ledSubsytem))
+    .andThen(
       new DeployCoralCmd(
         m_coral, 
         m_ledSubsytem,
         m_elevator))
+    .andThen(
+      new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_ledSubsytem))
     .andThen(
       alignToPath(
         paths.get("F-Refill")))
@@ -396,10 +322,14 @@ public class Autos extends SubsystemBase {
       alignToPath(
         paths.get("Refill-E")))
     .andThen(
+      new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_ledSubsytem))
+    .andThen(
       new DeployCoralCmd(
         m_coral, 
         m_ledSubsytem,
-        m_elevator));
+        m_elevator))
+    .andThen(
+      new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_ledSubsytem));
   }
 
   private Command path_MR_L4_F() {
@@ -407,10 +337,14 @@ public class Autos extends SubsystemBase {
     alignToPath(
       paths.get("M-L4-F"))
     .andThen(
+      new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_ledSubsytem))
+    .andThen(
       new DeployCoralCmd(
         m_coral, 
         m_ledSubsytem,
         m_elevator))
+    .andThen(
+      new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_ledSubsytem))
     .andThen(
       alignToPath(
         paths.get("F-Refill")))
@@ -423,10 +357,14 @@ public class Autos extends SubsystemBase {
       alignToPath(
         paths.get("Refill-E")))
     .andThen(
+      new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_ledSubsytem))
+    .andThen(
       new DeployCoralCmd(
         m_coral, 
         m_ledSubsytem,
-        m_elevator));
+        m_elevator))
+    .andThen(
+      new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_ledSubsytem));
   }
 
   @Override
