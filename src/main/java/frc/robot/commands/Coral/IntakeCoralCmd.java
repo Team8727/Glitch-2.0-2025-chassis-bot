@@ -33,9 +33,9 @@ public class IntakeCoralCmd extends Command {
       this.cancel();
     } else {
       m_coral.setIntakeSpeedDuty(.5);
-      m_ledSubsystem.setPatternForDuration(m_ledSubsystem.green, 2);
-      Timer.delay(2);
-      m_ledSubsystem.setPatternForDuration(m_ledSubsystem.coralPickup, 2);
+      // m_ledSubsystem.setPatternForDuration(m_ledSubsystem.green, 2);
+      // Timer.delay(2);
+      // m_ledSubsystem.setPatternForDuration(m_ledSubsystem.coralPickup, 2);
     }
   }
 
