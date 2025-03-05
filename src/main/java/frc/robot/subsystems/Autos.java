@@ -19,7 +19,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.kSwerve;
 import frc.robot.Constants.kElevator.ElevatorPosition;
-import frc.robot.Robot;
 import frc.robot.commands.AlgaeIntake.ScoreAlgaeCmd;
 import frc.robot.commands.Coral.DeployCoralCmd;
 import frc.robot.commands.Coral.IntakeCoralCmd;
@@ -27,7 +26,6 @@ import frc.robot.subsystems.AlgaeIntake.AlgaeIntakePivot;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.Coral.Coral;
 import frc.robot.commands.SetElevatorHeightCmd;
-import frc.robot.subsystems.AlgaeIntake.AlgaeIntakePivot;
 import frc.robot.subsystems.AlgaeIntake.AlgaeIntakeRollers;
 
 public class Autos extends SubsystemBase {
@@ -77,6 +75,7 @@ public class Autos extends SubsystemBase {
     paths.put("M-L4-G", PathPlannerPath.fromChoreoTrajectory("M-L4-G"));
     paths.put("G-Refill", PathPlannerPath.fromChoreoTrajectory("G-Refill"));
     paths.put("J-Refill", PathPlannerPath.fromChoreoTrajectory("J-Refill"));
+
     } catch (IOException | ParseException e) {
       e.printStackTrace();
     }

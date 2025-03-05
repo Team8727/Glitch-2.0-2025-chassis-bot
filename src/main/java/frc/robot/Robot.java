@@ -161,7 +161,7 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().cancelAll();
     m_robotContainer.autonomousInit();
 
-    m_Autos.align(new Pose2d(6.1,4.1,new Rotation2d(120))).schedule(); // TODO: Only enable this if you want the robot to do stuff during autonomous
+    m_Autos.CR_FE().schedule(); // TODO: Only enable this if you want the robot to do stuff during autonomous
 
   }
 
