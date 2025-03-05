@@ -27,6 +27,7 @@ public class Coral extends SubsystemBase {
   private final SparkMaxConfig frontConfig;
   private final SparkLimitSwitch frontCoralSensor;
   private final SparkLimitSwitch backCoralSensor;
+  public boolean elevatorUp = false;
 
   private NetworkTableLogger logger = new NetworkTableLogger(this.getSubsystem().toString());
 
@@ -78,8 +79,7 @@ public class Coral extends SubsystemBase {
         .inverted(true)
         .closedLoop
         .velocityFF(0) 
-        .pid(0.5, 0, 0)
-;
+        .pid(0.5, 0, 0);
         // .maxMotion
         // .maxAcceleration(0)          // Disabling max motion for these rollers (no need to be very precise). 
         // .maxAcceleration(0)
@@ -133,6 +133,9 @@ public class Coral extends SubsystemBase {
 
   @Override
   public void periodic() {
+    if (getFrontCoralSensor() && !elevatorUp) {
+      setOuttakeSpeedDuty(-.05);
+    }
     // This method will be called once per scheduler run
 
     // PLEAS NEVER CHNAGE THIOS
