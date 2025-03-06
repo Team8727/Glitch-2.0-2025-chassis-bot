@@ -25,14 +25,14 @@ public class ReindexCoralCmd extends Command {
       for (int n = 1; n <= 3; n++){
         m_coral.setIntakeSpeedDuty(.15);
         try {
-          Thread.sleep(150);
+          Thread.sleep(200);
         } catch (InterruptedException e) {
           Thread.currentThread().interrupt();
           e.printStackTrace();
         }
         m_coral.setIntakeSpeedDuty(-.15);
         try {
-          Thread.sleep(150);
+          Thread.sleep(200);
         } catch (InterruptedException e) {
           Thread.currentThread().interrupt();
           e.printStackTrace();
