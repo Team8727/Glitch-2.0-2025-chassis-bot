@@ -10,9 +10,12 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.DoubleArrayPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.GenericPublisher;
+import edu.wpi.first.networktables.IntegerPublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.Publisher;
 import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
@@ -25,6 +28,7 @@ import frc.robot.Constants.kElevator.ElevatorPosition;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Custom NetworkTable logger created by Glitch 2.0 in 2025. This logger is used to log values to
@@ -41,31 +45,17 @@ public class NetworkTableLogger {
   // NetworkTable to log to
   NetworkTable table;
 
-  // Declare the publishers (type) for the commonly used network table data types
-  DoublePublisher doublePublisher;
-  BooleanPublisher booleanPublisher;
-  StringPublisher stringPublisher;
-
-  // Pose2d logging objects
-  StructPublisher<Pose2d> pose2dPublisher;
-  StructArrayPublisher<Pose2d> pose2dArrayPublisher;
-
-  // Pose 3d logging objects
-  StructPublisher<Pose3d> pose3dPublisher;
-  StructArrayPublisher<Pose3d> pose3dArrayPublisher;
-
-  // ChassisSpeeds logging objects
-  StructPublisher<ChassisSpeeds> chassisSpeedsPublisher;
-
-  // Swerve Module States logging objects
-  StructArrayPublisher<SwerveModuleState> swerveModuleStatePublisher;
-
-  // Can status logging objects
-  DoubleArrayPublisher doubleArrayPublisher;
-
-  // ElevatorPosition logging objects
-  StructPublisher<ElevatorPosition> elevatorPositionPublisher;
-
+  // Publishers for each supported type
+  private final ConcurrentHashMap<String, BooleanPublisher> booleanPublishers = new ConcurrentHashMap<>();
+  private final ConcurrentHashMap<String, DoublePublisher> doublePublishers = new ConcurrentHashMap<>();
+  private final ConcurrentHashMap<String, IntegerPublisher> integerPublishers = new ConcurrentHashMap<>();
+  private final ConcurrentHashMap<String, StringPublisher> stringPublishers = new ConcurrentHashMap<>();
+  private final ConcurrentHashMap<String, DoubleArrayPublisher> doubleArrayPublishers = new ConcurrentHashMap<>();
+  private final ConcurrentHashMap<String, StructPublisher<Pose2d>> pose2dPublishers = new ConcurrentHashMap<>();
+  private final ConcurrentHashMap<String, StructPublisher<Pose3d>> pose3dPublishers = new ConcurrentHashMap<>();
+  private final ConcurrentHashMap<String, StructArrayPublisher<SwerveModuleState>> swerveModuleStatePublishers = new ConcurrentHashMap<>();
+  private final ConcurrentHashMap<String, StructPublisher<ChassisSpeeds>> chassisSpeedsPublishers = new ConcurrentHashMap<>();
+  
   // -=-=- Stuff for log(key, value) =-=-=
   @SuppressWarnings("PMD.UseConcurrentHashMap")
   private static final Map<String, Sendable> tablesToData = new HashMap<>();
@@ -87,6 +77,10 @@ public class NetworkTableLogger {
     table = inst.getTable(subsystemFor);
   }
 
+  public NetworkTable getNetworkTable() {
+    return table;
+  }
+
   /**
    * Log method for logging a double to the network table (can be seen using AdvantageScope, Glass,
    * Elastic, etc.)
@@ -95,8 +89,11 @@ public class NetworkTableLogger {
    * @param value the value (double) that will be logged
    */
   public void logDouble(String key, double value) {
-    if (!table.containsKey(key)) doublePublisher = table.getDoubleTopic(key).publish();
-    doublePublisher.set(value);
+    if (!doublePublishers.containsKey(key)) {
+      doublePublishers.put(key, table.getDoubleTopic(key).publish());
+    }
+
+    doublePublishers.get(key).set(value);
   }
 
     /**
@@ -107,8 +104,11 @@ public class NetworkTableLogger {
    * @param value the value (int) that will be logged
    */
   public void logInt(String key, int value) {
-    if (!table.containsKey(key)) doublePublisher = table.getDoubleTopic(key).publish();
-    doublePublisher.set((double) value);
+    if (!integerPublishers.containsKey(key)) {
+      integerPublishers.put(key, table.getIntegerTopic(key).publish());
+    }
+
+    integerPublishers.get(key).set(value);
   }
 
   /**
@@ -119,8 +119,11 @@ public class NetworkTableLogger {
    * @param value the value (boolean) that will be logged
    */
   public void logBoolean(String key, boolean value) {
-    if (!table.containsKey(key)) booleanPublisher = table.getBooleanTopic(key).publish();
-    booleanPublisher.set(value);
+    if (!booleanPublishers.containsKey(key)) {
+      booleanPublishers.put(key, table.getBooleanTopic(key).publish());
+    }
+
+    booleanPublishers.get(key).set(value);
   }
 
   /**
@@ -170,9 +173,12 @@ public class NetworkTableLogger {
    * @param key the key, a string, that will represent the value
    * @param string the value (string) that will be logged
    */
-  public void logString(String key, String string) {
-    if (!table.containsKey(key)) stringPublisher = table.getStringTopic(key).publish();
-    stringPublisher.set(string);
+  public void logString(String key, String value) {
+    if (!stringPublishers.containsKey(key)) {
+      stringPublishers.put(key, table.getStringTopic(key).publish());
+    }
+
+    stringPublishers.get(key).set(value);
   }
 
   /**
@@ -207,8 +213,11 @@ public class NetworkTableLogger {
       value.transmitErrorCount
     };
 
-    if (!table.containsKey(key)) doubleArrayPublisher = table.getDoubleArrayTopic(key).publish();
-    doubleArrayPublisher.set(canStatusArray);
+    if (!doubleArrayPublishers.containsKey(key)) {
+      doubleArrayPublishers.put(key, table.getDoubleArrayTopic(key).publish());
+    }
+
+    doubleArrayPublishers.get(key).set(canStatusArray);
   }
 
   /**
@@ -219,9 +228,11 @@ public class NetworkTableLogger {
    * @param pose2d the value (Pose2d) that will be logged
    */
   public void logPose2d(String key, Pose2d pose2d) {
-    if (!table.containsKey(key))
-      pose2dPublisher = table.getStructTopic(key, Pose2d.struct).publish();
-    pose2dPublisher.set(pose2d);
+    if (!pose2dPublishers.containsKey(key)) {
+      pose2dPublishers.put(key, table.getStructTopic(key, Pose2d.struct).publish());
+    }
+
+    pose2dPublishers.get(key).set(pose2d);
   }
 
   /**
@@ -232,9 +243,11 @@ public class NetworkTableLogger {
    * @param pose3d the value (Pose3d) that will be logged
    */
   public void logPose3d(String key, Pose3d pose3d) {
-    if (!table.containsKey(key))
-      pose3dPublisher = table.getStructTopic(key, Pose3d.struct).publish();
-    pose3dPublisher.set(pose3d);
+    if (!pose3dPublishers.containsKey(key)) {
+      pose3dPublishers.put(key, table.getStructTopic(key, Pose3d.struct).publish());
+    }
+
+    pose3dPublishers.get(key).set(pose3d);
   }
 
   /**
@@ -245,10 +258,11 @@ public class NetworkTableLogger {
    * @param swerveModuleStateList the value (SwerveModuleState[]) that will be logged
    */
   public void logSwerveModuleState(String key, SwerveModuleState[] swerveModuleStateList) {
-    if (!table.containsKey(key))
-      swerveModuleStatePublisher =
-          table.getStructArrayTopic(key, SwerveModuleState.struct).publish();
-    swerveModuleStatePublisher.set(swerveModuleStateList);
+    if (!swerveModuleStatePublishers.containsKey(key)) {
+      swerveModuleStatePublishers.put(key, table.getStructArrayTopic(key, SwerveModuleState.struct).publish());
+    }
+
+    swerveModuleStatePublishers.get(key).set(swerveModuleStateList);
   }
 
   /**
@@ -259,9 +273,11 @@ public class NetworkTableLogger {
    * @param chassisSpeeds the value (ChassisSpeeds) that will be logged
    */
   public void logChassisSpeeds(String key, ChassisSpeeds chassisSpeeds) {
-    if (!table.containsKey(key))
-      chassisSpeedsPublisher = table.getStructTopic(key, ChassisSpeeds.struct).publish();
-    chassisSpeedsPublisher.set(chassisSpeeds);
+    if (!chassisSpeedsPublishers.containsKey(key)) {
+      chassisSpeedsPublishers.put(key, table.getStructTopic(key, ChassisSpeeds.struct).publish());
+    }
+
+    chassisSpeedsPublishers.get(key).set(chassisSpeeds);
   }
 
   /**
