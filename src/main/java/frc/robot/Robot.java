@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 import frc.robot.Constants.kConfigs;
@@ -114,6 +115,10 @@ public class Robot extends TimedRobot {
             m_Autos,
             m_elevatorSpeedControl
             );
+    
+    // Load autos into chooser and use SmartDashboard to publish
+    m_Autos.setupAutoChooser();
+    SmartDashboard.putData("Auto choices", m_Autos.getAutoChooser());
 
     // Set Up PathPlanner to "warm up" the pathplanning system
     PathfindingCommand.warmupCommand().schedule();
