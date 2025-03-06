@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.kVision;
 import frc.robot.utilities.NetworkTableLogger;
@@ -37,6 +38,16 @@ public class PoseEstimatior extends SubsystemBase {
   PhotonCamera camera4 = new PhotonCamera("backUp");
 
   VisionSystemSim visionSim = new VisionSystemSim("main");
+
+  PhotonCameraSim cameraSimBackRight;
+  PhotonCameraSim cameraSimBackLeft;
+  PhotonCameraSim cameraSimFront;
+  PhotonCameraSim cameraSimBackUp;
+
+  Pose3d latestCamPoseBackRiight = new Pose3d();
+  Pose3d latestCamPoseBackLeft = new Pose3d();
+  Pose3d latestCamPoseFront = new Pose3d();
+  Pose3d latestCamPoseBackUp = new Pose3d();
 
   // TargetModel targetModel = TargetModel.kAprilTag16h5;
   // Pose3d targetPose = new Pose3d(16, 4, 2, new Rotation3d(0, 0, Math.PI));
@@ -74,15 +85,15 @@ public class PoseEstimatior extends SubsystemBase {
     cameraProp.setAvgLatencyMs(35);
     cameraProp.setLatencyStdDevMs(5);
 
-    PhotonCameraSim cameraSimBackRight = new PhotonCameraSim(camera1, cameraProp);
-    PhotonCameraSim cameraSimBackLeft = new PhotonCameraSim(camera2, cameraProp);
-    PhotonCameraSim cameraSimFront = new PhotonCameraSim(camera3, cameraProp);
-    PhotonCameraSim cameraSimBackUp = new PhotonCameraSim(camera4, cameraProp);
-    cameraSimBackRight.enableDrawWireframe(true);
+    cameraSimBackRight = new PhotonCameraSim(camera1, cameraProp);
+    cameraSimBackLeft = new PhotonCameraSim(camera2, cameraProp);
+    cameraSimFront = new PhotonCameraSim(camera3, cameraProp);
+    cameraSimBackUp = new PhotonCameraSim(camera4, cameraProp);
+
     visionSim.addCamera(cameraSimBackRight, kVision.camera1Position);
     visionSim.addCamera(cameraSimBackLeft, kVision.camera2Position);
-    visionSim.addCamera(cameraSimFront, kVision.camera3Position);
-    visionSim.addCamera(cameraSimBackUp, kVision.camera4Position);
+    visionSim.addCamera(cameraSimFront, kVision.camera4Position);
+    visionSim.addCamera(cameraSimBackUp, kVision.camera3Position);
     }
 
   // photon pose estimators
@@ -100,12 +111,12 @@ public class PoseEstimatior extends SubsystemBase {
       new PhotonPoseEstimator(
           kVision.aprilTagFieldLayout,
           PoseStrategy.CLOSEST_TO_REFERENCE_POSE,
-          kVision.camera3Position);
+          kVision.camera4Position);
   PhotonPoseEstimator PoseEstimator4 =
       new PhotonPoseEstimator(
           kVision.aprilTagFieldLayout,
           PoseStrategy.CLOSEST_TO_REFERENCE_POSE,
-          kVision.camera4Position);
+          kVision.camera3Position);
 
   // get starting pos with cam1
   public Pose3d getPose3d() {
@@ -184,9 +195,14 @@ public class PoseEstimatior extends SubsystemBase {
     } catch (Exception e) {
     }
   }
+
   @Override
   public void simulationPeriodic() {
     visionSim.update(m_SwervePoseEstimator.getEstimatedPosition());
+    networkTableLogger.logPose3d("cam back Right", visionSim.getCameraPose(cameraSimBackRight).orElse(null));
+    networkTableLogger.logPose3d("cam back left",  visionSim.getCameraPose(cameraSimBackLeft).orElse(null));
+    networkTableLogger.logPose3d("cam front",     visionSim.getCameraPose(cameraSimFront).orElse(null));
+    networkTableLogger.logPose3d("cam back up",   visionSim.getCameraPose(cameraSimBackUp).orElse(null));
     m_SwervePoseEstimator.addVisionMeasurement(visionSim.getRobotPose(), 0);
   }
 
