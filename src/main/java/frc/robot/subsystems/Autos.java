@@ -5,7 +5,6 @@
 package frc.robot.subsystems;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.LinkedHashMap;
 
 import org.json.simple.parser.ParseException;
@@ -16,18 +15,18 @@ import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.kSwerve;
 import frc.robot.Constants.kElevator.ElevatorPosition;
-import frc.robot.commands.AlgaeIntake.ScoreAlgaeCmd;
 import frc.robot.commands.Coral.DeployCoralCmd;
 import frc.robot.commands.Coral.IntakeCoralCmd;
 import frc.robot.subsystems.AlgaeIntake.AlgaeIntakePivot;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.Coral.Coral;
+import frc.robot.utilities.NetworkTableLogger;
 import frc.robot.commands.SetElevatorHeightCmd;
 import frc.robot.subsystems.AlgaeIntake.AlgaeIntakeRollers;
 
@@ -38,6 +37,9 @@ public class Autos extends SubsystemBase {
   private final AlgaeIntakePivot m_algaeIntakePivot;
   private final AlgaeIntakeRollers m_algaeIntakeRollers;
   private final LinkedHashMap<String, PathPlannerPath> paths = new LinkedHashMap<String, PathPlannerPath>();
+  private final SendableChooser<Command> autoChooser = new SendableChooser<>();
+  private final NetworkTableLogger logger = new NetworkTableLogger(this.getName().toString());
+
 
   /** Creates a new Autos. */
   public Autos(LEDSubsystem ledSubsystem, Coral coralSubsystem, Elevator elevatorSubsystem, AlgaeIntakePivot algaeIntakePivot, AlgaeIntakeRollers algaeIntakeRollers) {
@@ -126,6 +128,20 @@ public class Autos extends SubsystemBase {
       new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_coral, m_ledSubsytem),
       alignToPath(paths.get("H-Refill")),
       new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsytem));
+  }
+
+  public void setupAutoChooser() {
+    autoChooser.setDefaultOption("Path M-L4-H", path_ML_L4_I_J());
+    autoChooser.addOption("Path CR-F-E", CR_FE());
+    autoChooser.addOption("Path ML-L4-I-J", path_M_L4_H());
+    autoChooser.addOption("Path ML-I-R-J-R", ML_I_R_J_R());
+    autoChooser.addOption("Path MR-F-R-E-R", MR_F_R_E_R());
+    autoChooser.addOption("Path CL-L4-I-J", path_CL_L4_I_J());
+    autoChooser.addOption("Path CR-L4-F-E", path_CR_L4_F_E());
+  }
+
+  public SendableChooser<Command> getAutoChooser() {
+    return autoChooser;
   }
 
   public Command CR_FE() {

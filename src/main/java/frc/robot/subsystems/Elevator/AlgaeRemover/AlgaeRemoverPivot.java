@@ -61,7 +61,7 @@ public class AlgaeRemoverPivot extends SubsystemBase {
         .closedLoop
           .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
           .outputRange(-1, 1) 
-          .pid(.1, 0,0);
+          .pid(.2, 0,0);
         // .maxMotion
         //   .maxAcceleration(0)
         //   .maxVelocity(0)

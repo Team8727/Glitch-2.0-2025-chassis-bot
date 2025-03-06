@@ -77,5 +77,6 @@ public class RobotContainer {
 
   public void autonomousInit() {
     m_controller.clearBindings();
+    m_Autos.setupAutoChooser();
   }
 }
