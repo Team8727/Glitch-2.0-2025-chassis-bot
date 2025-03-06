@@ -39,6 +39,7 @@ public class RemoveAlgaeCmd extends Command {
       System.out.println("test");
       m_pivot.setPositionTrapazoidal(RemoverPositions.Raised); // TODO: set positions
       m_rollers.spinnnnnnn(); // TODO: set speed
+      m_ledSubsystem.combinePatternsForDuration(m_ledSubsystem.blue, m_ledSubsystem.ace, 2);
       // new Thread(() -> {
       //     try {
       //       Thread.sleep(500);
@@ -60,7 +61,6 @@ public class RemoveAlgaeCmd extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_ledSubsystem.setPatternForDuration(m_ledSubsystem.blue, 2);
   }
 
   // Called once the command ends or is interrupted.

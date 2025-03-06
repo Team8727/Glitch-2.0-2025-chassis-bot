@@ -75,6 +75,13 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
 
   public LEDPattern green = LEDPattern.solid(m_green);
 
+  public LEDPattern defaultPattern = LEDPattern.steps(
+    Map.of(
+      0, 
+      m_green, 
+      Math.random(), 
+      Color.kBlack));
+
   // Elevator progress bar pattern
   public LEDPattern elevatorProgress = LEDPattern.gradient(
     GradientType.kDiscontinuous, 
@@ -115,6 +122,7 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
 
     // // Set a default pattern (White Solid) to ensure LEDs are not blank initially
     // currentPattern = LEDPattern.solid(Color.kBlack);
+    currentPattern = defaultPattern;
     currentPattern.applyTo(stripBuffer);
     lightStrip.setData(stripBuffer);
     lightStrip.start();
@@ -136,7 +144,7 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
       () -> currentPattern = pattern)
     .withTimeout(seconds)
     .andThen(
-      () -> currentPattern = LEDPattern.solid(Color.kBlack));
+      () -> currentPattern = defaultPattern);
 
     //Notify of duration pattern
     //System.out.println("Pattern was set to: " + pattern + " for " + seconds + " seconds");
@@ -145,6 +153,27 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
   public void turnLEDsOff() {
     currentPattern = LEDPattern.solid(Color.kBlack);
     //System.out.println("Pattern set to: " + LEDPattern.solid(Color.kBlack));
+  }
+
+  public void combinePatterns(LEDPattern leftPattern, LEDPattern rightPattern) {
+    leftPattern.applyTo(leftSide);
+    rightPattern.applyTo(rightSide);
+    //System.out.println("Pattern set to: " + pattern1.combine(pattern2));
+  }
+
+  public void combinePatternsForDuration(LEDPattern leftPattern, LEDPattern rightPattern, double seconds) {
+    //Command Composition for duration pattern
+    new RunCommand(
+      () -> {
+        leftPattern.applyTo(leftSide);
+        rightPattern.applyTo(rightSide);
+      })
+    .withTimeout(seconds)
+    .andThen(
+      () -> currentPattern = defaultPattern);
+
+    //Notify of duration pattern
+    //System.out.println("Pattern was set to: " + pattern1.combine(pattern2) + " for " + seconds + " seconds");
   }
 
   @Override
