@@ -78,7 +78,17 @@ public class Autos extends SubsystemBase {
     paths.put("M-L4-G", PathPlannerPath.fromChoreoTrajectory("M-L4-G"));
     paths.put("G-Refill", PathPlannerPath.fromChoreoTrajectory("G-Refill"));
     paths.put("J-Refill", PathPlannerPath.fromChoreoTrajectory("J-Refill"));
+    loadPath("E-Refill");
+    loadPath("ML-L4-I");
+    loadPath("MR-L4-F");
+    } catch (IOException | ParseException e) {
+      e.printStackTrace();
+    }
+  }
 
+  private void loadPath(String pathName) {
+    try {
+    paths.put(pathName, PathPlannerPath.fromChoreoTrajectory(pathName));
     } catch (IOException | ParseException e) {
       e.printStackTrace();
     }
