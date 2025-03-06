@@ -30,10 +30,8 @@ import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.Robot;
 import frc.robot.Constants.kConfigs;
 import frc.robot.Constants.kElevator;
-import frc.robot.Constants.kElevator.ElevatorPosition;
 import frc.robot.utilities.NetworkTableLogger;
 import frc.robot.utilities.SparkConfigurator.LogData;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -48,6 +46,7 @@ public class Elevator extends SubsystemBase {
   private kElevator.ElevatorPosition previousHeight;
   private double targetRotations;
   private NetworkTableLogger logger = new NetworkTableLogger("Elevator");
+  public boolean isHoming = false;
 
 //-=-=-=-=-=-=-=-=-TrapezoidProfile=-=-=-=-=-=-=-=- /
 
@@ -123,6 +122,14 @@ public class Elevator extends SubsystemBase {
     limitSwitch = new DigitalInput(kElevator.limitSwitchDIO);
 
     setElevatorHeightMotionProfile(kElevator.ElevatorPosition.L1);
+  }
+
+  public void setDutyCycle(double dutyCycle) {
+    elevatorPID.setReference(dutyCycle, ControlType.kDutyCycle);
+  }
+
+  public double getCurrentDrawAmps() {
+    return elevatorMotorR.getOutputCurrent();
   }
 
   public void stopElevator() {
@@ -229,11 +236,15 @@ public class Elevator extends SubsystemBase {
     // } else {
     //   m_setpoint = m_profile.calculate(kDt, m_setpoint, m_goal);
     // }
-    m_setpoint = m_profile.calculate(kDt, m_setpoint, m_goal);
-
-
-    // Send setpoint to offboard controller PID (I made this in periodic so when the setpositionTrapezoidProfile Method is updated it runs the elevator)
-    setElevatorHeight(m_setpoint.position);
+    if (limitSwitch.get()) {
+      resetElevatorEncoders();
+    }
+    
+    if (!isHoming) {
+      m_setpoint = m_profile.calculate(kDt, m_setpoint, m_goal);
+      // Send setpoint to offboard controller PID (I made this in periodic so when the setpositionTrapezoidProfile Method is updated it runs the elevator)
+      setElevatorHeight(m_setpoint.position);
+    }
 
     
   }

@@ -5,6 +5,9 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.Coral.Coral;
@@ -41,23 +44,21 @@ public class SetElevatorHeightCmd extends Command {
   public void initialize() {
       System.out.println("Setting elevator height to " + m_scoreLevel);
       m_elevator.setElevatorHeightMotionProfile(m_scoreLevel);
+      if (m_scoreLevel == ElevatorPosition.L1) {
+        new SequentialCommandGroup(
+          new WaitUntilCommand(() -> Math.abs(m_elevator.getElevatorHeight() - m_scoreLevel.getOutputRotations()) < 0.5),
+          new InstantCommand(() -> m_elevator.isHoming = true),
+          new InstantCommand(() -> m_elevator.setDutyCycle(-0.1)),
+          new WaitUntilCommand(() -> m_elevator.getCurrentDrawAmps() > 20),
+          new InstantCommand(() -> m_elevator.resetElevatorEncoders()),
+          new InstantCommand(() -> m_elevator.isHoming = false)).schedule();
+      }
       this.cancel();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_scoreLevel == ElevatorPosition.L1) {
-      m_elevator.setElevatorHeightMotionProfile(ElevatorPosition.HOME);
-        new Thread(() -> {
-          try {
-            Thread.sleep(100);
-            m_elevator.resetElevatorEncoders();
-          } catch (InterruptedException e) {
-            e.printStackTrace();
-          }
-        }).start();
-    }
   }
 
   // Called once the command ends or is interrupted.
