@@ -39,20 +39,20 @@ public class RemoveAlgaeCmd extends Command {
       System.out.println("test");
       m_pivot.setPositionTrapazoidal(RemoverPositions.Raised); // TODO: set positions
       m_rollers.spinnnnnnn(); // TODO: set speed
-      new Thread(() -> {
-          try {
-            Thread.sleep(500);
-            m_pivot.setPositionTrapazoidal(RemoverPositions.Stowed);
-            m_rollers.setRemoverRollerSpeed(0);
-          } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            e.printStackTrace();
-          }
-          this.cancel();
-          Thread.currentThread().interrupt();    
-        }).start();
-      } else {
-      m_elevator.setElevatorHeightMotionProfile(m_setPos);
+      // new Thread(() -> {
+      //     try {
+      //       Thread.sleep(500);
+      //       m_pivot.setPositionTrapazoidal(RemoverPositions.Stowed);
+      //       m_rollers.setRemoverRollerSpeed(0);
+      //     } catch (InterruptedException e) {
+      //       Thread.currentThread().interrupt();
+      //       e.printStackTrace();
+      //     }
+      //     this.cancel();
+      //     Thread.currentThread().interrupt();    
+      //   }).start();
+      // } else {
+      // m_elevator.setElevatorHeightMotionProfile(m_setPos);
       this.cancel();
     }
   }

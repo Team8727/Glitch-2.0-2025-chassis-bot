@@ -80,12 +80,12 @@ public class AlgaeIntakePivot extends SubsystemBase {
       .smartCurrentLimit(Constants.kAlgaeIntake.kAlgaeIntakePivot.motorCurrentLimit)
       .idleMode(IdleMode.kBrake)
       .inverted(false)
-
       // PID Control
       .closedLoop
         .outputRange(-1, 1)
         .velocityFF(0)
         .pid(2, 0.0007, 2)
+        .positionWrappingEnabled(false)
         .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
         // .maxMotion // MaxMotion Control for more precise position control
         //   .maxVelocity(100) 
