@@ -336,7 +336,7 @@ public final class Constants {
           17; // TODO: not set yet because intake is not built yet
 
       public enum IntakePosition {
-          HOME(6), 
+          HOME(10), 
           SCORE(20), 
           DOWN(90); // TODO: SET WITH ACTUAL VALUES
 
@@ -399,6 +399,7 @@ public final class Constants {
     public static double gearRatio = 5;
 
     public enum ElevatorPosition {
+      HOME(0), // TODO: SET WITH ACTUAL VALUES
       L1(0.3848), // TODO: SET WITH ACTUAL VALUES
       L2(8.23663),// TODO: SET WITH ACTUAL VALUES
       L3(20.43877), // TODO: SET WITH ACTUAL VALUES

@@ -47,6 +47,17 @@ public class SetElevatorHeightCmd extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    if (m_scoreLevel == ElevatorPosition.L1) {
+      m_elevator.setElevatorHeightMotionProfile(ElevatorPosition.HOME);
+        new Thread(() -> {
+          try {
+            Thread.sleep(100);
+            m_elevator.resetElevatorEncoders();
+          } catch (InterruptedException e) {
+            e.printStackTrace();
+          }
+        }).start();
+    }
   }
 
   // Called once the command ends or is interrupted.
