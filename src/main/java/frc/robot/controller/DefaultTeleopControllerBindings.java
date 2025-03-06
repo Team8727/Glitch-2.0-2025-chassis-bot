@@ -87,24 +87,25 @@ public class DefaultTeleopControllerBindings implements ControllerBindings {
         // intake coral
         controller.leftTrigger().toggleOnTrue(new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsytem));
         // reindex coral
-        // controller.povUp().onTrue(new ReindexCoralCmd(m_coral));
-        controller.povDown().onTrue(new RejectCoralCmd(m_coral));
+        controller.povRight().onTrue(new ReindexCoralCmd(m_coral));
+        controller.povLeft().onTrue(new RejectCoralCmd(m_coral));
         //deploy coral
-        controller.rightBumper().onTrue(new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator));
+        controller.leftBumper().onTrue(new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator));
 
         // elevator L1
         controller.x().onTrue(new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_coral, m_ledSubsytem));
         // elevator L2
-        controller.y().onTrue(new SetElevatorHeightCmd(ElevatorPosition.L2, m_elevator, m_coral, m_ledSubsytem));
+        controller.a().onTrue(new SetElevatorHeightCmd(ElevatorPosition.L2, m_elevator, m_coral, m_ledSubsytem));
         // elevator L3
         controller.b().onTrue(new SetElevatorHeightCmd(ElevatorPosition.L3, m_elevator, m_coral, m_ledSubsytem));
         // elevator L4
-        controller.a().onTrue(new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem));
+        controller.y().onTrue(new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem));
 
         // zero elevator
-        controller.povDown().onTrue(new InstantCommand(() -> m_elevator.resetElevatorEncoders()));
+        controller.leftStick().and(controller.rightStick()).onTrue(new InstantCommand(() -> m_elevator.resetElevatorEncoders()));
 
-        controller.povUp().onTrue(new RemoveAlgaeCmd(m_AlgaeRemoverPivot, m_AlgaeRemoverRollers, ElevatorPosition.A2, m_elevator, m_ledSubsytem));
+        controller.povUp().onTrue(new RemoveAlgaeCmd(m_AlgaeRemoverPivot, m_AlgaeRemoverRollers, ElevatorPosition.A3, m_elevator, m_ledSubsytem));
+        controller.povDown().onTrue(new RemoveAlgaeCmd(m_AlgaeRemoverPivot, m_AlgaeRemoverRollers, ElevatorPosition.A2, m_elevator, m_ledSubsytem));
 
 
         // Align to pose
@@ -115,7 +116,7 @@ public class DefaultTeleopControllerBindings implements ControllerBindings {
         // Intake algae
         controller.rightTrigger().whileTrue(new IntakeAlgaeCmd(m_AlgaeIntakePivot, m_AlgaeIntakeRollers, m_ledSubsytem));
         // deploy algae
-        controller.leftBumper().onTrue(new ScoreAlgaeCmd(m_AlgaeIntakePivot, m_AlgaeIntakeRollers, m_ledSubsytem));
+        controller.rightBumper().onTrue(new ScoreAlgaeCmd(m_AlgaeIntakePivot, m_AlgaeIntakeRollers, m_ledSubsytem));
         // controller.rightBumper().onTrue(new ScoreAlgaeProcessorCmd(m_AlgaeIntakePivot, m_AlgaeIntakeRollers, m_ledSubsytem));
 
         // // Intake algae
