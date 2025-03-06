@@ -22,7 +22,7 @@ public class ReindexCoralCmd extends Command {
   @Override
   public void initialize() {
     new Thread(() -> {
-      for (int n = 1; n<= 3; n++){
+      for (int n = 1; n <= 3; n++){
         m_coral.setIntakeSpeedDuty(.15);
         try {
           Thread.sleep(150);
