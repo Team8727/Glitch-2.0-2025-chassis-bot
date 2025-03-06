@@ -75,14 +75,7 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
 
   public LEDPattern green = LEDPattern.solid(m_green);
 
-  public LEDPattern defaultPattern = LEDPattern.steps(
-    Map.of(
-      0, 
-      m_green,
-      0.2,
-      m_green, 
-      Math.random(), 
-      Color.kBlack));
+  public LEDPattern defaultPattern = LEDPattern.solid(m_green); // don't delete this plz
 
   // Elevator progress bar pattern
   public LEDPattern elevatorProgress = LEDPattern.gradient(
@@ -125,7 +118,8 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
     // // Set a default pattern (White Solid) to ensure LEDs are not blank initially
     // currentPattern = LEDPattern.solid(Color.kBlack);
     currentPattern = defaultPattern;
-    currentPattern.applyTo(stripBuffer);
+    currentPattern.atBrightness(Percent.of(30)).applyTo(leftSide);
+    currentPattern.atBrightness(Percent.of(30)).applyTo(rightSide);
     lightStrip.setData(stripBuffer);
     lightStrip.start();
   }
@@ -182,6 +176,15 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
   public void periodic() {
     // This method will be called once per scheduler run
     if (currentPattern != null) {
+      defaultPattern = LEDPattern.steps(
+        Map.of(
+          0, 
+          m_green,
+          0.2,
+          m_green, 
+          Math.random(), 
+          Color.kBlack));
+          
       currentPattern.atBrightness(Percent.of(30)).applyTo(leftSide);
       currentPattern.atBrightness(Percent.of(30)).applyTo(rightSide);
       lightStrip.setData(stripBuffer);
