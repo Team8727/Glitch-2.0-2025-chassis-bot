@@ -78,6 +78,8 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
   public LEDPattern defaultPattern = LEDPattern.steps(
     Map.of(
       0, 
+      m_green,
+      0.2,
       m_green, 
       Math.random(), 
       Color.kBlack));
