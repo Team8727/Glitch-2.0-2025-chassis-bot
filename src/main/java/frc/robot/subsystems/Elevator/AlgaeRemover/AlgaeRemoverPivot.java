@@ -22,6 +22,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.kAlgaeRemover;
 import frc.robot.Constants.kAlgaeRemover.kPivot.RemoverPositions;
+import frc.robot.utilities.NetworkTableLogger;
 import frc.robot.utilities.SparkConfigurator.LogData;
 import java.util.Set;
 
@@ -34,6 +35,7 @@ public class AlgaeRemoverPivot extends SubsystemBase {
     new TrapezoidProfile.Constraints(3.53, 0.01)); // TODO: May need to adjust these values later
   private TrapezoidProfile.State m_goal = new TrapezoidProfile.State(0,0);
   private TrapezoidProfile.State m_setpoint = new TrapezoidProfile.State(0,0);
+  private NetworkTableLogger logger = new NetworkTableLogger(this.getSubsystem().toString());
 
   private final ArmFeedforward pivotFeedforward =  new ArmFeedforward(0, 0.13, 0.56);
 
@@ -104,6 +106,7 @@ public class AlgaeRemoverPivot extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    logger.logDouble("remover Pos", removerPivotMotor.getAbsoluteEncoder().getPosition() * 360);
 
     m_setpoint = m_profile.calculate(kDt, m_setpoint, m_goal);
 
