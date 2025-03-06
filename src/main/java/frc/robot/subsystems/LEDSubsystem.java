@@ -46,19 +46,20 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
   .blink(Second.of(0.5));
 
   // Rainbow pattern with a scrolling mask
-  private LEDPattern rainbowBase =
-      LEDPattern.rainbow(256, 128)
+  public LEDPattern rainbow = LEDPattern.rainbow(
+    256, 
+    128)
+    .scrollAtRelativeSpeed(
+      Percent.per(Second).of(15))
+      .reversed()
+      .mask(
+        LEDPattern.steps(
+          Map.of(
+              0.0, Color.kWhite,
+              0.25, Color.kBlack,
+              0.75, Color.kWhite))
       .scrollAtRelativeSpeed(
-        Percent.per(Second).of(15));
-  private LEDPattern rainbowMask =
-      LEDPattern.steps(
-              Map.of(
-                  0.0, Color.kWhite,
-                  0.25, Color.kBlack,
-                  0.75, Color.kWhite))
-          .scrollAtRelativeSpeed(
-            Percent.per(Second).of(15));
-  public LEDPattern rainbow = rainbowBase.reversed().mask(rainbowMask);
+        Percent.per(Second).of(15)));
 
   // Blue gradient pattern with a scrolling mask
   public LEDPattern blue =
@@ -72,29 +73,17 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
           .scrollAtRelativeSpeed(
             Percent.per(Second).of(15));
 
-  public LEDPattern colorCheck = LEDPattern.solid(m_purple);
-
-  // Green pattern that breathes
-  public LEDPattern green = 
-    LEDPattern.steps(
-      Map.of(
-        0, 
-        m_green, 
-        0.5, 
-        new Color(
-          0,
-          0,
-          200)))
-      .scrollAtRelativeSpeed(
-        Percent.per(Second).of(15))
-      .mask(
-        LEDPattern.gradient(GradientType.kDiscontinuous, Color.kWhite, Color.kBlack));
+  public LEDPattern green = LEDPattern.solid(m_green);
 
   // Elevator progress bar pattern
-  private LEDPattern elevatorProgressMap = LEDPattern.progressMaskLayer(
-    () -> m_elevator.getElevatorHeight() / kElevator.ElevatorPosition.L4.getOutputRotations());
-  private LEDPattern elevatorProgressBase = LEDPattern.gradient(GradientType.kDiscontinuous, m_green, m_yellow, m_orange, Color.kRed);
-  public LEDPattern elevatorProgress = elevatorProgressBase.mask(elevatorProgressMap);
+  public LEDPattern elevatorProgress = LEDPattern.gradient(
+    GradientType.kDiscontinuous, 
+    m_green, 
+    m_yellow, 
+    m_orange, 
+    Color.kRed)
+    .mask(LEDPattern.progressMaskLayer(
+      () -> m_elevator.getElevatorHeight() / kElevator.ElevatorPosition.L4.getOutputRotations()));
 
   // Coral pickup pattern
   public LEDPattern coralPickup = LEDPattern.gradient(
@@ -114,44 +103,18 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
      Color.kRed)
       .blink(Second.of(0.5));
   
-  // Solid Colors
-  public LEDPattern solidRed = LEDPattern.solid(Color.kRed);
-
-  public LEDPattern solidGreen = LEDPattern.solid(m_green);
-
   /** Creates a new LEDSubsystem. */
   public LEDSubsystem() {
     // LED setup and port configuration
     lightStrip = new AddressableLED(5); // Correct PWM port
     stripBuffer = new AddressableLEDBuffer(114); // Correct LED count
-    leftSide = new AddressableLEDBufferView(stripBuffer, 0, 57); // TODO: LEDs are currently MIA :(
+    leftSide = new AddressableLEDBufferView(stripBuffer, 0, 57);
     rightSide = new AddressableLEDBufferView(stripBuffer, 57, 113).reversed();
 
     lightStrip.setLength(stripBuffer.getLength());
 
     // // Set a default pattern (White Solid) to ensure LEDs are not blank initially
     // currentPattern = LEDPattern.solid(Color.kBlack);
-
-    // Set default pattern to a team color pattern
-    if (isRedAlliance() == true) {
-      currentPattern = LEDPattern.steps(
-        Map.of(
-          0, m_green,
-          0.2, Color.kRed, 
-          0.8, m_green))
-      .scrollAtRelativeSpeed(
-        Percent.per(Second).of(10));
-    }
-    else { // if blue alliance
-      currentPattern = LEDPattern.steps(
-        Map.of(
-          0, m_green, 
-          0.2, m_blue,
-          0.8, m_green))
-      .scrollAtRelativeSpeed(
-        Percent.per(Second).of(10));
-    }
-    currentPattern =  LEDPattern.solid(Color.kRed);
     currentPattern.applyTo(stripBuffer);
     lightStrip.setData(stripBuffer);
     lightStrip.start();
