@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator3d;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.kVision;
@@ -19,31 +20,70 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.PhotonUtils;
+import org.photonvision.simulation.PhotonCameraSim;
+import org.photonvision.simulation.SimCameraProperties;
+import org.photonvision.simulation.VisionSystemSim;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class PoseEstimatior extends SubsystemBase {
-  SwerveSubsystem m_SwerveSubsystem;
-  SwerveDrivePoseEstimator3d m_SwervePoseEstimator;
-  NetworkTableLogger networkTableLogger = new NetworkTableLogger(this.getName().toString());
+  final SwerveSubsystem m_SwerveSubsystem;
+  final SwerveDrivePoseEstimator3d m_SwervePoseEstimator;
+  final NetworkTableLogger networkTableLogger = new NetworkTableLogger(this.getName().toString());
+
+  PhotonCamera camera1 = new PhotonCamera("backRight");
+  PhotonCamera camera2 = new PhotonCamera("backLeft");
+  PhotonCamera camera3 = new PhotonCamera("front");
+  PhotonCamera camera4 = new PhotonCamera("backUp");
+
+  VisionSystemSim visionSim = new VisionSystemSim("main");
+
+  // TargetModel targetModel = TargetModel.kAprilTag16h5;
+  // Pose3d targetPose = new Pose3d(16, 4, 2, new Rotation3d(0, 0, Math.PI));
+  // VisionTargetSim visionTarget = new VisionTargetSim(targetPose, targetModel);
+
+  SimCameraProperties cameraProp = new SimCameraProperties();
+
+  // Field2d for logging the robot's 2d position on the field to the dashboard like AdvantageScope,
+  // Elastic or Glass.
+  public Field2d simField2d;
+  public Field2d field2d = new Field2d();
+
+
+
 
   /** Creates a new PoseEstimation. */
   public PoseEstimatior(SwerveSubsystem swerveSubsystem) {
     // subsystem setups
     m_SwerveSubsystem = swerveSubsystem;
     m_SwervePoseEstimator = swerveSubsystem.SwervePoseEstimator;
+    visionSim.addAprilTags(kVision.aprilTagFieldLayout);
+    simField2d = visionSim.getDebugField();
+    setUpCameras();
     resetStartPose();
   }
 
-  // setup cameras
-  PhotonCamera camera1 = new PhotonCamera("backRight");
-  PhotonCamera camera2 = new PhotonCamera("backLeft");
-  PhotonCamera camera3 = new PhotonCamera("front");
-  PhotonCamera camera4 = new PhotonCamera("backUp");
+  private void setUpCameras() {
+    // A 640 x 480 camera with a 100 degree diagonal FOV.
+    cameraProp.setCalibration(640, 480, Rotation2d.fromDegrees(70));
+    // Approximate detection noise with average and standard deviation error in pixels.
+    cameraProp.setCalibError(0.25, 0.08);
+    // Set the camera image capture framerate (Note: this is limited by robot loop rate).
+    cameraProp.setFPS(40);
+    // The average and standard deviation in milliseconds of image data latency.
+    cameraProp.setAvgLatencyMs(35);
+    cameraProp.setLatencyStdDevMs(5);
 
-  // Field2d for logging the robot's 2d position on the field to the dashboard like AdvantageScope,
-  // Elastic or Glass.
-  public Field2d field2d = new Field2d();
+    PhotonCameraSim cameraSimBackRight = new PhotonCameraSim(camera1, cameraProp);
+    PhotonCameraSim cameraSimBackLeft = new PhotonCameraSim(camera2, cameraProp);
+    PhotonCameraSim cameraSimFront = new PhotonCameraSim(camera3, cameraProp);
+    PhotonCameraSim cameraSimBackUp = new PhotonCameraSim(camera4, cameraProp);
+    cameraSimBackRight.enableDrawWireframe(true);
+    visionSim.addCamera(cameraSimBackRight, kVision.camera1Position);
+    visionSim.addCamera(cameraSimBackLeft, kVision.camera2Position);
+    visionSim.addCamera(cameraSimFront, kVision.camera3Position);
+    visionSim.addCamera(cameraSimBackUp, kVision.camera4Position);
+    }
 
   // photon pose estimators
   PhotonPoseEstimator PoseEstimator1 =
@@ -144,6 +184,11 @@ public class PoseEstimatior extends SubsystemBase {
     } catch (Exception e) {
     }
   }
+  @Override
+  public void simulationPeriodic() {
+    visionSim.update(m_SwervePoseEstimator.getEstimatedPosition());
+    m_SwervePoseEstimator.addVisionMeasurement(visionSim.getRobotPose(), 0);
+  }
 
   @Override
   public void periodic() {
@@ -230,6 +275,7 @@ public class PoseEstimatior extends SubsystemBase {
     // Log the robot's 2d position on the field to the dashboard using the NetworkTableLogger
     // Utility
     networkTableLogger.logField2d("Field2d", field2d);
+    networkTableLogger.logField2d("simField", simField2d);
     networkTableLogger.logPose2d("2d pose", get2dPose());
     networkTableLogger.logPose2d("Robot 3d Pose", get2dPose());
     networkTableLogger.logPose3d("Robot 2d Pose", m_SwervePoseEstimator.getEstimatedPosition());

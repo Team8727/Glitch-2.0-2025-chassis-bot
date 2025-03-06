@@ -78,8 +78,14 @@ public class Robot extends TimedRobot {
           //         new TrajectoryConfig(10, 5))); //TODO: get this from pathplanner somehow
           // });
           logger.logChassisSpeeds("speeds", chassisSpeeds);
-          m_SwerveSubsystem.setModuleStates(kSwerve.kinematics.toSwerveModuleStates(ChassisSpeeds.fromRobotRelativeSpeeds(new ChassisSpeeds(-chassisSpeeds.vxMetersPerSecond, -chassisSpeeds.vyMetersPerSecond, -chassisSpeeds.omegaRadiansPerSecond), m_SwerveSubsystem.getRotation2d())));
-          // new DriveCmd(m_SwerveSubsystem, () -> chassisSpeeds, () -> true).execute();
+          m_SwerveSubsystem.setModuleStates(
+            kSwerve.kinematics.toSwerveModuleStates(
+              ChassisSpeeds.fromRobotRelativeSpeeds(
+                new ChassisSpeeds(
+                  -chassisSpeeds.vxMetersPerSecond, 
+                  -chassisSpeeds.vyMetersPerSecond, 
+                  -chassisSpeeds.omegaRadiansPerSecond), 
+                m_SwerveSubsystem.getRotation2d())));
         },
         kSwerve.Auton.pathFollowController,
         kConfigs.robotConfig,
