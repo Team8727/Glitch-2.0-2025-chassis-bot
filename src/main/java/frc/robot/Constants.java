@@ -50,7 +50,7 @@ public final class Constants {
 
     public static RobotConfig robotConfig =
         new RobotConfig(
-          62.04, // TODO: find real value
+          61.235, // TODO: find real value
             5.22, // TODO: find real value
             new ModuleConfig(
                 .0381,
@@ -58,13 +58,13 @@ public final class Constants {
                 1.4, // TODO: find real value
                 new DCMotor(
                     12, 
-                    3.65, 
-                    218, 
-                    3.54, 
-                    1000, // TODO: probobly wrong
+                    3.6, 
+                    211, 
+                    3.6, 
+                    710.42, // TODO: probobly wrong
                     1),
                 5.08,
-                60,
+                50,
                 1),
             kSwerve.kinematics.getModules());
 
@@ -309,7 +309,8 @@ public final class Constants {
       public static int removerPivotMotorCANID =12; // TODO: not set yet because remover is not built yet
 
       public enum RemoverPositions {
-        Raised(50), // TODO: SET WITH ACTUAL VALUES
+        RaisedL2(80), // TODO: SET WITH ACTUAL VALUES
+        RaisedL3(50), // TODO: SET WITH ACTUAL VALUES
         Stowed(18); // TODO: SET WITH ACTUAL VALUES
       
         private final double degrees;
@@ -404,8 +405,8 @@ public final class Constants {
       L2(8.23663),// TODO: SET WITH ACTUAL VALUES
       L3(20.43877), // TODO: SET WITH ACTUAL VALUES
       L4(39.53888), // TODO: SET WITH ACTUAL VALUES
-      A2(13.3377), // TODO: SET WITH ACTUAL VALUES
-      A3(28.5); // TODO: SET WITH ACTUAL VALUES
+      A2(13.5), // TODO: SET WITH ACTUAL VALUES
+      A3(25.5); // TODO: SET WITH ACTUAL VALUES
     
       private final double rotations;
       

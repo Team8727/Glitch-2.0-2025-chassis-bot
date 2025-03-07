@@ -104,8 +104,8 @@ public class DefaultTeleopControllerBindings implements ControllerBindings {
         // zero elevator
         controller.leftStick().and(controller.rightStick()).onTrue(new InstantCommand(() -> m_elevator.resetElevatorEncoders()));
 
-        controller.povUp().onTrue(new RemoveAlgaeCmd(m_AlgaeRemoverPivot, m_AlgaeRemoverRollers, ElevatorPosition.A3, m_elevator, m_ledSubsytem));
-        controller.povDown().onTrue(new RemoveAlgaeCmd(m_AlgaeRemoverPivot, m_AlgaeRemoverRollers, ElevatorPosition.A2, m_elevator, m_ledSubsytem));
+        controller.povUp().whileTrue(new RemoveAlgaeCmd(m_AlgaeRemoverPivot, m_AlgaeRemoverRollers, ElevatorPosition.A3, m_elevator, m_ledSubsytem));
+        controller.povDown().whileTrue(new RemoveAlgaeCmd(m_AlgaeRemoverPivot, m_AlgaeRemoverRollers, ElevatorPosition.A2, m_elevator, m_ledSubsytem));
 
 
         // Align to pose

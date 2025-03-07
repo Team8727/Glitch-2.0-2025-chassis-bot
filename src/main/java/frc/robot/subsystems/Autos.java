@@ -99,7 +99,7 @@ public class Autos extends SubsystemBase {
   public void setupAutoChooser() {
     autoChooser.setDefaultOption("Path M-L4-H", M_L4_H());
     autoChooser.addOption("Path L-L4-I", L_L4_I());
-    autoChooser.addOption("Path R_Lr_I", R_L4_F());
+    autoChooser.addOption("Path R_L4_I", R_L4_F());
     autoChooser.addOption("Path ML_L4_H", ML_L4_H());
     autoChooser.addOption("Path MR_L4_F", MR_L4_F());
     autoChooser.addOption("Path CL-L4-I-J", path_CL_L4_I_J());
