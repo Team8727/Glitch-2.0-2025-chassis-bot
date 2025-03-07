@@ -117,6 +117,7 @@ public class Robot extends TimedRobot {
     PathfindingCommand.warmupCommand().schedule();
 
     // Log data to a log file using WPILib's DataLogManager
+    DataLogManager.logNetworkTables(true);
     DataLogManager.start();
 
     // Start the URCL logger (logs REV SparkMaxes and SparkFlexes automatically on networktables)
