@@ -57,11 +57,11 @@ public class AlgaeRemoverPivot extends SubsystemBase {
     config // TODO: config everything
         .smartCurrentLimit(40) 
         .idleMode(IdleMode.kBrake)
-        .inverted(false)
+        .inverted(true)
         .closedLoop
           .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
           .positionWrappingEnabled(false)
-          .outputRange(0, 0) 
+          .outputRange(-1, 1) 
           .pid(.5, 0, 2); 
         // .maxMotion
         //   .maxAcceleration(0)
