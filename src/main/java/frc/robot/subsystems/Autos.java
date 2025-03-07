@@ -88,6 +88,8 @@ public class Autos extends SubsystemBase {
     loadPath("ML-L4-I");
     loadPath("MR-L4-F");
     loadPath("bareminimum");
+    loadPath("MR-L4-F");
+    loadPath("ML-L4-I");
     } catch (IOException | ParseException e) {
       e.printStackTrace();
     }
@@ -95,10 +97,10 @@ public class Autos extends SubsystemBase {
 
   public void setupAutoChooser() {
     autoChooser.setDefaultOption("Path M-L4-H", M_L4_H());
-    autoChooser.addOption("Path CR-F-E", CR_FE());
-    autoChooser.addOption("Path ML-L4-I-J", path_M_L4_H());
-    autoChooser.addOption("Path ML-I-R-J-R", ML_I_R_J_R());
-    autoChooser.addOption("Path MR-F-R-E-R", MR_F_R_E_R());
+    autoChooser.addOption("Path L-L4-I", L_L4_I());
+    autoChooser.addOption("Path R_Lr_I", R_L4_F());
+    autoChooser.addOption("Path ML_L4_H", ML_L4_H());
+    autoChooser.addOption("Path MR_L4_F", MR_L4_F());
     autoChooser.addOption("Path CL-L4-I-J", path_CL_L4_I_J());
     autoChooser.addOption("Path CR-L4-F-E", path_CR_L4_F_E());
     autoChooser.addOption("betterMinimum", bareMinimum());
@@ -144,23 +146,39 @@ public class Autos extends SubsystemBase {
     return alignToPath(paths.get("betterMinimum"));
   }
 
-  public Command M_L4_H() {
+  private Command M_L4_H() {
     m_PoseEstimatior.resetPoseToPose2d(new Pose2d(7.2, 4, new Rotation2d(Math.toRadians(180))));
     return alignToPath(paths.get("M-L4-H"))
       .andThen(new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem)).withTimeout(2)
       .andThen(new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator));
-      // new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_coral, m_ledSubsytem),
-      // alignToPath(paths.get("I-Refill")),
-      // new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsytem));
   }
 
-  public Command L_L4_I() {
-    return 
-      run(() -> m_PoseEstimatior.resetPoseToPose2d(paths.get("CL-L4-I").getStartingDifferentialPose()))
-      .andThen(alignToPath(paths.get("CL-L4-I")))
+  private Command L_L4_I() {
+    m_PoseEstimatior.resetPoseToPose2d(new Pose2d(7.2, 4.45, new Rotation2d(Math.toRadians(180))));
+    return alignToPath(paths.get("CL-L4-I"))
       .andThen(new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem)).withTimeout(2)
-      .andThen(new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator))
-      ;
+      .andThen(new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator));
+  }
+
+  private Command R_L4_F() {
+    m_PoseEstimatior.resetPoseToPose2d(new Pose2d(7.2, 3.65, new Rotation2d(Math.toRadians(180))));
+    return alignToPath(paths.get("CR-L4-F"))
+      .andThen(new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem)).withTimeout(2)
+      .andThen(new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator));
+  }
+
+  private Command MR_L4_F() {
+    m_PoseEstimatior.resetPoseToPose2d(new Pose2d(7.2, 0.5, new Rotation2d(Math.toRadians(180))));
+    return alignToPath(paths.get("MR-L4-F"))//TODO: to be made
+      .andThen(new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem)).withTimeout(2)
+      .andThen(new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator));
+  }
+
+  private Command ML_L4_H() {
+    m_PoseEstimatior.resetPoseToPose2d(new Pose2d(7.2, 0.5, new Rotation2d(Math.toRadians(180))));
+    return alignToPath(paths.get("ML-L4-I"))//TODO: to be made
+      .andThen(new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem)).withTimeout(2)
+      .andThen(new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator));
   }
 
   private Command path_M_L4_H() {
