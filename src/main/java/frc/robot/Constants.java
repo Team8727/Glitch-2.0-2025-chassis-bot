@@ -60,11 +60,11 @@ public final class Constants {
                 12, 
                 3.6, 
                 211, 
-                3.54, 
-                1000, // TODO: probobly wrong
+                3.6, 
+                710.42, // TODO: probobly wrong
                 1),
             5.08,
-            60,
+            50,
             1),
             kSwerve.kinematics.getModules());
 
@@ -155,7 +155,7 @@ public final class Constants {
       public static final double maxAngAccel = 0.4 * kSwerve.maxAngAccel;
       public static final double maxAngVel = 0.4 * kSwerve.maxAngSpeed;
 
-      public static final double transP = 12;
+      public static final double transP = 7.5;
 
       public static final double maxOnTheFlyVel = 2;
       public static final double maxOnTheFlyAcc = 2;
@@ -207,7 +207,7 @@ public final class Constants {
 
       public static class kSteer {
         public static final double kP = 2.5;
-        public static final double kD = 4;
+        public static final double kD = 0;
         public static final double minOutput = -1;
         public static final double maxOutput = 1;
       }
