@@ -59,6 +59,9 @@ public class RobotContainer {
     m_ledSubsytem = ledSubsystem;
     m_Autos = autos;
     m_elevatorSpeedControl = elevatorSpeedControl;
+
+    m_Autos.setupAutoChooser();
+
   }
 
   public void teleopInit() {

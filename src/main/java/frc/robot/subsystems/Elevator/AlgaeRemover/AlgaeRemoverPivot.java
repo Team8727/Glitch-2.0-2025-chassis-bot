@@ -31,7 +31,7 @@ public class AlgaeRemoverPivot extends SubsystemBase {
   private final SparkClosedLoopController removerPivotPID;
 
   private final TrapezoidProfile m_profile = new TrapezoidProfile(
-    new TrapezoidProfile.Constraints(3.53, 0.01)); // TODO: May need to adjust these values later
+    new TrapezoidProfile.Constraints(50, 50)); // TODO: May need to adjust these values later
   private TrapezoidProfile.State m_goal = new TrapezoidProfile.State(0,0);
   private TrapezoidProfile.State m_setpoint = new TrapezoidProfile.State(0,0);
 
@@ -57,11 +57,12 @@ public class AlgaeRemoverPivot extends SubsystemBase {
     config // TODO: config everything
         .smartCurrentLimit(40) 
         .idleMode(IdleMode.kBrake)
-        .inverted(false)
+        .inverted(true)
         .closedLoop
           .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
+          .positionWrappingEnabled(false)
           .outputRange(-1, 1) 
-          .pid(2, 0.0007,2);
+          .pid(.5, 0, 2); 
         // .maxMotion
         //   .maxAcceleration(0)
         //   .maxVelocity(0)

@@ -44,15 +44,15 @@ public class SetElevatorHeightCmd extends Command {
   public void initialize() {
       System.out.println("Setting elevator height to " + m_scoreLevel);
       m_elevator.setElevatorHeightMotionProfile(m_scoreLevel);
-      if (m_scoreLevel == ElevatorPosition.L1) {
-        new SequentialCommandGroup(
-          new WaitUntilCommand(() -> Math.abs(m_elevator.getElevatorHeight() - m_scoreLevel.getOutputRotations()) < 0.5),
-          new InstantCommand(() -> m_elevator.isHoming = true),
-          new InstantCommand(() -> m_elevator.setDutyCycle(-0.1)),
-          new WaitUntilCommand(() -> m_elevator.getCurrentDrawAmps() > 20),
-          new InstantCommand(() -> m_elevator.resetElevatorEncoders()),
-          new InstantCommand(() -> m_elevator.isHoming = false)).schedule();
-      }
+      // if (m_scoreLevel == ElevatorPosition.L1) {
+      //   new SequentialCommandGroup(
+      //     new WaitUntilCommand(() -> Math.abs(m_elevator.getElevatorHeight() - m_scoreLevel.getOutputRotations()) < 0.5),
+      //     new InstantCommand(() -> m_elevator.isHoming = true),
+      //     new InstantCommand(() -> m_elevator.setDutyCycle(-0.1)),
+      //     new WaitUntilCommand(() -> m_elevator.getCurrentDrawAmps() > 20),
+      //     new InstantCommand(() -> m_elevator.resetElevatorEncoders()),
+      //     new InstantCommand(() -> m_elevator.isHoming = false)).schedule();
+      // }
       this.cancel();
   }
 
