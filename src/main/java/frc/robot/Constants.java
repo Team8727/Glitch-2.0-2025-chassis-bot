@@ -49,23 +49,23 @@ public final class Constants {
   public static class kConfigs {
 
     public static RobotConfig robotConfig =
-        new RobotConfig(
-          61.235, // TODO: find real value
-            5.22, // TODO: find real value
-            new ModuleConfig(
-                .0381,
-                4.45,
-                1.4, // TODO: find real value
-                new DCMotor(
-                    12, 
-                    3.6, 
-                    211, 
-                    3.6, 
-                    710.42, // TODO: probobly wrong
-                    1),
-                5.08,
-                50,
+    new RobotConfig(
+      61.235, // TODO: find real value
+        5.22, // TODO: find real value
+        new ModuleConfig(
+            .0381,
+            4.45,
+            1.4, // TODO: find real value
+            new DCMotor(
+                12, 
+                3.65, 
+                218, 
+                3.54, 
+                1000, // TODO: probobly wrong
                 1),
+            5.08,
+            60,
+            1),
             kSwerve.kinematics.getModules());
 
     public static final DCMotor neoMotor = 
