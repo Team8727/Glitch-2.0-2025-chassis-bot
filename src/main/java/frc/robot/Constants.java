@@ -50,16 +50,16 @@ public final class Constants {
 
     public static RobotConfig robotConfig =
     new RobotConfig(
-      61.235, // TODO: find real value
+      65, // TODO: find real value
         5.22, // TODO: find real value
         new ModuleConfig(
-            .0381,
-            4.45,
+            .0371,
+            4.55,
             1.4, // TODO: find real value
             new DCMotor(
                 12, 
-                3.65, 
-                218, 
+                3.6, 
+                211, 
                 3.54, 
                 1000, // TODO: probobly wrong
                 1),
@@ -207,7 +207,7 @@ public final class Constants {
 
       public static class kSteer {
         public static final double kP = 2.5;
-        public static final double kD = 0;
+        public static final double kD = 4;
         public static final double minOutput = -1;
         public static final double maxOutput = 1;
       }
