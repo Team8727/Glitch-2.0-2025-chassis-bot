@@ -50,7 +50,7 @@ public final class Constants {
 
     public static RobotConfig robotConfig =
         new RobotConfig(
-          62.6864655, // TODO: find real value
+          62.04, // TODO: find real value
             5.22, // TODO: find real value
             new ModuleConfig(
                 .0381,
@@ -336,7 +336,7 @@ public final class Constants {
           17; // TODO: not set yet because intake is not built yet
 
       public enum IntakePosition {
-          HOME(10), 
+          HOME(20), 
           SCORE(20), 
           DOWN(90); // TODO: SET WITH ACTUAL VALUES
 

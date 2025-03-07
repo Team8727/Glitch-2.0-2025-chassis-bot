@@ -14,6 +14,7 @@ import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -37,17 +38,19 @@ public class Autos extends SubsystemBase {
   private final AlgaeIntakePivot m_algaeIntakePivot;
   private final AlgaeIntakeRollers m_algaeIntakeRollers;
   private final LinkedHashMap<String, PathPlannerPath> paths = new LinkedHashMap<String, PathPlannerPath>();
+  private final PoseEstimatior m_PoseEstimatior;
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
   private final NetworkTableLogger logger = new NetworkTableLogger(this.getName().toString());
 
 
   /** Creates a new Autos. */
-  public Autos(LEDSubsystem ledSubsystem, Coral coralSubsystem, Elevator elevatorSubsystem, AlgaeIntakePivot algaeIntakePivot, AlgaeIntakeRollers algaeIntakeRollers) {
+  public Autos(LEDSubsystem ledSubsystem, Coral coralSubsystem, Elevator elevatorSubsystem, AlgaeIntakePivot algaeIntakePivot, AlgaeIntakeRollers algaeIntakeRollers, PoseEstimatior poseEstimatior) {
     m_ledSubsytem = ledSubsystem;
     m_coral = coralSubsystem;
     m_elevator = elevatorSubsystem;
     m_algaeIntakePivot = algaeIntakePivot;
     m_algaeIntakeRollers = algaeIntakeRollers;
+    m_PoseEstimatior = poseEstimatior;
 
     loadPaths();
 
@@ -80,12 +83,29 @@ public class Autos extends SubsystemBase {
     paths.put("M-L4-G", PathPlannerPath.fromChoreoTrajectory("M-L4-G"));
     paths.put("G-Refill", PathPlannerPath.fromChoreoTrajectory("G-Refill"));
     paths.put("J-Refill", PathPlannerPath.fromChoreoTrajectory("J-Refill"));
+    paths.put("betterMinimum", PathPlannerPath.fromPathFile("bareMinimum"));
     loadPath("E-Refill");
     loadPath("ML-L4-I");
     loadPath("MR-L4-F");
+    loadPath("bareminimum");
     } catch (IOException | ParseException e) {
       e.printStackTrace();
     }
+  }
+
+  public void setupAutoChooser() {
+    autoChooser.setDefaultOption("Path M-L4-H", M_L4_H());
+    autoChooser.addOption("Path CR-F-E", CR_FE());
+    autoChooser.addOption("Path ML-L4-I-J", path_M_L4_H());
+    autoChooser.addOption("Path ML-I-R-J-R", ML_I_R_J_R());
+    autoChooser.addOption("Path MR-F-R-E-R", MR_F_R_E_R());
+    autoChooser.addOption("Path CL-L4-I-J", path_CL_L4_I_J());
+    autoChooser.addOption("Path CR-L4-F-E", path_CR_L4_F_E());
+    autoChooser.addOption("betterMinimum", bareMinimum());
+  }
+
+  public SendableChooser<Command> getAutoChooser() {
+    return autoChooser;
   }
 
   private void loadPath(String pathName) {
@@ -120,6 +140,29 @@ public class Autos extends SubsystemBase {
             kSwerve.Auton.maxAngAccel)).andThen(new WaitCommand(0.0001));
   }
 
+  private Command bareMinimum() {
+    return alignToPath(paths.get("betterMinimum"));
+  }
+
+  public Command M_L4_H() {
+    m_PoseEstimatior.resetPoseToPose2d(new Pose2d(7.2, 4, new Rotation2d(Math.toRadians(180))));
+    return alignToPath(paths.get("M-L4-H"))
+      .andThen(new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem)).withTimeout(2)
+      .andThen(new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator));
+      // new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_coral, m_ledSubsytem),
+      // alignToPath(paths.get("I-Refill")),
+      // new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsytem));
+  }
+
+  public Command L_L4_I() {
+    return 
+      run(() -> m_PoseEstimatior.resetPoseToPose2d(paths.get("CL-L4-I").getStartingDifferentialPose()))
+      .andThen(alignToPath(paths.get("CL-L4-I")))
+      .andThen(new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem)).withTimeout(2)
+      .andThen(new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator))
+      ;
+  }
+
   private Command path_M_L4_H() {
     return new SequentialCommandGroup(
       alignToPath(paths.get("M-L4-H")),
@@ -128,20 +171,6 @@ public class Autos extends SubsystemBase {
       new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_coral, m_ledSubsytem),
       alignToPath(paths.get("H-Refill")),
       new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsytem));
-  }
-
-  public void setupAutoChooser() {
-    autoChooser.setDefaultOption("Path M-L4-H", path_ML_L4_I_J());
-    autoChooser.addOption("Path CR-F-E", CR_FE());
-    autoChooser.addOption("Path ML-L4-I-J", path_M_L4_H());
-    autoChooser.addOption("Path ML-I-R-J-R", ML_I_R_J_R());
-    autoChooser.addOption("Path MR-F-R-E-R", MR_F_R_E_R());
-    autoChooser.addOption("Path CL-L4-I-J", path_CL_L4_I_J());
-    autoChooser.addOption("Path CR-L4-F-E", path_CR_L4_F_E());
-  }
-
-  public SendableChooser<Command> getAutoChooser() {
-    return autoChooser;
   }
 
   public Command CR_FE() {
@@ -157,15 +186,6 @@ public class Autos extends SubsystemBase {
       new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator),
       new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_coral, m_ledSubsytem)
     );
-  }
-
-  public Command path_ML_L4_I_J() {
-    return alignToPath(paths.get("M-L4-H"))
-      .andThen(new SetElevatorHeightCmd(ElevatorPosition.L2, m_elevator, m_coral, m_ledSubsytem)).andThen(new WaitCommand(0.0001))
-      .andThen(new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator));
-      // new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_coral, m_ledSubsytem),
-      // alignToPath(paths.get("I-Refill")),
-      // new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsytem));
   }
 
   public Command ML_I_R_J_R() {

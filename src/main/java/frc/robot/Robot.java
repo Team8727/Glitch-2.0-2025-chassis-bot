@@ -8,19 +8,12 @@ import org.littletonrobotics.urcl.URCL;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathfindingCommand;
-import com.pathplanner.lib.util.PathPlannerLogging;
-
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -56,7 +49,7 @@ public class Robot extends TimedRobot {
   private final Elevator m_elevator = new Elevator();
   private final AlgaeIntakePivot m_AlgaeIntakePivot = new AlgaeIntakePivot();
   private final AlgaeIntakeRollers m_AlgaeIntakeRollers = new AlgaeIntakeRollers();
-  private final Autos m_Autos = new Autos(m_ledSubsytem, m_coral, m_elevator, m_AlgaeIntakePivot, m_AlgaeIntakeRollers);
+  private final Autos m_Autos = new Autos(m_ledSubsytem, m_coral, m_elevator, m_AlgaeIntakePivot, m_AlgaeIntakeRollers, m_PoseEstimatior);
 
   private boolean m_elevatorSpeedControl = true;
 
@@ -167,8 +160,7 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().cancelAll();
     m_robotContainer.autonomousInit();
 
-    m_PoseEstimatior.resetPoseToPose2d(new Pose2d(7.2,4,new Rotation2d(Math.toRadians(180))));
-    m_Autos.path_ML_L4_I_J().schedule(); // TODO: Only enable this if you want the robot to do stuff during autonomous
+    m_Autos.getAutoChooser().getSelected().schedule(); // TODO: Only enable this if you want the robot to do stuff during autonomous
 
   }
 
