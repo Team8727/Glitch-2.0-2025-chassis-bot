@@ -16,6 +16,7 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -66,7 +67,7 @@ public class Autos extends SubsystemBase {
     */
     
     //paths.put("EXAMPLE", PathPlannerPath.fromChoreoTrajectory("EXAMPLE"));
-
+ 
   }
 
   private void loadPaths() {
@@ -147,38 +148,44 @@ public class Autos extends SubsystemBase {
   }
 
   private Command M_L4_H() {
-    m_PoseEstimatior.resetPoseToPose2d(new Pose2d(7.2, 4, new Rotation2d(Math.toRadians(180))));
-    return alignToPath(paths.get("M-L4-H"))
-      .andThen(new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem)).withTimeout(2)
-      .andThen(new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator));
+    return new InstantCommand(() ->
+      m_PoseEstimatior.resetPoseToPose2d(new Pose2d(7.2, 4.05, new Rotation2d(Math.toRadians(180)))))
+    .andThen(
+      alignToPath(paths.get("M-L4-H"))
+        .andThen(new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem)).withTimeout(2)
+        .andThen(new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator))
+    );
   }
 
   private Command L_L4_I() {
-    m_PoseEstimatior.resetPoseToPose2d(new Pose2d(7.2, 4.45, new Rotation2d(Math.toRadians(180))));
-    return alignToPath(paths.get("CL-L4-I"))
+    return new InstantCommand(() -> 
+      m_PoseEstimatior.resetPoseToPose2d(new Pose2d(7.2, 7.6, new Rotation2d(Math.toRadians(180)))))
+      .andThen(alignToPath(paths.get("CL-L4-I"))
       .andThen(new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem)).withTimeout(2)
-      .andThen(new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator));
+      .andThen(new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator)));
   }
 
   private Command R_L4_F() {
-    m_PoseEstimatior.resetPoseToPose2d(new Pose2d(7.2, 3.65, new Rotation2d(Math.toRadians(180))));
-    return alignToPath(paths.get("CR-L4-F"))
+    return new InstantCommand(() -> m_PoseEstimatior.resetPoseToPose2d(new Pose2d(7.2, 0.5, new Rotation2d(Math.toRadians(180)))))
+      .andThen(alignToPath(paths.get("CR-L4-F")))
       .andThen(new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem)).withTimeout(2)
       .andThen(new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator));
   }
 
   private Command MR_L4_F() {
-    m_PoseEstimatior.resetPoseToPose2d(new Pose2d(7.2, 0.5, new Rotation2d(Math.toRadians(180))));
-    return alignToPath(paths.get("MR-L4-F"))//TODO: to be made
+    return new InstantCommand(() -> 
+      m_PoseEstimatior.resetPoseToPose2d(new Pose2d(7.2, 3.65, new Rotation2d(Math.toRadians(180)))))
+      .andThen(alignToPath(paths.get("MR-L4-F"))//TODO: add correct path
       .andThen(new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem)).withTimeout(2)
-      .andThen(new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator));
+      .andThen(new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator)));
   }
 
   private Command ML_L4_H() {
-    m_PoseEstimatior.resetPoseToPose2d(new Pose2d(7.2, 0.5, new Rotation2d(Math.toRadians(180))));
-    return alignToPath(paths.get("ML-L4-I"))//TODO: to be made
+    return new InstantCommand(() -> 
+      m_PoseEstimatior.resetPoseToPose2d(new Pose2d(7.2, 4.45, new Rotation2d(Math.toRadians(180)))))
+      .andThen(alignToPath(paths.get("ML-L4-I"))//TODO: add correct path
       .andThen(new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem)).withTimeout(2)
-      .andThen(new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator));
+      .andThen(new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator)));
   }
 
   private Command path_M_L4_H() {
