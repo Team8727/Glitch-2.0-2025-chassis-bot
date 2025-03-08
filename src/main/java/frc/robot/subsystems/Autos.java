@@ -47,8 +47,6 @@ public class Autos extends SubsystemBase {
   private final PoseEstimatior m_PoseEstimatior;
   private final SendableChooser<String> autoChooser = new SendableChooser<>();
   private final NetworkTableLogger logger = new NetworkTableLogger(this.getName().toString());
-  private boolean flipPath;
-
 
   /** Creates a new Autos. */
   public Autos(LEDSubsystem ledSubsystem, Coral coralSubsystem, Elevator elevatorSubsystem, AlgaeIntakePivot algaeIntakePivot, AlgaeIntakeRollers algaeIntakeRollers, PoseEstimatior poseEstimatior) {
@@ -173,7 +171,6 @@ public class Autos extends SubsystemBase {
         (17.55 - startPose.getX()) + 0.01,
         (8 - startPose.getY()) + 0.01,
         new Rotation2d(Math.toRadians(0.1)));
-      flipPath = true;
       m_PoseEstimatior.resetPoseToPose2d(startPoseOffset);
     } else {
       Pose2d startPoseOffset = new Pose2d(
@@ -181,7 +178,6 @@ public class Autos extends SubsystemBase {
         startPose.getY() - 0.01,
         new Rotation2d(Math.toRadians(180)));
         m_PoseEstimatior.resetPoseToPose2d(startPoseOffset);
-        flipPath = false;
     }
   }
 
