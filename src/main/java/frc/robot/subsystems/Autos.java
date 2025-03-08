@@ -90,7 +90,7 @@ public class Autos extends SubsystemBase {
     paths.put("M-L4-G", PathPlannerPath.fromChoreoTrajectory("M-L4-G"));
     paths.put("G-Refill", PathPlannerPath.fromChoreoTrajectory("G-Refill"));
     paths.put("J-Refill", PathPlannerPath.fromChoreoTrajectory("J-Refill"));
-    paths.put("betterMinimum", PathPlannerPath.fromPathFile("bareMinimum"));
+    paths.put("betterMinimum", PathPlannerPath.fromChoreoTrajectory("bareminimum"));
     loadPath("E-Refill");
     loadPath("ML-L4-I");
     loadPath("MR-L4-F");
@@ -104,19 +104,28 @@ public class Autos extends SubsystemBase {
 
   public void setupAutoChooser() {
     autoChooser.setDefaultOption("Path M-L4-H", "M_L4_H()");
-    // autoChooser.addOption("Path Red-M-L4-H", Red_M_L4_H());
-    // autoChooser.addOption("Path L-L4-I", L_L4_I());
-    // autoChooser.addOption("Path R_L4_I", R_L4_F());
-    // autoChooser.addOption("Path ML_L4_H", ML_L4_H());
-    // autoChooser.addOption("Path MR_L4_F", MR_L4_F());
-    // autoChooser.addOption("Path CL-L4-I-J", path_CL_L4_I_J());
-    // autoChooser.addOption("Path CR-L4-F-E", path_CR_L4_F_E());
-    // autoChooser.addOption("betterMinimum", bareMinimum());
+    autoChooser.addOption("Path L-L4-I", "L_L4_I()");
+    autoChooser.addOption("Path R_L4_I", "R_L4_F()");
+    autoChooser.addOption("Path ML_L4_I", "ML_L4_I()");
+    autoChooser.addOption("Path MR_L4_F", "MR_L4_F()");
+    autoChooser.addOption("betterMinimum", "bareMinimum()");
   }
 
   public void selectAuto() {
     if (autoChooser.getSelected() == "M_L4_H()") {
       M_L4_H().schedule();
+    } else if (autoChooser.getSelected() == "L_L4_I()") {
+      L_L4_I().schedule();
+    } else if (autoChooser.getSelected() == "R_L4_F()") {
+      R_L4_F().schedule();
+    } else if (autoChooser.getSelected() == "MR_L4_F()") {
+      MR_L4_F().schedule();
+    } else if (autoChooser.getSelected() == "ML_L4_I()") {
+      ML_L4_I().schedule();
+    } else if (autoChooser.getSelected() == "betterMinimum") {
+      bareMinimum().schedule();
+    } else {
+      System.out.println("somting is very wrong if you see this");
     }
   }
   public SendableChooser<String> getAutoChooser() {
@@ -175,153 +184,146 @@ public class Autos extends SubsystemBase {
   }
 
   private Command bareMinimum() {
-    return alignToPath(paths.get("betterMinimum"));
-  }
+    return new 
+      InstantCommand(() -> setStartPose(paths.get("betterMinimum")))
+      .andThen(alignToPath(paths.get("betterMinimum")));
+    }
 
   private Command M_L4_H() {
-    return new InstantCommand(() -> setStartPose(paths.get("M-L4-H")))
-        .andThen(alignToPath(paths.get("M-L4-H")));
-}
-      // .andThen(new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem)).withTimeout(3)
-      // .andThen(new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator))
-  // private Command Red_M_L4_H() {
-  //   return new InstantCommand(() ->
-  //     setStartPose(paths.get("Red-M-L4-H")))
-  //     .andThen(alignToPath(paths.get("Red-M-L4-H")))
-  //     .andThen(new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem)).withTimeout(3)
-  //     .andThen(new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator))
-  //   ;
-  // }
+    return new 
+      InstantCommand(() -> setStartPose(paths.get("M-L4-H")))
+      .andThen(alignToPath(paths.get("M-L4-H")))
+      .andThen(new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem)).withTimeout(3)
+      .andThen(new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator));
+  }
 
   private Command L_L4_I() {
-    return new InstantCommand(() -> 
-      m_PoseEstimatior.resetPoseToPose2d(new Pose2d(7.2, 7.6, new Rotation2d(Math.toRadians(180)))))
+    return new 
+      InstantCommand(() -> setStartPose(paths.get("CL-L4-I")))
       .andThen(alignToPath(paths.get("CL-L4-I"))
       .andThen(new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem)).withTimeout(2)
       .andThen(new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator)));
   }
 
   private Command R_L4_F() {
-    return new InstantCommand(() -> m_PoseEstimatior.resetPoseToPose2d(new Pose2d(7.2, 0.5, new Rotation2d(Math.toRadians(180)))))
+    return new InstantCommand(() -> setStartPose(paths.get("CR-L4-F")))
       .andThen(alignToPath(paths.get("CR-L4-F")))
       .andThen(new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem)).withTimeout(2)
       .andThen(new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator));
   }
 
   private Command MR_L4_F() {
-    return new InstantCommand(() -> 
-      m_PoseEstimatior.resetPoseToPose2d(new Pose2d(7.2, 3.65, new Rotation2d(Math.toRadians(180)))))
+    return new InstantCommand(() -> setStartPose(paths.get("MR-L4-F")))
       .andThen(alignToPath(paths.get("MR-L4-F"))//TODO: add correct path
       .andThen(new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem)).withTimeout(2)
       .andThen(new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator)));
   }
 
-  private Command ML_L4_H() {
-    return new InstantCommand(() -> 
-      m_PoseEstimatior.resetPoseToPose2d(new Pose2d(7.2, 4.45, new Rotation2d(Math.toRadians(180)))))
+  private Command ML_L4_I() {
+    return new InstantCommand(() -> setStartPose(paths.get("ML-L4-I")))
       .andThen(alignToPath(paths.get("ML-L4-I"))//TODO: add correct path
       .andThen(new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem)).withTimeout(2)
       .andThen(new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator)));
   }
 
-  private Command path_M_L4_H() {
-    return new SequentialCommandGroup(
-      alignToPath(paths.get("M-L4-H")),
-      new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem),
-      new DeployCoralCmd(m_coral, m_ledSubsytem,m_elevator),
-      new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_coral, m_ledSubsytem),
-      alignToPath(paths.get("H-Refill")),
-      new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsytem));
-  }
+  // private Command path_M_L4_H() {
+  //   return new SequentialCommandGroup(
+  //     alignToPath(paths.get("M-L4-H")),
+  //     new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem),
+  //     new DeployCoralCmd(m_coral, m_ledSubsytem,m_elevator),
+  //     new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_coral, m_ledSubsytem),
+  //     alignToPath(paths.get("H-Refill")),
+  //     new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsytem));
+  // }
 
-  public Command CR_FE() {
-    return new SequentialCommandGroup(
-      alignToPath(paths.get("CR-L4-F")),
-      new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem),
-      new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator),
-      new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_coral, m_ledSubsytem),
-      alignToPath(paths.get("F-Refill")),
-      new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsytem),
-      alignToPath(paths.get("Refill-E")),
-      new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem),
-      new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator),
-      new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_coral, m_ledSubsytem)
-    );
-  }
+  // public Command CR_FE() {
+  //   return new SequentialCommandGroup(
+  //     alignToPath(paths.get("CR-L4-F")),
+  //     new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem),
+  //     new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator),
+  //     new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_coral, m_ledSubsytem),
+  //     alignToPath(paths.get("F-Refill")),
+  //     new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsytem),
+  //     alignToPath(paths.get("Refill-E")),
+  //     new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem),
+  //     new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator),
+  //     new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_coral, m_ledSubsytem)
+  //   );
+  // }
 
-  public Command ML_I_R_J_R() {
-    return new SequentialCommandGroup(
-      alignToPath(paths.get("ML-L4-I")),
-      new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem),
-      new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator),
-      new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_coral, m_ledSubsytem),
-      alignToPath(paths.get("I-Refill")),
-      new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsytem),
-      alignToPath(paths.get("Refill-J")),
-      new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem),
-      new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator),
-      new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_coral, m_ledSubsytem),
-      alignToPath(paths.get("J-Refill")),
-      new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsytem));
-  }
+  // public Command ML_I_R_J_R() {
+  //   return new SequentialCommandGroup(
+  //     alignToPath(paths.get("ML-L4-I")),
+  //     new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem),
+  //     new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator),
+  //     new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_coral, m_ledSubsytem),
+  //     alignToPath(paths.get("I-Refill")),
+  //     new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsytem),
+  //     alignToPath(paths.get("Refill-J")),
+  //     new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem),
+  //     new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator),
+  //     new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_coral, m_ledSubsytem),
+  //     alignToPath(paths.get("J-Refill")),
+  //     new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsytem));
+  // }
 
-  public Command MR_F_R_E_R() {
-    return new SequentialCommandGroup(
-      alignToPath(paths.get("MR-L4-F")),
-      new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem),
-      new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator),
-      new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_coral, m_ledSubsytem),
-      alignToPath(paths.get("F-Refill")),
-      new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsytem),
-      alignToPath(paths.get("Refill-E")),
-      new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem),
-      new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator),
-      new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_coral, m_ledSubsytem),
-      alignToPath(paths.get("E-Refill")),
-      new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsytem));
-  }
+  // public Command MR_F_R_E_R() {
+  //   return new SequentialCommandGroup(
+  //     alignToPath(paths.get("MR-L4-F")),
+  //     new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem),
+  //     new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator),
+  //     new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_coral, m_ledSubsytem),
+  //     alignToPath(paths.get("F-Refill")),
+  //     new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsytem),
+  //     alignToPath(paths.get("Refill-E")),
+  //     new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem),
+  //     new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator),
+  //     new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_coral, m_ledSubsytem),
+  //     alignToPath(paths.get("E-Refill")),
+  //     new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsytem));
+  // }
 
-  private Command path_CL_L4_I_J() {
-    return new SequentialCommandGroup(
-      alignToPath(paths.get("CL-L4-I")),
-      new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem),
-      new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator),
-      new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_coral, m_ledSubsytem),
-      alignToPath(paths.get("I-Refill")),
-      new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsytem),
-      alignToPath(paths.get("Refill-J")),
-      new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem),
-      new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator),
-      new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_coral, m_ledSubsytem));
-  }
+  // private Command path_CL_L4_I_J() {
+  //   return new SequentialCommandGroup(
+  //     alignToPath(paths.get("CL-L4-I")),
+  //     new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem),
+  //     new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator),
+  //     new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_coral, m_ledSubsytem),
+  //     alignToPath(paths.get("I-Refill")),
+  //     new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsytem),
+  //     alignToPath(paths.get("Refill-J")),
+  //     new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem),
+  //     new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator),
+  //     new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_coral, m_ledSubsytem));
+  // }
 
-  private Command path_CR_L4_F_E() {
-    return new SequentialCommandGroup(
-      alignToPath(paths.get("CR-L4-F")),
-      new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem),
-      new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator),
-      new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_coral, m_ledSubsytem),
-      alignToPath(paths.get("F-Refill")),
-      new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsytem),
-      alignToPath(paths.get("Refill-E")),
-      new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem),
-      new DeployCoralCmd(m_coral, m_ledSubsytem,m_elevator),
-      new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_coral, m_ledSubsytem));
-  }
+  // private Command path_CR_L4_F_E() {
+  //   return new SequentialCommandGroup(
+  //     alignToPath(paths.get("CR-L4-F")),
+  //     new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem),
+  //     new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator),
+  //     new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_coral, m_ledSubsytem),
+  //     alignToPath(paths.get("F-Refill")),
+  //     new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsytem),
+  //     alignToPath(paths.get("Refill-E")),
+  //     new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem),
+  //     new DeployCoralCmd(m_coral, m_ledSubsytem,m_elevator),
+  //     new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_coral, m_ledSubsytem));
+  // }
 
-  private Command path_MR_L4_F() {
-    return new SequentialCommandGroup(
-      alignToPath(paths.get("M-L4-F")),
-      new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem),
-      new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator),
-      new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_coral, m_ledSubsytem),
-      alignToPath(paths.get("F-Refill")),
-      new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsytem),
-      alignToPath(paths.get("Refill-E")),
-      new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem),
-      new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator),
-      new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_coral, m_ledSubsytem));
-  }
+  // private Command path_MR_L4_F() {
+  //   return new SequentialCommandGroup(
+  //     alignToPath(paths.get("M-L4-F")),
+  //     new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem),
+  //     new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator),
+  //     new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_coral, m_ledSubsytem),
+  //     alignToPath(paths.get("F-Refill")),
+  //     new IntakeCoralCmd(m_coral, m_elevator, m_ledSubsytem),
+  //     alignToPath(paths.get("Refill-E")),
+  //     new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem),
+  //     new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator),
+  //     new SetElevatorHeightCmd(ElevatorPosition.L1, m_elevator, m_coral, m_ledSubsytem));
+  // }
 
   @Override
   public void periodic() {
