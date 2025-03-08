@@ -79,25 +79,26 @@ public class Autos extends SubsystemBase {
     try {
     paths.put("M-L4-H", PathPlannerPath.fromChoreoTrajectory("M-L4-H"));
     // paths.put("Red-M-L4-H", PathPlannerPath.fromChoreoTrajectory("M-L4-H").flipPath());
-    paths.put("H-PC", PathPlannerPath.fromChoreoTrajectory("H-PC"));
-    paths.put("H-Refill", PathPlannerPath.fromChoreoTrajectory("H-Refill"));
+    // paths.put("H-PC", PathPlannerPath.fromChoreoTrajectory("H-PC"));
+    // paths.put("H-Refill", PathPlannerPath.fromChoreoTrajectory("H-Refill"));
     paths.put("CL-L4-I", PathPlannerPath.fromChoreoTrajectory("CL-L4-I"));
-    paths.put("I-Refill", PathPlannerPath.fromChoreoTrajectory("I-Refill"));
-    paths.put("Refill-J", PathPlannerPath.fromChoreoTrajectory("Refill-J"));
+    // paths.put("I-Refill", PathPlannerPath.fromChoreoTrajectory("I-Refill"));
+    // paths.put("Refill-J", PathPlannerPath.fromChoreoTrajectory("Refill-J"));
     paths.put("CR-L4-F", PathPlannerPath.fromChoreoTrajectory("CR-L4-F"));
-    paths.put("F-Refill", PathPlannerPath.fromChoreoTrajectory("F-Refill"));
-    paths.put("Refill-E", PathPlannerPath.fromChoreoTrajectory("Refill-E"));
-    paths.put("M-L4-G", PathPlannerPath.fromChoreoTrajectory("M-L4-G"));
-    paths.put("G-Refill", PathPlannerPath.fromChoreoTrajectory("G-Refill"));
-    paths.put("J-Refill", PathPlannerPath.fromChoreoTrajectory("J-Refill"));
-    paths.put("betterMinimum", PathPlannerPath.fromChoreoTrajectory("bareminimum"));
-    loadPath("E-Refill");
-    loadPath("ML-L4-I");
+    // paths.put("F-Refill", PathPlannerPath.fromChoreoTrajectory("F-Refill"));
+    // paths.put("Refill-E", PathPlannerPath.fromChoreoTrajectory("Refill-E"));
+    // paths.put("M-L4-G", PathPlannerPath.fromChoreoTrajectory("M-L4-G"));
+    // paths.put("G-Refill", PathPlannerPath.fromChoreoTrajectory("G-Refill"));
+    // paths.put("J-Refill", PathPlannerPath.fromChoreoTrajectory("J-Refill"));
+    // paths.put("betterMinimum", PathPlannerPath.fromChoreoTrajectory("bareminimum"));
+    paths.put("Min", PathPlannerPath.fromChoreoTrajectory("Min"));
+    // loadPath("E-Refill");
+    // loadPath("ML-L4-I");
+    // loadPath("MR-L4-F");
+    // loadPath("bareminimum");
     loadPath("MR-L4-F");
-    loadPath("bareminimum");
-    loadPath("MR-L4-F");
     loadPath("ML-L4-I");
-    loadPath("M-M+");
+    // loadPath("M-M+");
     } catch (IOException | ParseException e) {
       e.printStackTrace();
     }
@@ -109,7 +110,7 @@ public class Autos extends SubsystemBase {
     autoChooser.addOption("Path R_L4_I", "R_L4_F()");
     autoChooser.addOption("Path ML_L4_I", "ML_L4_I()");
     autoChooser.addOption("Path MR_L4_F", "MR_L4_F()");
-    autoChooser.addOption("betterMinimum", "bareMinimum()");
+    autoChooser.addOption("Min", "Min()");
   }
 
   public void selectAuto() {
@@ -123,8 +124,8 @@ public class Autos extends SubsystemBase {
       MR_L4_F().schedule();
     } else if (autoChooser.getSelected() == "ML_L4_I()") {
       ML_L4_I().schedule();
-    } else if (autoChooser.getSelected() == "betterMinimum") {
-      bareMinimum().schedule();
+    } else if (autoChooser.getSelected() == "Min()") {
+      Min().schedule();
     } else {
       System.out.println("somting is very wrong if you see this");
     }
@@ -184,10 +185,10 @@ public class Autos extends SubsystemBase {
     }
   }
 
-  private Command bareMinimum() {
+  private Command Min() {
     return new 
-      InstantCommand(() -> setStartPose(paths.get("M-M+")))
-      .andThen(alignToPath(paths.get("M-M+")));
+      InstantCommand(() -> setStartPose(paths.get("Min")))
+      .andThen(alignToPath(paths.get("Min")));
     }
 
   private Command M_L4_H() {
