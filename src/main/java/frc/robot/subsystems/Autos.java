@@ -97,6 +97,7 @@ public class Autos extends SubsystemBase {
     loadPath("bareminimum");
     loadPath("MR-L4-F");
     loadPath("ML-L4-I");
+    loadPath("M-M+");
     } catch (IOException | ParseException e) {
       e.printStackTrace();
     }
@@ -185,8 +186,8 @@ public class Autos extends SubsystemBase {
 
   private Command bareMinimum() {
     return new 
-      InstantCommand(() -> setStartPose(paths.get("betterMinimum")))
-      .andThen(alignToPath(paths.get("betterMinimum")));
+      InstantCommand(() -> setStartPose(paths.get("M-M+")))
+      .andThen(alignToPath(paths.get("M-M+")));
     }
 
   private Command M_L4_H() {
