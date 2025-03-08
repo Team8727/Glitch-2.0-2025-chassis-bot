@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import java.util.Optional;
 import java.util.concurrent.RecursiveAction;
 
 import org.littletonrobotics.urcl.URCL;
@@ -86,18 +87,17 @@ public class Robot extends TimedRobot {
         },
         kSwerve.Auton.pathFollowController,
         kConfigs.robotConfig,
-        () -> false,
-        // () -> {
-        //   // Boolean supplier that controls when the path will be mirrored for the red alliance
-        //   // This will flip the path being followed to the red side of the field.
-        //   // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-        //   Optional<Alliance> alliance = DriverStation.getAlliance();
+        () -> {
+          // Boolean supplier that controls when the path will be mirrored for the red alliance
+          // This will flip the path being followed to the red side of the field.
+          // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+          Optional<Alliance> alliance = DriverStation.getAlliance();
 
-        //   if (alliance.isPresent()) {
-        //     return alliance.get() == DriverStation.Alliance.Red;
-        //   }
-        //   return true;
-        // },
+          if (alliance.isPresent()) {
+            return alliance.get() == DriverStation.Alliance.Red;
+          }
+          return false;
+        },
         m_SwerveSubsystem,
         m_PoseEstimatior);
 
@@ -169,7 +169,7 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().cancelAll();
     m_robotContainer.autonomousInit();
 
-    m_Autos.getAutoChooser().getSelected().schedule(); // TODO: Only enable this if you want the robot to do stuff during autonomous
+    m_Autos.selectAuto(); // TODO: Only enable this if you want the robot to do stuff during autonomous
 
   }
 
