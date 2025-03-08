@@ -18,6 +18,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -43,6 +45,7 @@ public class Autos extends SubsystemBase {
   private final PoseEstimatior m_PoseEstimatior;
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
   private final NetworkTableLogger logger = new NetworkTableLogger(this.getName().toString());
+  private PathPlannerPath path1;
 
 
   /** Creates a new Autos. */
@@ -68,12 +71,13 @@ public class Autos extends SubsystemBase {
     */
     
     //paths.put("EXAMPLE", PathPlannerPath.fromChoreoTrajectory("EXAMPLE"));
- 
+    path1 = paths.get("H-PC");
   }
 
   private void loadPaths() {
     try {
     paths.put("M-L4-H", PathPlannerPath.fromChoreoTrajectory("M-L4-H"));
+    paths.put("Red-M-L4-H", PathPlannerPath.fromChoreoTrajectory("M-L4-H").flipPath());
     paths.put("H-PC", PathPlannerPath.fromChoreoTrajectory("H-PC"));
     paths.put("H-Refill", PathPlannerPath.fromChoreoTrajectory("H-Refill"));
     paths.put("CL-L4-I", PathPlannerPath.fromChoreoTrajectory("CL-L4-I"));
@@ -99,6 +103,7 @@ public class Autos extends SubsystemBase {
 
   public void setupAutoChooser() {
     autoChooser.setDefaultOption("Path M-L4-H", M_L4_H());
+    autoChooser.addOption("Path Red-M-L4-H", Red_M_L4_H());
     autoChooser.addOption("Path L-L4-I", L_L4_I());
     autoChooser.addOption("Path R_L4_I", R_L4_F());
     autoChooser.addOption("Path ML_L4_H", ML_L4_H());
@@ -144,18 +149,47 @@ public class Autos extends SubsystemBase {
             kSwerve.Auton.maxAngAccel)).andThen(new WaitCommand(0.0001));
   }
 
+  private void setStartPose(PathPlannerPath path) {
+    Pose2d startPose = path.getStartingHolonomicPose().orElse(path.getStartingDifferentialPose());
+    // if (DriverStation.getAlliance().get() ==  Alliance.Red) {
+    //   Pose2d startPoseOffset = new Pose2d(
+    //     (17.55 - startPose.getX()) + 0.01,
+    //     (8 - startPose.getY()) + 0.01,
+    //     new Rotation2d(
+    //       Math.toRadians(
+    //         startPose.getRotation().getDegrees() - 180)));
+    //   m_PoseEstimatior.resetPoseToPose2d(startPoseOffset);
+    //   path1 = path.flipPath();
+    // } else {
+      Pose2d startPoseOffset = new Pose2d(
+        startPose.getX() - 0.01,
+        startPose.getY() - 0.01,
+        startPose.getRotation());
+        m_PoseEstimatior.resetPoseToPose2d(startPoseOffset);
+        // path1 = path;
+    // }
+  }
+
   private Command bareMinimum() {
     return alignToPath(paths.get("betterMinimum"));
   }
 
   private Command M_L4_H() {
     return new InstantCommand(() ->
-      m_PoseEstimatior.resetPoseToPose2d(new Pose2d(7.2, 4.0, new Rotation2d(Math.toRadians(180)))))
-    .andThen(
-      alignToPath(paths.get("M-L4-H"))
-        .andThen(new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem)).withTimeout(3)
-        .andThen(new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator))
-    );
+      setStartPose(paths.get("M-L4-H")))
+      .andThen(alignToPath(paths.get("M-L4-H")))
+      .andThen(new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem)).withTimeout(3)
+      .andThen(new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator))
+    ;
+  }
+
+  private Command Red_M_L4_H() {
+    return new InstantCommand(() ->
+      setStartPose(paths.get("Red-M-L4-H")))
+      .andThen(alignToPath(paths.get("Red-M-L4-H")))
+      .andThen(new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem)).withTimeout(3)
+      .andThen(new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator))
+    ;
   }
 
   private Command L_L4_I() {
