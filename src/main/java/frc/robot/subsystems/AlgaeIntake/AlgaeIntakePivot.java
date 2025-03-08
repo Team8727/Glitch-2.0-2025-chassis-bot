@@ -152,10 +152,11 @@ public class AlgaeIntakePivot extends SubsystemBase {
 
 @Override
 public void periodic() {
+  if (intakePivotMotor.getAbsoluteEncoder().getPosition() < 0.375) 
+    m_setpoint = m_profile.calculate(kDt, m_setpoint, m_goal);
+    setMotorFFandPIDPosition(m_setpoint.position, m_setpoint.velocity);{
+  }
   
-  m_setpoint = m_profile.calculate(kDt, m_setpoint, m_goal);
-  setMotorFFandPIDPosition(m_setpoint.position, m_setpoint.velocity);
-
   // This method will be called once per scheduler run
   if (m_shouldLog) {
     startLogging();
