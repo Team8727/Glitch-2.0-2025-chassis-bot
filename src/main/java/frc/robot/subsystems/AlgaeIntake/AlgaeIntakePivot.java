@@ -157,6 +157,8 @@ public void periodic() {
     setMotorFFandPIDPosition(m_setpoint.position, m_setpoint.velocity);{
   }
   
+  logger.logDouble("intake Pos", intakePivotMotor.getAbsoluteEncoder().getPosition() * 360);
+
   // This method will be called once per scheduler run
   if (m_shouldLog) {
     startLogging();
