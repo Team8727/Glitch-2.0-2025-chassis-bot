@@ -113,10 +113,11 @@ public class DefaultTeleopControllerBindings implements ControllerBindings {
 
         
         //                algae commands
-        // Intake algae
-        controller.rightTrigger().whileTrue(new IntakeAlgaeCmd(m_AlgaeIntakePivot, m_AlgaeIntakeRollers, m_ledSubsytem));
-        // deploy algae
-        controller.rightBumper().onTrue(new ScoreAlgaeCmd(m_AlgaeIntakePivot, m_AlgaeIntakeRollers, m_ledSubsytem));
+        controller.rightTrigger().and(controller.rightBumper()).and(() -> m_elevator.getElevatorSetPosition() == ElevatorPosition.L1).onTrue(new InstantCommand(() -> m_elevator.resetElevatorEncoders()));
+        // // Intake algae
+        // controller.rightTrigger().whileTrue(new IntakeAlgaeCmd(m_AlgaeIntakePivot, m_AlgaeIntakeRollers, m_ledSubsytem));
+        // // deploy algae
+        // controller.rightBumper().onTrue(new ScoreAlgaeCmd(m_AlgaeIntakePivot, m_AlgaeIntakeRollers, m_ledSubsytem));
         // controller.rightBumper().onTrue(new ScoreAlgaeProcessorCmd(m_AlgaeIntakePivot, m_AlgaeIntakeRollers, m_ledSubsytem));
 
         // // Intake algae
