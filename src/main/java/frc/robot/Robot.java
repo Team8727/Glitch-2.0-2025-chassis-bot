@@ -82,7 +82,12 @@ public class Robot extends TimedRobot {
           if (DriverStation.getAlliance().get() == Alliance.Red) {
             chassisSpeeds = new ChassisSpeeds(-chassisSpeeds.vxMetersPerSecond, -chassisSpeeds.vyMetersPerSecond, -chassisSpeeds.omegaRadiansPerSecond);
           }
-          m_SwerveSubsystem.setModuleStates(kSwerve.kinematics.toSwerveModuleStates(ChassisSpeeds.fromRobotRelativeSpeeds(new ChassisSpeeds(-chassisSpeeds.vxMetersPerSecond, -chassisSpeeds.vyMetersPerSecond, -chassisSpeeds.omegaRadiansPerSecond), m_SwerveSubsystem.getRotation2d())));
+          m_SwerveSubsystem.setModuleStates(kSwerve.kinematics.toSwerveModuleStates(ChassisSpeeds.fromRobotRelativeSpeeds(
+            new ChassisSpeeds(
+              (-chassisSpeeds.vxMetersPerSecond) * 1.1, 
+              (-chassisSpeeds.vyMetersPerSecond), 
+              -chassisSpeeds.omegaRadiansPerSecond), 
+            m_SwerveSubsystem.getRotation2d())));
           // new DriveCmd(m_SwerveSubsystem, () -> chassisSpeeds, () -> true).execute();
         },
         kSwerve.Auton.pathFollowController,

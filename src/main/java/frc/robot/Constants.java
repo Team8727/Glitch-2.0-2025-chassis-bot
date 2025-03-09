@@ -155,7 +155,7 @@ public final class Constants {
       public static final double maxAngAccel = 0.4 * kSwerve.maxAngAccel;
       public static final double maxAngVel = 0.4 * kSwerve.maxAngSpeed;
 
-      public static final double transP = 7.5;
+      public static final double transP = 8;
 
       public static final double maxOnTheFlyVel = 2;
       public static final double maxOnTheFlyAcc = 2;
