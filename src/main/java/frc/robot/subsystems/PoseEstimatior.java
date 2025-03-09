@@ -8,8 +8,8 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator3d;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.kVision;
 import frc.robot.utilities.NetworkTableLogger;
@@ -37,23 +37,23 @@ public class PoseEstimatior extends SubsystemBase {
   PhotonCamera camera3 = new PhotonCamera("front");
   PhotonCamera camera4 = new PhotonCamera("backUp");
 
-  VisionSystemSim visionSim = new VisionSystemSim("main");
+  private final VisionSystemSim visionSim = new VisionSystemSim("main");
 
-  PhotonCameraSim cameraSimBackRight;
-  PhotonCameraSim cameraSimBackLeft;
-  PhotonCameraSim cameraSimFront;
-  PhotonCameraSim cameraSimBackUp;
+  private final PhotonCameraSim cameraSimBackRight;
+  private final PhotonCameraSim cameraSimBackLeft;
+  private final PhotonCameraSim cameraSimFront;
+  private final PhotonCameraSim cameraSimBackUp;
 
-  Pose3d latestCamPoseBackRiight = new Pose3d();
-  Pose3d latestCamPoseBackLeft = new Pose3d();
-  Pose3d latestCamPoseFront = new Pose3d();
-  Pose3d latestCamPoseBackUp = new Pose3d();
+  Pose3d latestCamPoseBackRiight;
+  Pose3d latestCamPoseBackLeft;
+  Pose3d latestCamPoseFront;
+  Pose3d latestCamPoseBackUp;
 
   // TargetModel targetModel = TargetModel.kAprilTag16h5;
   // Pose3d targetPose = new Pose3d(16, 4, 2, new Rotation3d(0, 0, Math.PI));
   // VisionTargetSim visionTarget = new VisionTargetSim(targetPose, targetModel);
 
-  SimCameraProperties cameraProp = new SimCameraProperties();
+  private final SimCameraProperties cameraProp = new SimCameraProperties();
 
   // Field2d for logging the robot's 2d position on the field to the dashboard like AdvantageScope,
   // Elastic or Glass.
@@ -70,11 +70,6 @@ public class PoseEstimatior extends SubsystemBase {
     m_SwervePoseEstimator = swerveSubsystem.SwervePoseEstimator;
     visionSim.addAprilTags(kVision.aprilTagFieldLayout);
     simField2d = visionSim.getDebugField();
-    setUpCameras();
-    resetStartPose();
-  }
-
-  private void setUpCameras() {
     // A 640 x 480 camera with a 100 degree diagonal FOV.
     cameraProp.setCalibration(640, 480, Rotation2d.fromDegrees(70));
     // Approximate detection noise with average and standard deviation error in pixels.
@@ -94,7 +89,8 @@ public class PoseEstimatior extends SubsystemBase {
     visionSim.addCamera(cameraSimBackLeft, kVision.camera2Position);
     visionSim.addCamera(cameraSimFront, kVision.camera4Position);
     visionSim.addCamera(cameraSimBackUp, kVision.camera3Position);
-    }
+    resetStartPose();
+  }
 
   // photon pose estimators
   PhotonPoseEstimator PoseEstimator1 =
@@ -181,7 +177,7 @@ public class PoseEstimatior extends SubsystemBase {
       for (PhotonTrackedTarget target : targets) {
         double ambiguity = target.getPoseAmbiguity();
 
-        if (ambiguity <= 0.2) {
+        if (ambiguity <= 0.2 && ambiguity != -1) {
           Optional<EstimatedRobotPose> cameraPose =
             getEstimatedGlobalPose(
                 m_SwervePoseEstimator.getEstimatedPosition(),
@@ -199,11 +195,11 @@ public class PoseEstimatior extends SubsystemBase {
   @Override
   public void simulationPeriodic() {
     visionSim.update(m_SwervePoseEstimator.getEstimatedPosition());
-    networkTableLogger.logPose3d("cam back Right", visionSim.getCameraPose(cameraSimBackRight).orElse(null));
-    networkTableLogger.logPose3d("cam back left",  visionSim.getCameraPose(cameraSimBackLeft).orElse(null));
-    networkTableLogger.logPose3d("cam front",     visionSim.getCameraPose(cameraSimFront).orElse(null));
-    networkTableLogger.logPose3d("cam back up",   visionSim.getCameraPose(cameraSimBackUp).orElse(null));
-    m_SwervePoseEstimator.addVisionMeasurement(visionSim.getRobotPose(), 0);
+    networkTableLogger.logPose3d("cam back Right", visionSim.getCameraPose(cameraSimBackRight).orElse(new Pose3d()));
+    networkTableLogger.logPose3d("cam back left", visionSim.getCameraPose(cameraSimBackLeft).orElse(new Pose3d()));
+    networkTableLogger.logPose3d("cam front", visionSim.getCameraPose(cameraSimFront).orElse(new Pose3d()));
+    networkTableLogger.logPose3d("cam back up", visionSim.getCameraPose(cameraSimBackUp).orElse(new Pose3d()));
+    m_SwervePoseEstimator.addVisionMeasurement(visionSim.getRobotPose(), RobotController.getFPGATime());
   }
 
   @Override
