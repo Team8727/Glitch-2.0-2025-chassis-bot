@@ -8,6 +8,7 @@ import frc.robot.commands.SetElevatorHeightCmd;
 import frc.robot.commands.AlgaeIntake.IntakeAlgaeCmd;
 import frc.robot.commands.AlgaeIntake.ScoreAlgaeCmd;
 import frc.robot.commands.Coral.DeployCoralCmd;
+import frc.robot.commands.Coral.FrontReingdx;
 import frc.robot.commands.Coral.IntakeCoralCmd;
 import frc.robot.commands.Coral.ReindexCoralCmd;
 import frc.robot.commands.Coral.RejectCoralCmd;
