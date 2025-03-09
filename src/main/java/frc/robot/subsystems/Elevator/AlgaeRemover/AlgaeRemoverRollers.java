@@ -42,6 +42,7 @@ public class AlgaeRemoverRollers extends SubsystemBase {
     config
         .smartCurrentLimit(25) // TODO: figure out what this should be
         .idleMode(IdleMode.kCoast)
+        .inverted(false)
         .closedLoop
         .velocityFF(0) // TODO: tune
         .pidf(0, 0, 0, 0)
@@ -59,7 +60,7 @@ public class AlgaeRemoverRollers extends SubsystemBase {
   }
 
   public void setRemoverRollerSpeed(double speed) {
-    removerRollerPID.setReference(speed, ControlType.kVelocity);
+    removerRollerPID.setReference(speed, ControlType.kDutyCycle);
   }
 
   public void spinnnnnnn() {

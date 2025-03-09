@@ -80,24 +80,24 @@ public class SparkConfigurator {
     // status6 Absolute Encoder Velocity
 
     if (!hasFollower && !logData.contains(LogData.VOLTAGE)) {
-      status[0] = SLOW;
+      status[0] = FAST;
     }
 
     if (logData.contains(LogData.VELOCITY)
         || logData.contains(LogData.VOLTAGE)
         || logData.contains(LogData.CURRENT)) {
-      status[1] = NORMAL;
+      status[1] = FAST;
     }
 
-    if (logData.contains(LogData.POSITION)) status[2] = NORMAL;
+    if (logData.contains(LogData.POSITION)) status[2] = FAST;
 
-    if (sensors.contains(Sensors.ANALOG)) status[3] = NORMAL;
+    if (sensors.contains(Sensors.ANALOG)) status[3] = FAST;
 
-    if (sensors.contains(Sensors.ALTERNATE)) status[4] = NORMAL;
+    if (sensors.contains(Sensors.ALTERNATE)) status[4] = FAST;
 
     if (sensors.contains(Sensors.ABSOLUTE)) {
-      if (logData.contains(LogData.POSITION)) status[5] = NORMAL;
-      if (logData.contains(LogData.VELOCITY)) status[6] = NORMAL;
+      if (logData.contains(LogData.POSITION)) status[5] = FAST;
+      if (logData.contains(LogData.VELOCITY)) status[6] = FAST;
     }
 
     for (int i = 0; i < 7; i++) {
@@ -171,24 +171,24 @@ public class SparkConfigurator {
     // status6 Absolute Encoder Velocity
 
     if (!hasFollower && !logData.contains(LogData.VOLTAGE)) {
-      status[0] = SLOW;
+      status[0] = FAST;
     }
 
     if (logData.contains(LogData.VELOCITY)
         || logData.contains(LogData.VOLTAGE)
         || logData.contains(LogData.CURRENT)) {
-      status[1] = NORMAL;
+      status[1] = FAST;
     }
 
-    if (logData.contains(LogData.POSITION)) status[2] = NORMAL;
+    if (logData.contains(LogData.POSITION)) status[2] = FAST;
 
-    if (sensors.contains(Sensors.ANALOG)) status[3] = NORMAL;
+    if (sensors.contains(Sensors.ANALOG)) status[3] = FAST;
 
-    if (sensors.contains(Sensors.ALTERNATE)) status[4] = NORMAL;
+    if (sensors.contains(Sensors.ALTERNATE)) status[4] = FAST;
 
     if (sensors.contains(Sensors.ABSOLUTE)) {
-      if (logData.contains(LogData.POSITION)) status[5] = NORMAL;
-      if (logData.contains(LogData.VELOCITY)) status[6] = NORMAL;
+      if (logData.contains(LogData.POSITION)) status[5] = FAST;
+      if (logData.contains(LogData.VELOCITY)) status[6] = FAST;
     }
 
     for (int i = 0; i < 7; i++) {

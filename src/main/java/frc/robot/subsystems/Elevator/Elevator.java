@@ -236,9 +236,10 @@ public class Elevator extends SubsystemBase {
     // } else {
     //   m_setpoint = m_profile.calculate(kDt, m_setpoint, m_goal);
     // }
-    if (limitSwitch.get()) {
-      resetElevatorEncoders();
-    }
+    
+    // if (limitSwitch.get()) {
+    //   resetElevatorEncoders();
+    // }
     
     if (!isHoming) {
       m_setpoint = m_profile.calculate(kDt, m_setpoint, m_goal);

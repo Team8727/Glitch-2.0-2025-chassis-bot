@@ -4,22 +4,23 @@
 
 package frc.robot;
 
+import java.util.Optional;
+import java.util.concurrent.RecursiveAction;
+
 import org.littletonrobotics.urcl.URCL;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathfindingCommand;
-import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 import frc.robot.Constants.kConfigs;
@@ -54,7 +55,7 @@ public class Robot extends TimedRobot {
   private final Elevator m_elevator = new Elevator();
   private final AlgaeIntakePivot m_AlgaeIntakePivot = new AlgaeIntakePivot();
   private final AlgaeIntakeRollers m_AlgaeIntakeRollers = new AlgaeIntakeRollers();
-  private final Autos m_Autos = new Autos(m_ledSubsytem, m_coral, m_elevator, m_AlgaeIntakePivot, m_AlgaeIntakeRollers);
+  private final Autos m_Autos = new Autos(m_ledSubsytem, m_coral, m_elevator, m_AlgaeIntakePivot, m_AlgaeIntakeRollers, m_PoseEstimatior);
 
   private boolean m_elevatorSpeedControl = true;
 
@@ -78,29 +79,30 @@ public class Robot extends TimedRobot {
           //         new TrajectoryConfig(10, 5))); //TODO: get this from pathplanner somehow
           // });
           logger.logChassisSpeeds("speeds", chassisSpeeds);
-          m_SwerveSubsystem.setModuleStates(
-            kSwerve.kinematics.toSwerveModuleStates(
-              ChassisSpeeds.fromRobotRelativeSpeeds(
-                new ChassisSpeeds(
-                  -chassisSpeeds.vxMetersPerSecond, 
-                  -chassisSpeeds.vyMetersPerSecond, 
-                  -chassisSpeeds.omegaRadiansPerSecond), 
-                m_SwerveSubsystem.getRotation2d())));
+          if (DriverStation.getAlliance().get() == Alliance.Red) {
+            chassisSpeeds = new ChassisSpeeds(-chassisSpeeds.vxMetersPerSecond, -chassisSpeeds.vyMetersPerSecond, -chassisSpeeds.omegaRadiansPerSecond);
+          }
+          m_SwerveSubsystem.setModuleStates(kSwerve.kinematics.toSwerveModuleStates(ChassisSpeeds.fromRobotRelativeSpeeds(
+            new ChassisSpeeds(
+              (-chassisSpeeds.vxMetersPerSecond) * 1.1, 
+              (-chassisSpeeds.vyMetersPerSecond), 
+              -chassisSpeeds.omegaRadiansPerSecond), 
+            m_SwerveSubsystem.getRotation2d())));
+          // new DriveCmd(m_SwerveSubsystem, () -> chassisSpeeds, () -> true).execute();
         },
         kSwerve.Auton.pathFollowController,
         kConfigs.robotConfig,
-        () -> false,
-        // () -> {
-        //   // Boolean supplier that controls when the path will be mirrored for the red alliance
-        //   // This will flip the path being followed to the red side of the field.
-        //   // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-        //   Optional<Alliance> alliance = DriverStation.getAlliance();
+        () -> {
+          // Boolean supplier that controls when the path will be mirrored for the red alliance
+          // This will flip the path being followed to the red side of the field.
+          // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+          Optional<Alliance> alliance = DriverStation.getAlliance();
 
-        //   if (alliance.isPresent()) {
-        //     return alliance.get() == DriverStation.Alliance.Red;
-        //   }
-        //   return true;
-        // },
+          if (alliance.isPresent()) {
+            return alliance.get() == DriverStation.Alliance.Red;
+          }
+          return false;
+        },
         m_SwerveSubsystem,
         m_PoseEstimatior);
 
@@ -119,11 +121,16 @@ public class Robot extends TimedRobot {
             m_Autos,
             m_elevatorSpeedControl
             );
+    
+    // Load autos into chooser and use SmartDashboard to publish
+    m_Autos.setupAutoChooser();
+    SmartDashboard.putData("Auto choices", m_Autos.getAutoChooser());
 
     // Set Up PathPlanner to "warm up" the pathplanning system
     PathfindingCommand.warmupCommand().schedule();
 
     // Log data to a log file using WPILib's DataLogManager
+    DataLogManager.logNetworkTables(true);
     DataLogManager.start();
 
     // Start the URCL logger (logs REV SparkMaxes and SparkFlexes automatically on networktables)
@@ -167,8 +174,7 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().cancelAll();
     m_robotContainer.autonomousInit();
 
-    m_PoseEstimatior.resetPoseToPose2d(new Pose2d(7.2,4,new Rotation2d(Math.toRadians(180))));
-    m_Autos.path_ML_L4_I_J().schedule(); // TODO: Only enable this if you want the robot to do stuff during autonomous
+    m_Autos.selectAuto(); // TODO: Only enable this if you want the robot to do stuff during autonomous
 
   }
 

@@ -49,23 +49,23 @@ public final class Constants {
   public static class kConfigs {
 
     public static RobotConfig robotConfig =
-        new RobotConfig(
-          62.6864655, // TODO: find real value
-            5.22, // TODO: find real value
-            new ModuleConfig(
-                .0381,
-                4.45,
-                1.4, // TODO: find real value
-                new DCMotor(
-                    12, 
-                    3.65, 
-                    218, 
-                    3.54, 
-                    1000, // TODO: probobly wrong
-                    1),
-                5.08,
-                60,
+    new RobotConfig(
+      65, // TODO: find real value
+        5.22, // TODO: find real value
+        new ModuleConfig(
+            .0371,
+            4.55,
+            1.4, // TODO: find real value
+            new DCMotor(
+                12, 
+                3.6, 
+                211, 
+                3.6, 
+                710.42, // TODO: probobly wrong
                 1),
+            5.08,
+            50,
+            1),
             kSwerve.kinematics.getModules());
 
     public static final DCMotor neoMotor = 
@@ -155,7 +155,7 @@ public final class Constants {
       public static final double maxAngAccel = 0.4 * kSwerve.maxAngAccel;
       public static final double maxAngVel = 0.4 * kSwerve.maxAngSpeed;
 
-      public static final double transP = 12;
+      public static final double transP = 8;
 
       public static final double maxOnTheFlyVel = 2;
       public static final double maxOnTheFlyAcc = 2;
@@ -277,7 +277,7 @@ public final class Constants {
     }
 
     public static final AprilTagFieldLayout aprilTagFieldLayout =
-        AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
+    AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark);
     public static final Transform3d camera1Position = // Right Rear
       new Transform3d(
         new Translation3d(Units.inchesToMeters(1.633), Units.inchesToMeters(8.555), Units.inchesToMeters(28.120)), 
@@ -309,8 +309,9 @@ public final class Constants {
       public static int removerPivotMotorCANID =12; // TODO: not set yet because remover is not built yet
 
       public enum RemoverPositions {
-        Raised(50), // TODO: SET WITH ACTUAL VALUES
-        Stowed(10); // TODO: SET WITH ACTUAL VALUES
+        RaisedL2(80), // TODO: SET WITH ACTUAL VALUES
+        RaisedL3(50), // TODO: SET WITH ACTUAL VALUES
+        Stowed(18); // TODO: SET WITH ACTUAL VALUES
       
         private final double degrees;
         
@@ -336,7 +337,7 @@ public final class Constants {
           17; // TODO: not set yet because intake is not built yet
 
       public enum IntakePosition {
-          HOME(10), 
+          HOME(20), 
           SCORE(20), 
           DOWN(90); // TODO: SET WITH ACTUAL VALUES
 
@@ -404,8 +405,8 @@ public final class Constants {
       L2(8.23663),// TODO: SET WITH ACTUAL VALUES
       L3(20.43877), // TODO: SET WITH ACTUAL VALUES
       L4(39.53888), // TODO: SET WITH ACTUAL VALUES
-      A2(13.3377), // TODO: SET WITH ACTUAL VALUES
-      A3(28.5); // TODO: SET WITH ACTUAL VALUES
+      A2(13.5), // TODO: SET WITH ACTUAL VALUES
+      A3(25.5); // TODO: SET WITH ACTUAL VALUES
     
       private final double rotations;
       
