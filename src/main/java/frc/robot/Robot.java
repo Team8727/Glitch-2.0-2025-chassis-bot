@@ -22,7 +22,6 @@ import edu.wpi.first.wpilibj.simulation.SimDeviceSim;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-
 import frc.robot.Constants.kConfigs;
 import frc.robot.Constants.kSwerve;
 import frc.robot.subsystems.Autos;
@@ -69,7 +68,7 @@ public class Robot extends TimedRobot {
         m_PoseEstimatior::get2dPose,
         m_PoseEstimatior::resetPoseToPose2d,
         m_SwerveSubsystem::getChassisSpeeds,
-        (chassisSpeeds, driveff) -> {          
+        (chassisSpeeds, driveff) -> { // drive command
           System.out.println("aligning");
           // PathPlannerLogging.setLogActivePathCallback((poselist) -> {
           //   m_PoseEstimatior.field2d.getObject("Trajectory")
@@ -103,9 +102,9 @@ public class Robot extends TimedRobot {
           logger.logSwerveModuleState("states", moduleStates);
           m_SwerveSubsystem.setModuleStates(moduleStates);
         },
-        kSwerve.Auton.pathFollowController,
+        kSwerve.Auton.pathFollowController, 
         kConfigs.robotConfig,
-        () -> {
+        () -> { // to flip path
           // Boolean supplier that controls when the path will be mirrored for the red alliance
           // This will flip the path being followed to the red side of the field.
           // THE ORIGIN WILL REMAIN ON THE BLUE SIDE

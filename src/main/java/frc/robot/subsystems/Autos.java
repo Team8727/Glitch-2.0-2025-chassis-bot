@@ -10,6 +10,7 @@ import java.util.LinkedHashMap;
 import org.json.simple.parser.ParseException;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 
@@ -48,6 +49,8 @@ public class Autos extends SubsystemBase {
 
     loadPaths();
 
+    PathPlannerAuto setelevatorheight = new PathPlannerAuto(new SetElevatorHeightCmd(ElevatorPosition.L4, elevatorSubsystem, coralSubsystem, ledSubsystem));
+
     // // Load a full Choreo trajectory as a PathPlannerPath
     // PathPlannerPath exampleChoreoTraj = PathPlannerPath.fromChoreoTrajectory("Example Choreo Traj");
     // // Load a split Choreo trajectory as a PathPlannerPath, using the split point with index 1
@@ -64,6 +67,7 @@ public class Autos extends SubsystemBase {
 
   private void loadPaths() {
     try {
+    paths.put("M-H test", PathPlannerPath.fromPathFile("M-H test"));
     paths.put("M-L4-H", PathPlannerPath.fromChoreoTrajectory("M-L4-H"));
     // paths.put("Red-M-L4-H", PathPlannerPath.fromChoreoTrajectory("M-L4-H").flipPath());
     // paths.put("H-PC", PathPlannerPath.fromChoreoTrajectory("H-PC"));
@@ -162,7 +166,7 @@ public class Autos extends SubsystemBase {
     if (DriverStation.getAlliance().get() ==  Alliance.Red) {
       Pose2d startPoseOffset = new Pose2d(
         (17.55 - startPose.getX()),
-        (8 - startPose.getY()),
+        (8.05 - startPose.getY()),
         new Rotation2d(Math.toRadians(0)));
       m_PoseEstimatior.resetPoseToPose2d(startPoseOffset);
     } else {
@@ -174,6 +178,7 @@ public class Autos extends SubsystemBase {
     }
   }
 
+  
   private Command Min() {
     return new 
       InstantCommand(() -> setStartPose(paths.get("Min")))
@@ -182,8 +187,8 @@ public class Autos extends SubsystemBase {
 
   private Command M_L4_H() {
     return new 
-      InstantCommand(() -> setStartPose(paths.get("M-L4-H")))
-      .andThen(followPath(paths.get("M-L4-H")))
+      InstantCommand(() -> setStartPose(paths.get("M-H test")))
+      .andThen(followPath(paths.get("M-H test")))
       .andThen(new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem)).withTimeout(3)
       .andThen(new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator));
   }
