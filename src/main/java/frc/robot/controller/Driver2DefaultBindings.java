@@ -51,16 +51,6 @@ public class Driver2DefaultBindings implements ControllerBindings {
 
     @Override
     public void bind(CommandXboxController controller) {
-        m_SwerveSubsystem.setDefaultCommand(
-            new SwerveJoystickCmd(
-                m_SwerveSubsystem,
-                m_elevator,
-                () -> -controller.getLeftY(),
-                () -> -controller.getLeftX(),
-                () -> controller.getRightX(),
-                () -> true,
-                () -> m_elevatorSpeedControl));
-    
         //              Drive Commands
         // Zero heading
         controller.start().onTrue(new InstantCommand(() -> m_SwerveSubsystem.zeroHeading()));

@@ -66,7 +66,8 @@ public class RobotContainer {
   }
 
   public void teleopInit() {
-    m_mainController.applyBindings(new Driver1DefaultBindings(
+    m_mainController.applyBindings(
+    new Driver1DefaultBindings(
       m_SwerveSubsystem,
       m_AlgaeIntakePivot,
       m_AlgaeIntakeRollers,
@@ -75,9 +76,8 @@ public class RobotContainer {
       m_ledSubsytem,
       m_elevatorSpeedControl,
       m_AlgaeRemoverPivot,
-      m_AlgaeRemoverRollers
-    ));
-    m_assistController.applyBindings(new Driver2DefaultBindings(
+      m_AlgaeRemoverRollers),
+    new Driver2DefaultBindings(
       m_SwerveSubsystem,
       m_AlgaeIntakePivot,
       m_AlgaeIntakeRollers,
@@ -86,8 +86,7 @@ public class RobotContainer {
       m_ledSubsytem,
       m_elevatorSpeedControl,
       m_AlgaeRemoverPivot,
-      m_AlgaeRemoverRollers
-    ));
+      m_AlgaeRemoverRollers));
   }
 
   public void autonomousInit() {

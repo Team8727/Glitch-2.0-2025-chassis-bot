@@ -164,18 +164,22 @@ public class Autos extends SubsystemBase {
             kSwerve.Auton.maxAngAccel)).andThen(new WaitCommand(0.0001));
   }
 
+  public Command followPath(PathPlannerPath path) {
+    return AutoBuilder.followPath(path);
+  }
+
   private void setStartPose(PathPlannerPath path) {
     Pose2d startPose = path.getStartingHolonomicPose().orElse(path.getStartingDifferentialPose());
     if (DriverStation.getAlliance().get() ==  Alliance.Red) {
       Pose2d startPoseOffset = new Pose2d(
-        (17.55 - startPose.getX()) - 0.175,
-        (8 - startPose.getY()) + 0.01,
-        new Rotation2d(Math.toRadians(0.1)));
+        (17.55 - startPose.getX()),
+        (8 - startPose.getY()),
+        new Rotation2d(Math.toRadians(0)));
       m_PoseEstimatior.resetPoseToPose2d(startPoseOffset);
     } else {
       Pose2d startPoseOffset = new Pose2d(
-        startPose.getX() + 0.175,
-        startPose.getY() - 0.01,
+        startPose.getX(),
+        startPose.getY(),
         new Rotation2d(Math.toRadians(180)));
         m_PoseEstimatior.resetPoseToPose2d(startPoseOffset);
     }
@@ -190,7 +194,7 @@ public class Autos extends SubsystemBase {
   private Command M_L4_H() {
     return new 
       InstantCommand(() -> setStartPose(paths.get("M-L4-H")))
-      .andThen(alignToPath(paths.get("M-L4-H")))
+      .andThen(followPath(paths.get("M-L4-H")))
       .andThen(new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem)).withTimeout(3)
       .andThen(new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator));
   }

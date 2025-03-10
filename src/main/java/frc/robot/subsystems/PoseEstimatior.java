@@ -69,7 +69,7 @@ public class PoseEstimatior extends SubsystemBase {
   public PoseEstimatior(SwerveSubsystem swerveSubsystem) {
     // subsystem setups
     m_SwerveSubsystem = swerveSubsystem;
-    m_SwervePoseEstimator = swerveSubsystem.SwervePoseEstimator;
+    m_SwervePoseEstimator = swerveSubsystem.swervePoseEstimator;
     visionSim.addAprilTags(kVision.aprilTagFieldLayout);
     simField2d = visionSim.getDebugField();
     // A 640 x 480 camera with a 100 degree diagonal FOV.

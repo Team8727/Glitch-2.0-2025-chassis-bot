@@ -10,25 +10,48 @@ public class Controller {
     private final int m_assistPort = 1;
     CommandXboxController m_mainController = new CommandXboxController(m_mainPort);
     CommandXboxController m_assistController = new CommandXboxController(m_assistPort);
-    ControllerBindings m_currentBindings;
+    ControllerBindings m_mainCurrentBindings;
+    ControllerBindings m_assistCurrentBindings;
 
-    public void applyBindings(ControllerBindings bindings) {
-        if (m_currentBindings != null) {
-            m_currentBindings.unbind(m_mainController);
-            m_currentBindings.unbind(m_assistController);
+    public void applyBindings(ControllerBindings mainBindings) {
+        if (m_mainCurrentBindings != null) {
+            m_mainCurrentBindings.unbind(m_mainController);
         }
 
         m_mainController = new CommandXboxController(m_mainPort);
 
-        if (bindings != null) {
-            bindings.bind(m_mainController);
-            bindings.bind(m_assistController);
+        if (mainBindings != null) {
+            mainBindings.bind(m_mainController);
         }
 
-        m_currentBindings = bindings;
+        m_mainCurrentBindings = mainBindings;
+    }
+
+    public void applyBindings(ControllerBindings mainBindings, ControllerBindings assistBindings) {
+        if (m_mainCurrentBindings != null) {
+            m_mainCurrentBindings.unbind(m_mainController);
+        }
+
+        if (m_assistCurrentBindings != null) {
+            m_assistCurrentBindings.unbind(m_assistController);
+        }
+
+        m_mainController = new CommandXboxController(m_mainPort);
+        m_assistController = new CommandXboxController(m_assistPort);
+
+        if (mainBindings != null) {
+            mainBindings.bind(m_mainController);
+        }
+
+        if (assistBindings != null) {
+            assistBindings.bind(m_assistController);
+        }
+
+        m_mainCurrentBindings = mainBindings;
+        m_assistCurrentBindings = assistBindings;
     }
 
     public void clearBindings() {
-        applyBindings(null);
+        applyBindings(null, null);
     }
 }

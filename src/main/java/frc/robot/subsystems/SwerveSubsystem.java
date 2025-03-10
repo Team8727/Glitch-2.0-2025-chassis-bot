@@ -1,11 +1,17 @@
 package frc.robot.subsystems;
 
 import com.studica.frc.AHRS;
+
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator3d;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry3d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
@@ -53,9 +59,14 @@ public class SwerveSubsystem extends SubsystemBase {
         frontRightModule.getState()
       };
 
+  SwerveDriveOdometry SwerveOdometry = new SwerveDriveOdometry(
+    kSwerve.kinematics,
+    navX.getRotation2d(),
+    modulePositions);
+        
   Pose3d pose3d = new Pose3d();
 
-  SwerveDrivePoseEstimator3d SwervePoseEstimator =
+  SwerveDrivePoseEstimator3d swervePoseEstimator =
       new SwerveDrivePoseEstimator3d(
           kSwerve.kinematics, navX.getRotation3d(), modulePositions, pose3d);
 
@@ -79,12 +90,12 @@ public class SwerveSubsystem extends SubsystemBase {
     navX.reset();
     navX.setAngleAdjustment(0);
     Pose3d pose3d = new Pose3d();
-    SwervePoseEstimator.resetRotation(pose3d.getRotation());
+    swervePoseEstimator.resetRotation(pose3d.getRotation());
   }
 
   // maybe = get corrected steer
   public double getHeading() {
-    return Units.radiansToDegrees(SwervePoseEstimator.getEstimatedPosition().getRotation().getZ()); // THIS IS CRUCIAL
+    return Units.radiansToDegrees(swervePoseEstimator.getEstimatedPosition().getRotation().getZ()); // THIS IS CRUCIAL
   }
 
   public Rotation2d getRotation2d() {
@@ -119,5 +130,6 @@ public class SwerveSubsystem extends SubsystemBase {
     frontRightModule.setTargetState(desiredState[1], true, true);
     backLeftModule.setTargetState(desiredState[2], true, true);
     backRightModule.setTargetState(desiredState[3], true, true);
+    
   }
 }

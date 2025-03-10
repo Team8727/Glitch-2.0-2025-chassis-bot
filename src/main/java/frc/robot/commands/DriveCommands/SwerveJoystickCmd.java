@@ -12,6 +12,7 @@ import frc.robot.Constants.kOI;
 import frc.robot.Constants.kSwerve;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Elevator.Elevator;
+import frc.robot.utilities.NetworkTableLogger;
 
 import java.util.function.Supplier;
 
@@ -22,6 +23,7 @@ public class SwerveJoystickCmd extends Command {
   private final Supplier<Double> m_xSpdFunction, m_ySpdFunction, m_turningSpdFunction;
   private final Supplier<Boolean> m_fieldOrientedFunction;
   private final Supplier<Boolean> m_scaleSpeedToElevHeight;
+  private final NetworkTableLogger m_logger = new NetworkTableLogger(this.getName().toString());
 
   public SwerveJoystickCmd(
       SwerveSubsystem swerveSubsystem,
@@ -94,6 +96,7 @@ public class SwerveJoystickCmd extends Command {
 
     // output to swerve modules
     m_SwerveSubsystem.setModuleStates(moduleStates);
+    m_logger.logChassisSpeeds("chassisspeeds", chassisSpeeds);
   }
 
   @Override
