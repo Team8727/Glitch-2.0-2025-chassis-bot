@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Second;
+
 import java.util.Optional;
 import java.util.concurrent.RecursiveAction;
 
@@ -47,12 +49,12 @@ public class Robot extends TimedRobot {
   private final RobotContainer m_robotContainer;
   private final SwerveSubsystem m_SwerveSubsystem = new SwerveSubsystem();
   private final PoseEstimatior m_PoseEstimatior = new PoseEstimatior(m_SwerveSubsystem);
-  private final LEDSubsystem m_ledSubsytem = new LEDSubsystem();
+  private final Elevator m_elevator = new Elevator();
+  private final LEDSubsystem m_ledSubsytem = new LEDSubsystem(m_elevator);
   private final NetworkTableLogger logger = new NetworkTableLogger("SHOW UPPPP");
   private final AlgaeRemoverRollers m_AlgeaRemoverRollers = new AlgaeRemoverRollers();
   private final AlgaeRemoverPivot m_AlgaeRemoverPivot = new AlgaeRemoverPivot();
   private final Coral m_coral = new Coral();
-  private final Elevator m_elevator = new Elevator();
   private final AlgaeIntakePivot m_AlgaeIntakePivot = new AlgaeIntakePivot();
   private final AlgaeIntakeRollers m_AlgaeIntakeRollers = new AlgaeIntakeRollers();
   private final Autos m_Autos = new Autos(m_ledSubsytem, m_coral, m_elevator, m_AlgaeIntakePivot, m_AlgaeIntakeRollers, m_PoseEstimatior);
@@ -173,6 +175,7 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     CommandScheduler.getInstance().cancelAll();
     m_robotContainer.autonomousInit();
+    m_ledSubsytem.setPattern(m_ledSubsytem.rainbow);
 
     m_Autos.selectAuto(); // TODO: Only enable this if you want the robot to do stuff during autonomous
 
@@ -185,6 +188,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     CommandScheduler.getInstance().cancelAll();
+    m_ledSubsytem.setPattern(m_ledSubsytem.elevatorProgress);
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove

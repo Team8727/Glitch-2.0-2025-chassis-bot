@@ -48,7 +48,7 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
   // Rainbow pattern with a scrolling mask
   public LEDPattern rainbow = LEDPattern.rainbow(
     256, 
-    128)
+    256)
     .scrollAtRelativeSpeed(
       Percent.per(Second).of(15))
       .reversed()
@@ -59,7 +59,7 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
               0.25, Color.kBlack,
               0.75, Color.kWhite))
       .scrollAtRelativeSpeed(
-        Percent.per(Second).of(15)));
+        Percent.per(Second).of(20)));
 
   // Blue gradient pattern with a scrolling mask
   public LEDPattern blue =
@@ -74,19 +74,16 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
             Percent.per(Second).of(15));
 
   public LEDPattern green = LEDPattern.solid(m_green);
-
-  public LEDPattern defaultPattern = LEDPattern.solid(m_green); // don't delete this plz
-
   // Elevator progress bar pattern
-  public LEDPattern elevatorProgress = LEDPattern.gradient(
+  public LEDPattern elevatorProgressBase = LEDPattern.gradient(
     GradientType.kDiscontinuous, 
     m_green, 
     m_yellow, 
     m_orange, 
-    Color.kRed)
-    .mask(LEDPattern.progressMaskLayer(
-      () -> m_elevator.getElevatorHeight() / kElevator.ElevatorPosition.L4.getOutputRotations()));
-
+    Color.kRed);
+  public LEDPattern elevatorProgressMap = LEDPattern.progressMaskLayer(
+    () -> m_elevator.getElevatorHeight() / kElevator.ElevatorPosition.L4.getOutputRotations());
+  public LEDPattern elevatorProgress = elevatorProgressBase.mask(elevatorProgressMap);
   // Coral pickup pattern
   public LEDPattern coralPickup = LEDPattern.gradient(
     GradientType.kDiscontinuous, 
@@ -106,7 +103,7 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
       .blink(Second.of(0.5));
   
   /** Creates a new LEDSubsystem. */
-  public LEDSubsystem() {
+  public LEDSubsystem(Elevator elevator) {
     // LED setup and port configuration
     lightStrip = new AddressableLED(5); // Correct PWM port
     stripBuffer = new AddressableLEDBuffer(114); // Correct LED count
@@ -116,12 +113,11 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
     lightStrip.setLength(stripBuffer.getLength());
 
     // // Set a default pattern (White Solid) to ensure LEDs are not blank initially
-    // currentPattern = LEDPattern.solid(Color.kBlack);
-    currentPattern = defaultPattern;
-    currentPattern.atBrightness(Percent.of(30)).applyTo(leftSide);
-    currentPattern.atBrightness(Percent.of(30)).applyTo(rightSide);
+    currentPattern = LEDPattern.solid(m_green);
     lightStrip.setData(stripBuffer);
     lightStrip.start();
+
+    m_elevator = elevator;
   }
 
   public void setPattern(LEDPattern pattern) {
@@ -138,9 +134,7 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
     //Command Composition for duration pattern
     new RunCommand(
       () -> currentPattern = pattern)
-    .withTimeout(seconds)
-    .andThen(
-      () -> currentPattern = defaultPattern);
+    .withTimeout(seconds);
 
     //Notify of duration pattern
     //System.out.println("Pattern was set to: " + pattern + " for " + seconds + " seconds");
@@ -164,9 +158,7 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
         leftPattern.applyTo(leftSide);
         rightPattern.applyTo(rightSide);
       })
-    .withTimeout(seconds)
-    .andThen(
-      () -> currentPattern = defaultPattern);
+    .withTimeout(seconds);
 
     //Notify of duration pattern
     //System.out.println("Pattern was set to: " + pattern1.combine(pattern2) + " for " + seconds + " seconds");
@@ -176,17 +168,8 @@ public class LEDSubsystem extends SubsystemBase { // Fixed class name
   public void periodic() {
     // This method will be called once per scheduler run
     if (currentPattern != null) {
-      defaultPattern = LEDPattern.steps(
-        Map.of(
-          0, 
-          m_green,
-          0.2,
-          m_green, 
-          Math.random(), 
-          Color.kBlack));
-          
-      currentPattern.atBrightness(Percent.of(30)).applyTo(leftSide);
-      currentPattern.atBrightness(Percent.of(30)).applyTo(rightSide);
+      currentPattern.atBrightness(Percent.of(40)).applyTo(leftSide);
+      currentPattern.atBrightness(Percent.of(40)).applyTo(rightSide);
       lightStrip.setData(stripBuffer);
     }
   }
