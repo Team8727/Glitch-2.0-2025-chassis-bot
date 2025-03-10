@@ -3,12 +3,14 @@ package frc.robot.commands.DriveCommands;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.kElevator;
 import frc.robot.Constants.kOI;
 import frc.robot.Constants.kSwerve;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Elevator.Elevator;
+import frc.robot.utilities.NetworkTableLogger;
 
 import java.util.function.Supplier;
 
@@ -19,6 +21,7 @@ public class SwerveJoystickCmd extends Command {
   private final Supplier<Double> m_xSpdFunction, m_ySpdFunction, m_turningSpdFunction;
   private final Supplier<Boolean> m_fieldOrientedFunction;
   private final Supplier<Boolean> m_scaleSpeedToElevHeight;
+  private final NetworkTableLogger m_logger = new NetworkTableLogger(this.getName().toString());
 
   public SwerveJoystickCmd(
       SwerveSubsystem swerveSubsystem,
@@ -80,12 +83,18 @@ public class SwerveJoystickCmd extends Command {
       chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turningSpeed);
     }
 
+    if (RobotBase.isSimulation()) { 
+      double adjustedAngle = m_SwerveSubsystem.navX.getAngle() + turningSpeed;
+      m_SwerveSubsystem.navX.setAngleAdjustment(adjustedAngle);
+    }
+    
     // Set the swerve module states
     SwerveModuleState[] moduleStates = kSwerve.kinematics.toSwerveModuleStates(chassisSpeeds);
     // System.out.println("setting module states");
 
     // output to swerve modules
     m_SwerveSubsystem.setModuleStates(moduleStates);
+    m_logger.logChassisSpeeds("chassisspeeds", chassisSpeeds);
   }
 
   @Override

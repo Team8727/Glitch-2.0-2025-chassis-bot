@@ -4,6 +4,10 @@
 
 package frc.robot;
 
+import java.io.IOException;
+
+import org.json.simple.parser.ParseException;
+
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
@@ -48,25 +52,34 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 public final class Constants {
   public static class kConfigs {
 
-    public static RobotConfig robotConfig =
-    new RobotConfig(
-      65, // TODO: find real value
-        5.22, // TODO: find real value
-        new ModuleConfig(
-            .0371,
-            4.55,
-            1.4, // TODO: find real value
-            new DCMotor(
-                12, 
-                3.6, 
-                211, 
-                3.6, 
-                710.42, // TODO: probobly wrong
+    public static RobotConfig robotConfig; 
+    static {
+      try {
+        robotConfig = RobotConfig.fromGUISettings();
+      } catch (IOException | ParseException e) {
+        e.printStackTrace();
+        System.out.println("Failed to load robot config from GUI settings, using default values");
+        // Default configuration if fromGUISettings fails or is not valid
+        robotConfig = new RobotConfig(
+            65, // TODO: find real value
+            5.22, // TODO: find real value
+            new ModuleConfig(
+                .0371,
+                4.55,
+                1.4, // TODO: find real value
+                new DCMotor(
+                    12, 
+                    3.6, 
+                    211, 
+                    3.6, 
+                    710.42, // TODO: probably wrong
+                    1),
+                5.08,
+                50,
                 1),
-            5.08,
-            50,
-            1),
             kSwerve.kinematics.getModules());
+      }
+    }
 
     public static final DCMotor neoMotor = 
       new DCMotor(
@@ -278,22 +291,27 @@ public final class Constants {
 
     public static final AprilTagFieldLayout aprilTagFieldLayout =
     AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark);
+    // x   y     z
+    // 4   7     22
+    // -4  7     22
+    // -4  6.625 19.5
+    //  4  6.625 19.5
     public static final Transform3d camera1Position = // Right Rear
       new Transform3d(
         new Translation3d(Units.inchesToMeters(1.633), Units.inchesToMeters(8.555), Units.inchesToMeters(28.120)), 
-        new Rotation3d(0, Math.toRadians(-10), Math.toRadians(126.6)));
+        new Rotation3d(0, Math.toRadians(20), Math.toRadians(-10)));
     public static final Transform3d camera2Position = // Upper
       new Transform3d(
-        new Translation3d(Units.inchesToMeters(-6.057), Units.inchesToMeters(-7.503218), Units.inchesToMeters(39.952)),
-        new Rotation3d(0, Math.toRadians(-40), Math.toRadians(135)));
+        new Translation3d(Units.inchesToMeters(1.633), Units.inchesToMeters(-8.555), Units.inchesToMeters(27.120)),
+        new Rotation3d(0, Math.toRadians(20), Math.toRadians(-35)));
     public static final Transform3d camera3Position = // Left Rear
       new Transform3d(
         new Translation3d(Units.inchesToMeters(1.633), Units.inchesToMeters(-8.555), Units.inchesToMeters(28.120)),
-        new Rotation3d(0, Math.toRadians(-10), Math.toRadians(-126.6)));
+        new Rotation3d(0, Math.toRadians(20), Math.toRadians(10)));
     public static final Transform3d camera4Position = // Front
       new Transform3d(
-        new Translation3d(Units.inchesToMeters(11.828), Units.inchesToMeters(-4.586), Units.inchesToMeters(7.825)),
-        new Rotation3d(0, Math.toRadians(-35), Math.toRadians(45)));
+        new Translation3d(Units.inchesToMeters(1.633), Units.inchesToMeters(8.555), Units.inchesToMeters(28.120)),
+        new Rotation3d(0, Math.toRadians(20), Math.toRadians(35)));
 
     public static final Matrix<N3, N1> stateStdDevs =
         MatBuilder.fill(Nat.N3(), Nat.N1(), 0.02, 0.02, 0.01);

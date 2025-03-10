@@ -14,17 +14,17 @@ import org.littletonrobotics.urcl.URCL;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathfindingCommand;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.hal.SimDouble;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.simulation.SimDeviceSim;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-
 import frc.robot.Constants.kConfigs;
 import frc.robot.Constants.kSwerve;
 import frc.robot.subsystems.Autos;
@@ -57,7 +57,7 @@ public class Robot extends TimedRobot {
   private final Coral m_coral = new Coral();
   private final AlgaeIntakePivot m_AlgaeIntakePivot = new AlgaeIntakePivot();
   private final AlgaeIntakeRollers m_AlgaeIntakeRollers = new AlgaeIntakeRollers();
-  private final Autos m_Autos = new Autos(m_ledSubsytem, m_coral, m_elevator, m_AlgaeIntakePivot, m_AlgaeIntakeRollers, m_PoseEstimatior);
+  private final Autos m_Autos = new Autos(m_ledSubsytem, m_coral, m_elevator, m_PoseEstimatior);
 
   private boolean m_elevatorSpeedControl = true;
 
@@ -71,7 +71,7 @@ public class Robot extends TimedRobot {
         m_PoseEstimatior::get2dPose,
         m_PoseEstimatior::resetPoseToPose2d,
         m_SwerveSubsystem::getChassisSpeeds,
-        (chassisSpeeds, driveff) -> {
+        (chassisSpeeds, driveff) -> { // drive command
           System.out.println("aligning");
           // PathPlannerLogging.setLogActivePathCallback((poselist) -> {
           //   m_PoseEstimatior.field2d.getObject("Trajectory")
@@ -81,20 +81,33 @@ public class Robot extends TimedRobot {
           //         new TrajectoryConfig(10, 5))); //TODO: get this from pathplanner somehow
           // });
           logger.logChassisSpeeds("speeds", chassisSpeeds);
-          if (DriverStation.getAlliance().get() == Alliance.Red) {
-            chassisSpeeds = new ChassisSpeeds(-chassisSpeeds.vxMetersPerSecond, -chassisSpeeds.vyMetersPerSecond, -chassisSpeeds.omegaRadiansPerSecond);
+          if (DriverStation.getAlliance().get() == Alliance.Blue) {
+            chassisSpeeds = new ChassisSpeeds(
+              -chassisSpeeds.vxMetersPerSecond, 
+              -chassisSpeeds.vyMetersPerSecond, 
+              -chassisSpeeds.omegaRadiansPerSecond);
           }
-          m_SwerveSubsystem.setModuleStates(kSwerve.kinematics.toSwerveModuleStates(ChassisSpeeds.fromRobotRelativeSpeeds(
-            new ChassisSpeeds(
-              (-chassisSpeeds.vxMetersPerSecond) * 1.1, 
-              (-chassisSpeeds.vyMetersPerSecond), 
-              -chassisSpeeds.omegaRadiansPerSecond), 
-            m_SwerveSubsystem.getRotation2d())));
-          // new DriveCmd(m_SwerveSubsystem, () -> chassisSpeeds, () -> true).execute();
+          // Set the swerve module states
+          SwerveModuleState[] moduleStates = kSwerve.kinematics.toSwerveModuleStates(
+              ChassisSpeeds.fromRobotRelativeSpeeds(
+              new ChassisSpeeds(
+                chassisSpeeds.vxMetersPerSecond, 
+                chassisSpeeds.vyMetersPerSecond, 
+                chassisSpeeds.omegaRadiansPerSecond), 
+              m_SwerveSubsystem.getRotation2d()));
+
+          if (Robot.isSimulation()) { 
+            double adjustedAngle = m_SwerveSubsystem.navX.getAngle() + chassisSpeeds.omegaRadiansPerSecond;
+            System.out.println("adjusted angle: " + adjustedAngle);
+            m_SwerveSubsystem.navX.setAngleAdjustment(adjustedAngle);
+          }
+      
+          logger.logSwerveModuleState("states", moduleStates);
+          m_SwerveSubsystem.setModuleStates(moduleStates);
         },
-        kSwerve.Auton.pathFollowController,
+        kSwerve.Auton.pathFollowController, 
         kConfigs.robotConfig,
-        () -> {
+        () -> { // to flip path
           // Boolean supplier that controls when the path will be mirrored for the red alliance
           // This will flip the path being followed to the red side of the field.
           // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
@@ -246,7 +259,11 @@ public class Robot extends TimedRobot {
 
   /** This function is called once when the robot is first started up. */
   @Override
-  public void simulationInit() {}
+  public void simulationInit() {
+    SimDeviceSim navXSim = new SimDeviceSim("navX-Sensor", m_SwerveSubsystem.navX.getPort());
+    SimDouble yaw = navXSim.getDouble("Yaw");
+    
+  }
 
   /** This function is called periodically whilst in simulation. */
   @Override

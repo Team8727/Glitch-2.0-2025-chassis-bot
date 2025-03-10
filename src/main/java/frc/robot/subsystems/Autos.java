@@ -12,6 +12,7 @@ import org.json.simple.parser.ParseException;
 import org.opencv.core.Mat;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 
@@ -29,35 +30,30 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.kSwerve;
 import frc.robot.Constants.kElevator.ElevatorPosition;
 import frc.robot.commands.Coral.DeployCoralCmd;
-import frc.robot.commands.Coral.IntakeCoralCmd;
-import frc.robot.subsystems.AlgaeIntake.AlgaeIntakePivot;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.Coral.Coral;
 import frc.robot.utilities.NetworkTableLogger;
 import frc.robot.commands.SetElevatorHeightCmd;
-import frc.robot.subsystems.AlgaeIntake.AlgaeIntakeRollers;
 
 public class Autos extends SubsystemBase {
   private final LEDSubsystem m_ledSubsytem;
   private final Coral m_coral;
   private final Elevator m_elevator;
-  private final AlgaeIntakePivot m_algaeIntakePivot;
-  private final AlgaeIntakeRollers m_algaeIntakeRollers;
   private final LinkedHashMap<String, PathPlannerPath> paths = new LinkedHashMap<String, PathPlannerPath>();
   private final PoseEstimatior m_PoseEstimatior;
   private final SendableChooser<String> autoChooser = new SendableChooser<>();
   private final NetworkTableLogger logger = new NetworkTableLogger(this.getName().toString());
 
   /** Creates a new Autos. */
-  public Autos(LEDSubsystem ledSubsystem, Coral coralSubsystem, Elevator elevatorSubsystem, AlgaeIntakePivot algaeIntakePivot, AlgaeIntakeRollers algaeIntakeRollers, PoseEstimatior poseEstimatior) {
+  public Autos(LEDSubsystem ledSubsystem, Coral coralSubsystem, Elevator elevatorSubsystem, PoseEstimatior poseEstimatior) {
     m_ledSubsytem = ledSubsystem;
     m_coral = coralSubsystem;
     m_elevator = elevatorSubsystem;
-    m_algaeIntakePivot = algaeIntakePivot;
-    m_algaeIntakeRollers = algaeIntakeRollers;
     m_PoseEstimatior = poseEstimatior;
 
     loadPaths();
+
+    PathPlannerAuto setelevatorheight = new PathPlannerAuto(new SetElevatorHeightCmd(ElevatorPosition.L4, elevatorSubsystem, coralSubsystem, ledSubsystem));
 
     // // Load a full Choreo trajectory as a PathPlannerPath
     // PathPlannerPath exampleChoreoTraj = PathPlannerPath.fromChoreoTrajectory("Example Choreo Traj");
@@ -75,6 +71,7 @@ public class Autos extends SubsystemBase {
 
   private void loadPaths() {
     try {
+    paths.put("M-H test", PathPlannerPath.fromPathFile("M-H test"));
     paths.put("M-L4-H", PathPlannerPath.fromChoreoTrajectory("M-L4-H"));
     // paths.put("Red-M-L4-H", PathPlannerPath.fromChoreoTrajectory("M-L4-H").flipPath());
     // paths.put("H-PC", PathPlannerPath.fromChoreoTrajectory("H-PC"));
@@ -164,23 +161,28 @@ public class Autos extends SubsystemBase {
             kSwerve.Auton.maxAngAccel)).andThen(new WaitCommand(0.0001));
   }
 
+  public Command followPath(PathPlannerPath path) {
+    return AutoBuilder.followPath(path);
+  }
+
   private void setStartPose(PathPlannerPath path) {
     Pose2d startPose = path.getStartingHolonomicPose().orElse(path.getStartingDifferentialPose());
     if (DriverStation.getAlliance().get() ==  Alliance.Red) {
       Pose2d startPoseOffset = new Pose2d(
-        (17.55 - startPose.getX()) - 0.21,
-        (8 - startPose.getY()) + 0.01,
-        new Rotation2d(Math.toRadians(0.1)));
+        (17.55 - startPose.getX()),
+        (8.05 - startPose.getY()),
+        new Rotation2d(Math.toRadians(0)));
       m_PoseEstimatior.resetPoseToPose2d(startPoseOffset);
     } else {
       Pose2d startPoseOffset = new Pose2d(
-        startPose.getX() + 0.21,
-        startPose.getY() - 0.01,
+        startPose.getX(),
+        startPose.getY(),
         new Rotation2d(Math.toRadians(180)));
         m_PoseEstimatior.resetPoseToPose2d(startPoseOffset);
     }
   }
 
+  
   private Command Min() {
     return new 
       InstantCommand(() -> setStartPose(paths.get("Min")))
@@ -189,8 +191,8 @@ public class Autos extends SubsystemBase {
 
   private Command M_L4_H() {
     return new 
-      InstantCommand(() -> setStartPose(paths.get("M-L4-H")))
-      .andThen(alignToPath(paths.get("M-L4-H")))
+      InstantCommand(() -> setStartPose(paths.get("M-H test")))
+      .andThen(followPath(paths.get("M-H test")))
       .andThen(new SetElevatorHeightCmd(ElevatorPosition.L4, m_elevator, m_coral, m_ledSubsytem)).withTimeout(3)
       .andThen(new DeployCoralCmd(m_coral, m_ledSubsytem, m_elevator));
   }

@@ -5,9 +5,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.Coral.Coral;
@@ -42,6 +39,7 @@ public class SetElevatorHeightCmd extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    if (!m_coral.getBackCoralSensor()) {
       System.out.println("Setting elevator height to " + m_scoreLevel);
       m_elevator.setElevatorHeightMotionProfile(m_scoreLevel);
       // if (m_scoreLevel == ElevatorPosition.L1) {
@@ -54,6 +52,18 @@ public class SetElevatorHeightCmd extends Command {
       //     new InstantCommand(() -> m_elevator.isHoming = false)).schedule();
       // }
       this.cancel();
+    } else {
+      System.out.println("hey driver, are you trying to kill the elevator or something? please move the coral out of the way");
+    }
+      // if (m_scoreLevel == ElevatorPosition.L1) {
+      //   new SequentialCommandGroup(
+      //     new WaitUntilCommand(() -> Math.abs(m_elevator.getElevatorHeight() - m_scoreLevel.getOutputRotations()) < 0.5),
+      //     new InstantCommand(() -> m_elevator.isHoming = true),
+      //     new InstantCommand(() -> m_elevator.setDutyCycle(-0.1)),
+      //     new WaitUntilCommand(() -> m_elevator.getCurrentDrawAmps() > 20),
+      //     new InstantCommand(() -> m_elevator.resetElevatorEncoders()),
+      //     new InstantCommand(() -> m_elevator.isHoming = false)).schedule();
+      // }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
