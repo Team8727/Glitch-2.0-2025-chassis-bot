@@ -8,9 +8,11 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator3d;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 import frc.robot.Constants.kVision;
 import frc.robot.utilities.NetworkTableLogger;
 
@@ -275,8 +277,13 @@ public class PoseEstimatior extends SubsystemBase {
     // }
 
     // gyro update
-    m_SwervePoseEstimator.update(
+    if (Robot.isReal()) {
+      m_SwervePoseEstimator.update(
         m_SwerveSubsystem.navX.getRotation3d(), m_SwerveSubsystem.modulePositions);
+    } else {
+      m_SwervePoseEstimator.update(
+        new Rotation3d(Math.toRadians(0), Math.toRadians(0), Math.toRadians(m_SwerveSubsystem.navX.getAngle())), m_SwerveSubsystem.modulePositions);
+    }
 
     // Update Field2d with pose to display the robot's visual position on the field to the dashboard
     field2d.setRobotPose(get2dPose());

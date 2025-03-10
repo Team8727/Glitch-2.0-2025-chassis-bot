@@ -84,10 +84,10 @@ public class SwerveJoystickCmd extends Command {
     }
 
     if (RobotBase.isSimulation()) { 
-      Double adjustedAngle = m_SwerveSubsystem.navX.getAngle() + turningSpeed;
-      m_SwerveSubsystem.navX.(adjustedAngle);
-      System.out.println(" turningSpeed: " + adjustedAngle);
+      double adjustedAngle = m_SwerveSubsystem.navX.getAngle() + turningSpeed;
+      m_SwerveSubsystem.navX.setAngleAdjustment(adjustedAngle);
     }
+    
     // Set the swerve module states
     SwerveModuleState[] moduleStates = kSwerve.kinematics.toSwerveModuleStates(chassisSpeeds);
     // System.out.println("setting module states");

@@ -13,6 +13,7 @@ import com.pathplanner.lib.commands.PathfindingCommand;
 
 import edu.wpi.first.hal.SimDouble;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
@@ -68,7 +69,7 @@ public class Robot extends TimedRobot {
         m_PoseEstimatior::get2dPose,
         m_PoseEstimatior::resetPoseToPose2d,
         m_SwerveSubsystem::getChassisSpeeds,
-        (chassisSpeeds, driveff) -> {
+        (chassisSpeeds, driveff) -> {          
           System.out.println("aligning");
           // PathPlannerLogging.setLogActivePathCallback((poselist) -> {
           //   m_PoseEstimatior.field2d.getObject("Trajectory")
@@ -78,16 +79,29 @@ public class Robot extends TimedRobot {
           //         new TrajectoryConfig(10, 5))); //TODO: get this from pathplanner somehow
           // });
           logger.logChassisSpeeds("speeds", chassisSpeeds);
-          if (DriverStation.getAlliance().get() == Alliance.Red) {
-            chassisSpeeds = new ChassisSpeeds(-chassisSpeeds.vxMetersPerSecond, -chassisSpeeds.vyMetersPerSecond, -chassisSpeeds.omegaRadiansPerSecond);
+          if (DriverStation.getAlliance().get() == Alliance.Blue) {
+            chassisSpeeds = new ChassisSpeeds(
+              -chassisSpeeds.vxMetersPerSecond, 
+              -chassisSpeeds.vyMetersPerSecond, 
+              -chassisSpeeds.omegaRadiansPerSecond);
           }
-          m_SwerveSubsystem.setModuleStates(kSwerve.kinematics.toSwerveModuleStates(ChassisSpeeds.fromRobotRelativeSpeeds(
-            new ChassisSpeeds(
-              (-chassisSpeeds.vxMetersPerSecond) * 1.1, 
-              (-chassisSpeeds.vyMetersPerSecond), 
-              -chassisSpeeds.omegaRadiansPerSecond), 
-            m_SwerveSubsystem.getRotation2d())));
-          // new DriveCmd(m_SwerveSubsystem, () -> chassisSpeeds, () -> true).execute();
+          // Set the swerve module states
+          SwerveModuleState[] moduleStates = kSwerve.kinematics.toSwerveModuleStates(
+              ChassisSpeeds.fromRobotRelativeSpeeds(
+              new ChassisSpeeds(
+                chassisSpeeds.vxMetersPerSecond, 
+                chassisSpeeds.vyMetersPerSecond, 
+                chassisSpeeds.omegaRadiansPerSecond), 
+              m_SwerveSubsystem.getRotation2d()));
+
+          if (Robot.isSimulation()) { 
+            double adjustedAngle = m_SwerveSubsystem.navX.getAngle() + chassisSpeeds.omegaRadiansPerSecond;
+            System.out.println("adjusted angle: " + adjustedAngle);
+            m_SwerveSubsystem.navX.setAngleAdjustment(adjustedAngle);
+          }
+      
+          logger.logSwerveModuleState("states", moduleStates);
+          m_SwerveSubsystem.setModuleStates(moduleStates);
         },
         kSwerve.Auton.pathFollowController,
         kConfigs.robotConfig,
