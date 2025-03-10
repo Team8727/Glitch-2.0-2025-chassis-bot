@@ -4,7 +4,6 @@
 
 package frc.robot.commands.Coral;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.kElevator;
 import frc.robot.subsystems.Elevator.Elevator;

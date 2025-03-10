@@ -6,10 +6,8 @@ package frc.robot.subsystems;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
-import java.util.NoSuchElementException;
 
 import org.json.simple.parser.ParseException;
-import org.opencv.core.Mat;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
@@ -19,42 +17,33 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.kSwerve;
 import frc.robot.Constants.kElevator.ElevatorPosition;
 import frc.robot.commands.Coral.DeployCoralCmd;
-import frc.robot.commands.Coral.IntakeCoralCmd;
-import frc.robot.subsystems.AlgaeIntake.AlgaeIntakePivot;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.Coral.Coral;
 import frc.robot.utilities.NetworkTableLogger;
 import frc.robot.commands.SetElevatorHeightCmd;
-import frc.robot.subsystems.AlgaeIntake.AlgaeIntakeRollers;
 
 public class Autos extends SubsystemBase {
   private final LEDSubsystem m_ledSubsytem;
   private final Coral m_coral;
   private final Elevator m_elevator;
-  private final AlgaeIntakePivot m_algaeIntakePivot;
-  private final AlgaeIntakeRollers m_algaeIntakeRollers;
   private final LinkedHashMap<String, PathPlannerPath> paths = new LinkedHashMap<String, PathPlannerPath>();
   private final PoseEstimatior m_PoseEstimatior;
   private final SendableChooser<String> autoChooser = new SendableChooser<>();
   private final NetworkTableLogger logger = new NetworkTableLogger(this.getName().toString());
 
   /** Creates a new Autos. */
-  public Autos(LEDSubsystem ledSubsystem, Coral coralSubsystem, Elevator elevatorSubsystem, AlgaeIntakePivot algaeIntakePivot, AlgaeIntakeRollers algaeIntakeRollers, PoseEstimatior poseEstimatior) {
+  public Autos(LEDSubsystem ledSubsystem, Coral coralSubsystem, Elevator elevatorSubsystem, PoseEstimatior poseEstimatior) {
     m_ledSubsytem = ledSubsystem;
     m_coral = coralSubsystem;
     m_elevator = elevatorSubsystem;
-    m_algaeIntakePivot = algaeIntakePivot;
-    m_algaeIntakeRollers = algaeIntakeRollers;
     m_PoseEstimatior = poseEstimatior;
 
     loadPaths();
