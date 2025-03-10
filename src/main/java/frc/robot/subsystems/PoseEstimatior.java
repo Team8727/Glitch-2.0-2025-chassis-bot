@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
@@ -22,10 +23,10 @@ import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
-import org.photonvision.PhotonUtils;
 import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
+import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
@@ -101,12 +102,12 @@ public class PoseEstimatior extends SubsystemBase {
       new PhotonPoseEstimator(
           kVision.aprilTagFieldLayout,
           PoseStrategy.CLOSEST_TO_REFERENCE_POSE,
-          kVision.camera4Position);
+          kVision.camera3Position);
   PhotonPoseEstimator PoseEstimator4 =
       new PhotonPoseEstimator(
           kVision.aprilTagFieldLayout,
           PoseStrategy.CLOSEST_TO_REFERENCE_POSE,
-          kVision.camera3Position);
+          kVision.camera4Position);
 
   // get starting pos with cam1
   public Pose2d getStartPose2d() {
