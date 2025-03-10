@@ -5,7 +5,8 @@
 package frc.robot;
 
 import frc.robot.controller.Controller;
-import frc.robot.controller.DefaultTeleopControllerBindings;
+import frc.robot.controller.Driver1DefaultBindings;
+import frc.robot.controller.Driver2DefaultBindings;
 import frc.robot.subsystems.Autos;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -34,8 +35,8 @@ public class RobotContainer {
   private final LEDSubsystem m_ledSubsytem;
   private final Autos m_Autos;
   private boolean m_elevatorSpeedControl;
-  private final Controller m_controller = new Controller();
-
+  private final Controller m_mainController = new Controller();
+  private final Controller m_assistController = new Controller();
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer(
       SwerveSubsystem swerveSubsystem,
@@ -65,7 +66,18 @@ public class RobotContainer {
   }
 
   public void teleopInit() {
-    m_controller.applyBindings(new DefaultTeleopControllerBindings(
+    m_mainController.applyBindings(new Driver1DefaultBindings(
+      m_SwerveSubsystem,
+      m_AlgaeIntakePivot,
+      m_AlgaeIntakeRollers,
+      m_coral,
+      m_elevator,
+      m_ledSubsytem,
+      m_elevatorSpeedControl,
+      m_AlgaeRemoverPivot,
+      m_AlgaeRemoverRollers
+    ));
+    m_assistController.applyBindings(new Driver2DefaultBindings(
       m_SwerveSubsystem,
       m_AlgaeIntakePivot,
       m_AlgaeIntakeRollers,
@@ -79,6 +91,7 @@ public class RobotContainer {
   }
 
   public void autonomousInit() {
-    m_controller.clearBindings();
+    m_mainController.clearBindings();
+    m_assistController.clearBindings();
   }
 }
