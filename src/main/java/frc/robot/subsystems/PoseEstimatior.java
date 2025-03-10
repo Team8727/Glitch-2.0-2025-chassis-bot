@@ -34,63 +34,55 @@ public class PoseEstimatior extends SubsystemBase {
   final SwerveDrivePoseEstimator m_SwervePoseEstimator;
   final NetworkTableLogger networkTableLogger = new NetworkTableLogger(this.getName().toString());
 
-  PhotonCamera camera1 = new PhotonCamera("backRight");
-  PhotonCamera camera2 = new PhotonCamera("backLeft");
-  PhotonCamera camera3 = new PhotonCamera("front");
-  PhotonCamera camera4 = new PhotonCamera("backUp");
+  private VisionSystemSim visionSim;
 
-  private final VisionSystemSim visionSim = new VisionSystemSim("main");
+  private PhotonCamera camera1 = new PhotonCamera("backRight");
+  private PhotonCamera camera2 = new PhotonCamera("backLeft");
+  private PhotonCamera camera3 = new PhotonCamera("front");
+  private PhotonCamera camera4 = new PhotonCamera("backUp");
 
-  private final PhotonCameraSim cameraSimBackRight;
-  private final PhotonCameraSim cameraSimBackLeft;
-  private final PhotonCameraSim cameraSimFront;
-  private final PhotonCameraSim cameraSimBackUp;
+  private PhotonCameraSim cameraSimBackRight;
+  private PhotonCameraSim cameraSimBackLeft;
+  private PhotonCameraSim cameraSimFront;
+  private PhotonCameraSim cameraSimBackUp;
 
-  Pose3d latestCamPoseBackRiight;
-  Pose3d latestCamPoseBackLeft;
-  Pose3d latestCamPoseFront;
-  Pose3d latestCamPoseBackUp;
+  private SimCameraProperties cameraProp;
 
-  // TargetModel targetModel = TargetModel.kAprilTag16h5;
-  // Pose3d targetPose = new Pose3d(16, 4, 2, new Rotation3d(0, 0, Math.PI));
-  // VisionTargetSim visionTarget = new VisionTargetSim(targetPose, targetModel);
-
-  private final SimCameraProperties cameraProp = new SimCameraProperties();
-
-  // Field2d for logging the robot's 2d position on the field to the dashboard like AdvantageScope,
-  // Elastic or Glass.
-  public Field2d simField2d;
+  // Field2d for logging the robot's 2d position on the field to the dashboard like AdvantageScope, Elastic or Glass.
+  private Field2d simField2d;
   public Field2d field2d = new Field2d();
-
-
-
 
   /** Creates a new PoseEstimation. */
   public PoseEstimatior(SwerveSubsystem swerveSubsystem) {
     // subsystem setups
     m_SwerveSubsystem = swerveSubsystem;
     m_SwervePoseEstimator = swerveSubsystem.swervePoseEstimator;
-    visionSim.addAprilTags(kVision.aprilTagFieldLayout);
-    simField2d = visionSim.getDebugField();
-    // A 640 x 480 camera with a 100 degree diagonal FOV.
-    cameraProp.setCalibration(640, 480, Rotation2d.fromDegrees(70));
-    // Approximate detection noise with average and standard deviation error in pixels.
-    cameraProp.setCalibError(0.25, 0.08);
-    // Set the camera image capture framerate (Note: this is limited by robot loop rate).
-    cameraProp.setFPS(40);
-    // The average and standard deviation in milliseconds of image data latency.
-    cameraProp.setAvgLatencyMs(35);
-    cameraProp.setLatencyStdDevMs(5);
+    if (Robot.isSimulation()) {
+      visionSim = new VisionSystemSim("main");
+      cameraProp = new SimCameraProperties();
+      simField2d = visionSim.getDebugField();
+      
+      visionSim.addAprilTags(kVision.aprilTagFieldLayout);
+      // A 640 x 480 camera with a 100 degree diagonal FOV.
+      cameraProp.setCalibration(640, 480, Rotation2d.fromDegrees(70));
+      // Approximate detection noise with average and standard deviation error in pixels.
+      cameraProp.setCalibError(0.25, 0.08);
+      // Set the camera image capture framerate (Note: this is limited by robot loop rate).
+      cameraProp.setFPS(40);
+      // The average and standard deviation in milliseconds of image data latency.
+      cameraProp.setAvgLatencyMs(35);
+      cameraProp.setLatencyStdDevMs(5);
 
-    cameraSimBackRight = new PhotonCameraSim(camera1, cameraProp);
-    cameraSimBackLeft = new PhotonCameraSim(camera2, cameraProp);
-    cameraSimFront = new PhotonCameraSim(camera3, cameraProp);
-    cameraSimBackUp = new PhotonCameraSim(camera4, cameraProp);
+      cameraSimBackRight = new PhotonCameraSim(camera1, cameraProp);
+      cameraSimBackLeft = new PhotonCameraSim(camera2, cameraProp);
+      cameraSimFront = new PhotonCameraSim(camera3, cameraProp);
+      cameraSimBackUp = new PhotonCameraSim(camera4, cameraProp);
 
-    visionSim.addCamera(cameraSimBackRight, kVision.camera1Position);
-    visionSim.addCamera(cameraSimBackLeft, kVision.camera2Position);
-    visionSim.addCamera(cameraSimFront, kVision.camera4Position);
-    visionSim.addCamera(cameraSimBackUp, kVision.camera3Position);
+      visionSim.addCamera(cameraSimBackRight, kVision.camera1Position);
+      visionSim.addCamera(cameraSimBackLeft, kVision.camera2Position);
+      visionSim.addCamera(cameraSimFront, kVision.camera4Position);
+      visionSim.addCamera(cameraSimBackUp, kVision.camera3Position);
+    }
     resetStartPose();
   }
 
