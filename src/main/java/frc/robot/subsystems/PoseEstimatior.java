@@ -4,12 +4,12 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator3d;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
@@ -31,7 +31,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class PoseEstimatior extends SubsystemBase {
   final SwerveSubsystem m_SwerveSubsystem;
-  final SwerveDrivePoseEstimator3d m_SwervePoseEstimator;
+  final SwerveDrivePoseEstimator m_SwervePoseEstimator;
   final NetworkTableLogger networkTableLogger = new NetworkTableLogger(this.getName().toString());
 
   PhotonCamera camera1 = new PhotonCamera("backRight");
@@ -117,10 +117,10 @@ public class PoseEstimatior extends SubsystemBase {
           kVision.camera3Position);
 
   // get starting pos with cam1
-  public Pose3d getPose3d() {
+  public Pose2d getStartPose2d() {
     // vars
     Pose3d pose3d = new Pose3d();
-    var result = camera1.getLatestResult();
+    PhotonPipelineResult result = camera1.getLatestResult();
     boolean hasTargets = result.hasTargets();
     // if camera sees targets
     if (hasTargets) {
@@ -135,34 +135,29 @@ public class PoseEstimatior extends SubsystemBase {
                 kVision.camera1Position);
       }
     }
-    return pose3d;
-  }
-
-  public void resetPoseToPose3d(Pose3d pose3d) {
-    m_SwervePoseEstimator.resetPose(pose3d);
+    return pose3d.toPose2d();
   }
 
   public void resetPoseToPose2d(Pose2d pose2d) {
-    Pose3d pose3d = new Pose3d(pose2d);
-    m_SwervePoseEstimator.resetPose(pose3d);
+    m_SwervePoseEstimator.resetPose(pose2d);
   }
 
   public void resetStartPose() {
-    m_SwervePoseEstimator.resetPose(getPose3d());
+    m_SwervePoseEstimator.resetPose(getStartPose2d());
   }
 
   public void resetToEmptyPose() {
-    Pose3d pose3d = new Pose3d();
-    m_SwervePoseEstimator.resetPose(pose3d);
+    Pose2d pose2d = new Pose2d();
+    m_SwervePoseEstimator.resetPose(pose2d);
   }
 
   // Get 2d pose: from the poseEstimator
   public Pose2d get2dPose() {
-    return (m_SwervePoseEstimator.getEstimatedPosition().toPose2d());
+    return (m_SwervePoseEstimator.getEstimatedPosition());
   }
 
   Optional<EstimatedRobotPose> getEstimatedGlobalPose(
-      Pose3d prevEstimatedRobotPose,
+      Pose2d prevEstimatedRobotPose,
       PhotonPipelineResult cameraResult,
       PhotonPoseEstimator PoseEstimator) {
     PoseEstimator.setReferencePose(prevEstimatedRobotPose);
@@ -187,7 +182,7 @@ public class PoseEstimatior extends SubsystemBase {
                 poseEstimator);
         
           m_SwervePoseEstimator.addVisionMeasurement(
-              cameraPose.get().estimatedPose, cameraPose.get().timestampSeconds);
+              cameraPose.get().estimatedPose.toPose2d(), cameraLatestRes.getTimestampSeconds());
         }
       }
     } catch (Exception e) {
@@ -201,7 +196,7 @@ public class PoseEstimatior extends SubsystemBase {
     networkTableLogger.logPose3d("cam back left", visionSim.getCameraPose(cameraSimBackLeft).orElse(new Pose3d()));
     networkTableLogger.logPose3d("cam front", visionSim.getCameraPose(cameraSimFront).orElse(new Pose3d()));
     networkTableLogger.logPose3d("cam back up", visionSim.getCameraPose(cameraSimBackUp).orElse(new Pose3d()));
-    m_SwervePoseEstimator.addVisionMeasurement(visionSim.getRobotPose(), RobotController.getFPGATime());
+    m_SwervePoseEstimator.addVisionMeasurement(visionSim.getRobotPose().toPose2d(), RobotController.getFPGATime());
   }
 
   @Override
@@ -215,88 +210,28 @@ public class PoseEstimatior extends SubsystemBase {
     // // // camera 4 pose estimation
     // addVisionMeasurement(camera4, PoseEstimator4);
 
-    // try {
-    //   // camera 1 pose estimation
-    //   List<PhotonPipelineResult> camera1res = camera1.getAllUnreadResults();
-    //   PhotonPipelineResult camera1LatestRes = camera1res.get(camera1res.size() - 1);
-    //   Optional<EstimatedRobotPose> camera1pose =
-    //     getEstimatedGlobalPose(
-    //         m_SwervePoseEstimator.getEstimatedPosition(), camera1LatestRes, PoseEstimator1);
-    //   m_SwervePoseEstimator.addVisionMeasurement(
-    //       camera1pose.get().estimatedPose, camera1pose.get().timestampSeconds);
-    //   // System.out.println("not error");
-    // } catch (Exception e) {
-    //   // System.out.println("error");
-    // }
-
-    // try {
-    //   // camera 2 pose estimation
-    //   List<PhotonPipelineResult> camera2res = camera2.getAllUnreadResults();
-    //   PhotonPipelineResult camera2LatestRes = camera2res.get(camera2res.size() - 1);
-    //   Optional<EstimatedRobotPose> camera2pose =
-    //     getEstimatedGlobalPose(
-    //         m_SwervePoseEstimator.getEstimatedPosition(), camera2LatestRes, PoseEstimator2);
-    //   m_SwervePoseEstimator.addVisionMeasurement(
-    //       camera2pose.get().estimatedPose, camera2pose.get().timestampSeconds);
-    // } catch (Exception e) {
-    // }
-
-    // try {
-    //   // camera 3 pose estimation
-    //   List<PhotonPipelineResult> camera3res = camera3.getAllUnreadResults();
-    //   PhotonPipelineResult camera3LatestRes = camera3res.get(camera3res.size() - 1);
-    //   Optional<EstimatedRobotPose> camera3pose =
-    //     getEstimatedGlobalPose(
-    //         m_SwervePoseEstimator.getEstimatedPosition(), camera3LatestRes, PoseEstimator3);
-    //   m_SwervePoseEstimator.addVisionMeasurement(
-    //       camera3pose.get().estimatedPose, camera3pose.get().timestampSeconds);
-    // } catch (Exception e) {
-    // }
-
-    // try {
-    //   // camera 4 pose estimation
-    //   List<PhotonPipelineResult> camera4res = camera4.getAllUnreadResults();
-    //   PhotonPipelineResult camera4LatestRes = camera4res.get(camera4res.size() - 1);
-
-    //   List<PhotonTrackedTarget> targets = camera4LatestRes.getTargets();
-    //   for (PhotonTrackedTarget target : targets) {
-    //     double ambiguity = target.getPoseAmbiguity();
-
-    //     if (ambiguity <= 0.2) {
-    //       Optional<EstimatedRobotPose> camera4pose =
-    //         getEstimatedGlobalPose(
-    //             m_SwervePoseEstimator.getEstimatedPosition(),
-    //             camera4LatestRes, 
-    //             PoseEstimator4);
-        
-    //       m_SwervePoseEstimator.addVisionMeasurement(
-    //           camera4pose.get().estimatedPose, camera4pose.get().timestampSeconds);
-    //     }
-    //   }
-    // } catch (Exception e) {
-    // }
-
     // gyro update
     if (Robot.isReal()) {
-      m_SwervePoseEstimator.update(
-        m_SwerveSubsystem.navX.getRotation3d(), m_SwerveSubsystem.modulePositions);
+      m_SwervePoseEstimator.updateWithTime(
+        Timer.getFPGATimestamp(), 
+        m_SwerveSubsystem.navX.getRotation2d(), 
+        m_SwerveSubsystem.modulePositions);
     } else {
-      m_SwervePoseEstimator.update(
-        new Rotation3d(Math.toRadians(0), Math.toRadians(0), Math.toRadians(m_SwerveSubsystem.navX.getAngle())), m_SwerveSubsystem.modulePositions);
+      m_SwervePoseEstimator.updateWithTime(
+        Timer.getFPGATimestamp(),
+        new Rotation2d(Math.toRadians(m_SwerveSubsystem.navX.getAngle())), 
+        m_SwerveSubsystem.modulePositions);
     }
 
     // Update Field2d with pose to display the robot's visual position on the field to the dashboard
     field2d.setRobotPose(get2dPose());
 
-    // field.setRobotPose(m_swervePoseEstimator.getEstimatedPosition().toPose2d());//pose 3d as 2d
-    // pose
+    // field.setRobotPose(m_swervePoseEstimator.getEstimatedPosition().toPose2d());// 2d pose
 
     // Log the robot's 2d position on the field to the dashboard using the NetworkTableLogger
     // Utility
     networkTableLogger.logField2d("Field2d", field2d);
     networkTableLogger.logField2d("simField", simField2d);
-    networkTableLogger.logPose2d("2d pose", get2dPose());
-    networkTableLogger.logPose2d("Robot 3d Pose", get2dPose());
-    networkTableLogger.logPose3d("Robot 2d Pose", m_SwervePoseEstimator.getEstimatedPosition());
+    networkTableLogger.logPose2d("Robot 2d Pose", get2dPose());
   }
 }

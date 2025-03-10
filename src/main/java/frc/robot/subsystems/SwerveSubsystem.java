@@ -2,19 +2,14 @@ package frc.robot.subsystems;
 
 import com.studica.frc.AHRS;
 
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator3d;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry3d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.kSwerve;
@@ -64,11 +59,11 @@ public class SwerveSubsystem extends SubsystemBase {
     navX.getRotation2d(),
     modulePositions);
         
-  Pose3d pose3d = new Pose3d();
+  Pose2d pose2d = new Pose2d();
 
-  SwerveDrivePoseEstimator3d swervePoseEstimator =
-      new SwerveDrivePoseEstimator3d(
-          kSwerve.kinematics, navX.getRotation3d(), modulePositions, pose3d);
+  SwerveDrivePoseEstimator swervePoseEstimator =
+      new SwerveDrivePoseEstimator(
+          kSwerve.kinematics, navX.getRotation2d(), modulePositions, pose2d);
 
   public SwerveSubsystem() {
     new Thread(
@@ -89,13 +84,12 @@ public class SwerveSubsystem extends SubsystemBase {
   public void zeroHeading() {
     navX.reset();
     navX.setAngleAdjustment(0);
-    Pose3d pose3d = new Pose3d();
-    swervePoseEstimator.resetRotation(pose3d.getRotation());
+    swervePoseEstimator.resetRotation(pose2d.getRotation());
   }
 
   // maybe = get corrected steer
   public double getHeading() {
-    return Units.radiansToDegrees(swervePoseEstimator.getEstimatedPosition().getRotation().getZ()); // THIS IS CRUCIAL
+    return swervePoseEstimator.getEstimatedPosition().getRotation().getDegrees(); // THIS IS CRUCIAL
   }
 
   public Rotation2d getRotation2d() {
